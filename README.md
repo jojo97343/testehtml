@@ -420,24 +420,24 @@
             .mobile-nav { display: block; }
             .mobile-fab { display: flex; }
 
-            html { overflow-x: hidden; }
-            body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); overflow-x: hidden; }
-            .container { padding: 10px 12px calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px); max-width: 100%; overflow-x: hidden; }
+            html { overflow-x: clip; }
+            body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+            .container { padding: 10px 12px calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px); max-width: 100%; }
 
-            /* Exception : la page bilan doit pouvoir scroller horizontalement dans ses tables */
-            #page-bilan { overflow-x: visible; }
+            #page-bilan { overflow: visible; }
             #page-bilan .card { overflow: visible; }
-            #page-bilan .bilan-table-side { overflow: hidden; }
+            #page-bilan .bilan-table-side {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
             #page-bilan .table-scroll {
-                overflow-x: scroll !important;
+                overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch;
                 margin: 0 -14px;
                 border-radius: 0;
                 border-left: none;
                 border-right: none;
-                /* Forcer le scroll même quand le parent cache overflow */
-                position: relative;
-                z-index: 1;
             }
             #page-bilan .table-scroll table { min-width: 500px; }
 
