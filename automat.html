@@ -444,6 +444,9 @@
             .bilan-layout { flex-direction: column; }
             .bilan-chart-side { width: 100%; flex: none; display: flex; justify-content: center; }
             .bilan-chart-side canvas { max-width: 180px !important; max-height: 180px !important; }
+            .bilan-table-side { width: 100%; min-width: 0; }
+            #page-bilan .table-scroll { overflow-x: auto; margin: 0 -14px; border-radius: 0; border-left: none; border-right: none; }
+            #page-bilan .table-scroll table { min-width: 480px; }
 
             .budget-row { gap: 6px; }
             .budget-row input { width: 75px; min-height: 38px; padding: 8px 8px; font-size: 0.88rem; }
@@ -693,7 +696,7 @@
             <div class="card-title"><span class="badge">3</span> Bilan</div>
             <div class="bilan-layout">
                 <div class="bilan-table-side">
-                    <div class="table-scroll">
+                    <div class="table-scroll" style="-webkit-overflow-scrolling:touch;">
                         <table id="bilan_table">
                             <thead><tr><th>Catégorie</th><th>Prévu</th><th>Réel</th><th>Écart</th><th>%</th><th>Statut</th></tr></thead>
                             <tbody></tbody>
