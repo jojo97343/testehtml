@@ -1,1272 +1,1032 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Mon Coach Finance</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --main: #5b5ef4;
-            --main-light: #818cf8;
-            --main-glow: rgba(91,94,244,0.18);
-            --bg: #f4f6fb;
-            --bg2: #e8ecf5;
-            --card: #ffffff;
-            --card-border: rgba(0,0,0,0.07);
-            --text: #1a1d2e;
-            --text-muted: #6b7280;
-            --text-hint: #9ca3af;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
-            --shadow-hover: 0 4px 24px rgba(91,94,244,0.12);
-            --radius: 16px;
-            --radius-sm: 10px;
-            --transition: 0.22s cubic-bezier(.4,0,.2,1);
-            --nav-h: 68px;
-            --header-h: 64px;
-        }
-        [data-theme="dark"] {
-            --bg: #111218;
-            --bg2: #1c1e2b;
-            --card: #1c1e2b;
-            --card-border: rgba(255,255,255,0.07);
-            --text: #e8eaf2;
-            --text-muted: #9ca3af;
-            --text-hint: #6b7280;
-            --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
-            --shadow-hover: 0 4px 24px rgba(91,94,244,0.2);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrats à Long Terme – DCG 441</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; color: #222; font-size: 15px; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+.header { background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%); color: white; padding: 28px 40px 20px; }
+.header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.header p { font-size: 13px; opacity: 0.85; }
+.badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 3px 12px; font-size: 12px; margin-top: 8px; margin-right: 6px; }
 
-        html, body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overscroll-behavior: none;
-        }
+.tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e6f0; padding: 0 30px; gap: 0; flex-wrap: wrap; }
+.tab { padding: 11px 16px; cursor: pointer; font-size: 13px; font-weight: 500; color: #666; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap; }
+.tab:hover { color: #2d6a9f; }
+.tab.active { color: #2d6a9f; border-bottom-color: #2d6a9f; font-weight: 700; }
 
-        /* ── MOBILE NAV BAR ── */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: var(--card);
-            border-top: 1px solid var(--card-border);
-            z-index: 100;
-            padding: 0 4px;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .mobile-nav-inner {
-            display: flex;
-            height: 60px;
-            align-items: stretch;
-        }
-        .nav-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px 4px;
-            border-radius: 12px;
-            transition: color var(--transition);
-            color: var(--text-muted);
-            font-family: 'DM Sans', sans-serif;
-        }
-        .nav-btn.active { color: var(--main); }
-        .nav-btn svg { width: 22px; height: 22px; }
-        .nav-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+.content { padding: 26px 36px; max-width: 980px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
 
-        /* ── MOBILE HEADER ── */
-        .mobile-header {
-            display: none;
-            position: sticky;
-            top: 0;
-            height: var(--header-h);
-            background: var(--card);
-            border-bottom: 1px solid var(--card-border);
-            z-index: 90;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            padding-top: env(safe-area-inset-top);
-        }
-        .mobile-header-title {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-        .mobile-header-actions { display: flex; gap: 8px; align-items: center; }
+.scenario-box { background: linear-gradient(135deg, #1a3a5c, #2d6a9f); color: white; border-radius: 12px; padding: 22px 26px; margin-bottom: 22px; }
+.scenario-box h2 { font-size: 19px; margin-bottom: 8px; }
+.scenario-box p { font-size: 14px; line-height: 1.7; opacity: 0.92; }
 
-        /* ── DESKTOP LAYOUT ── */
-        .desktop-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 28px 32px 0;
-            margin-bottom: 28px;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .header-title h1 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.9rem;
-            color: var(--text);
-            letter-spacing: -0.01em;
-        }
-        .header-title h1 em { font-style: normal; color: var(--main); }
-        .header-title p { color: var(--text-muted); font-size: 0.83rem; margin-top: 3px; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
+.card { background: white; border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; border: 1px solid #e0e6f0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.card h3 { font-size: 15px; font-weight: 700; color: #1a3a5c; margin-bottom: 12px; border-bottom: 2px solid #e8ecf5; padding-bottom: 7px; }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 24px 40px;
-        }
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; }
+th { background: #1a3a5c; color: white; padding: 8px 11px; text-align: left; font-weight: 600; }
+td { padding: 7px 11px; border-bottom: 1px solid #eef0f5; }
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) { background: #f8fafc; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.highlight { background: #fff3cd !important; font-weight: 600; }
+.total-row { background: #e8ecf5 !important; font-weight: 700; }
 
-        /* ── PAGES (mobile tab system) ── */
-        .page { display: block; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } .content { padding: 18px; } .tabs { padding: 0 10px; } }
 
-        /* ── CARDS ── */
-        .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: var(--radius);
-            border: 1px solid var(--card-border);
-            box-shadow: var(--shadow);
-            margin-bottom: 16px;
-        }
-        .card-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .card-title .badge {
-            width: 20px; height: 20px;
-            background: var(--main);
-            color: white;
-            border-radius: 50%;
-            font-size: 0.68rem;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
+/* ---- ZONE QUESTION ---- */
+.question-block { background: white; border-radius: 10px; border-left: 5px solid #2d6a9f; padding: 18px 20px; margin-bottom: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.q-label { font-size: 11px; font-weight: 700; color: #2d6a9f; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+.q-text { font-size: 14px; line-height: 1.65; color: #333; margin-bottom: 12px; }
+.q-hint { font-size: 12px; color: #888; font-style: italic; margin-bottom: 12px; padding: 7px 10px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #c8d8f0; }
 
-        /* ── STAT GRID ── */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .stat-box {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 16px;
-            text-align: center;
-        }
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
-        .stat-value { font-size: 1.9rem; font-weight: 700; line-height: 1; }
-        .stat-value small { font-size: 1.1rem; font-weight: 600; }
-        .stat-box-gold { border-color: rgba(245,158,11,0.3); }
-        .stat-box-gold .stat-value { color: #b45309; }
-        .stat-box-gold .stat-label { color: #d97706; }
-        .reset-coffre {
-            font-size: 0.68rem; color: #b45309; background: none;
-            border: 1px solid #d97706; border-radius: 20px;
-            padding: 2px 10px; margin-top: 6px;
-            cursor: pointer; font-family: 'DM Sans', sans-serif;
-            width: auto; display: inline-block;
-            transition: all var(--transition);
-        }
-        .reset-coffre:hover { background: #fef3c7; }
+/* zones de saisie */
+.input-zone { width: 100%; min-height: 90px; border: 1.5px solid #c8d8f0; border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: inherit; resize: vertical; background: #f8fbff; color: #222; line-height: 1.6; transition: border-color 0.2s; }
+.input-zone:focus { outline: none; border-color: #2d6a9f; background: #fff; }
+.input-zone::placeholder { color: #aab; font-style: italic; }
+.input-zone.filled { border-color: #2d9f6a; background: #f8fff8; }
 
-        /* ── TWO-COL GRID ── */
-        .grid-top { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
+/* tableau de saisie journal */
+.journal-grid { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+.journal-grid th { background: #1a3a5c; color: white; padding: 7px 10px; font-weight: 600; text-align: center; font-size: 12px; }
+.journal-grid td { border: 1px solid #d0d8e8; padding: 4px 6px; }
+.journal-grid .date-cell { background: #eef2fa; font-weight: 700; text-align: center; color: #1a3a5c; font-size: 12px; width: 90px; }
+.journal-grid input[type=text], .journal-grid input[type=number] {
+  width: 100%; border: none; background: transparent; font-size: 13px; font-family: inherit; padding: 2px 4px; color: #222;
+}
+.journal-grid input[type=text]:focus, .journal-grid input[type=number]:focus { outline: 2px solid #2d6a9f; border-radius: 3px; background: #f0f6ff; }
+.journal-grid input[type=number] { text-align: right; }
+.journal-grid .compte-col { width: 70px; }
+.journal-grid .libelle-col { }
+.journal-grid .montant-col { width: 110px; }
+.journal-grid .credit-row td:nth-child(2) { padding-left: 28px; }
+.journal-grid .credit-row { background: #f8fff8; }
+.journal-grid .debit-row { background: #f8fbff; }
 
-        /* ── FORM ELEMENTS ── */
-        label { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 11px 14px;
-            margin-bottom: 12px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--bg2);
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            transition: border-color var(--transition), box-shadow var(--transition);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-            min-height: 44px;
-        }
-        input:focus, select:focus { border-color: var(--main); box-shadow: 0 0 0 3px var(--main-glow); }
-        [data-theme="dark"] input, [data-theme="dark"] select { background: var(--bg2); border-color: rgba(255,255,255,0.1); }
+/* boutons */
+.btn-reveal { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: #b0c8e0; color: #fff; border: none; border-radius: 20px; padding: 7px 18px; font-size: 13px; cursor: not-allowed; transition: background 0.2s, transform 0.1s; opacity: 0.75; }
+.btn-reveal.ready { background: #2d6a9f; cursor: pointer; opacity: 1; }
+.btn-reveal.ready:hover { background: #1a3a5c; }
+.btn-reveal.done { background: #2d9f6a; cursor: default; opacity: 1; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.btn-reveal.shake { animation: shake 0.4s ease; }
+.btn-clear { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; margin-left: 8px; background: transparent; color: #888; border: 1px solid #c8d8f0; border-radius: 20px; padding: 7px 14px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+.btn-clear:hover { background: #f0f6ff; color: #2d6a9f; border-color: #2d6a9f; }
+.warn-fill { font-size: 12px; color: #b05500; background: #fff3cd; border: 1px solid #f0c040; border-radius: 6px; padding: 6px 12px; margin-top: 8px; display: none; }
+.warn-fill.show { display: block; }
 
-        /* ── BUTTONS ── */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 12px 18px;
-            border-radius: var(--radius-sm);
-            border: none;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600; font-size: 0.9rem;
-            cursor: pointer;
-            transition: all var(--transition);
-            min-height: 44px;
-            width: 100%;
-        }
-        .btn-primary { background: var(--main); color: white; }
-        .btn-primary:hover { background: #4a4de0; transform: translateY(-1px); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { background: var(--bg2); color: var(--text-muted); }
-        .btn-secondary:hover { background: var(--bg); }
-        .btn-icon-sm {
-            width: 36px; height: 36px; padding: 0;
-            border-radius: 8px; border: none;
-            background: rgba(239,68,68,0.1);
-            color: var(--danger);
-            font-size: 0.8rem; cursor: pointer;
-            transition: all var(--transition);
-            display: inline-flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .btn-icon-sm:hover { background: var(--danger); color: white; }
-        .btn-delete { background: none; border: none; color: var(--danger); cursor: pointer; padding: 6px; font-size: 1rem; transition: transform var(--transition); }
-        .btn-delete:hover { transform: scale(1.2); }
+/* correction */
+.correction-box { display: none; margin-top: 14px; background: #efffef; border: 1.5px solid #2d9f6a; border-radius: 8px; padding: 14px 16px; }
+.correction-box.show { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.correction-box .corr-title { font-size: 12px; font-weight: 700; color: #1a5c3a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.corr-formula { background: white; border: 1px solid #b0dfc0; border-radius: 6px; padding: 9px 12px; margin: 6px 0; font-size: 13px; line-height: 1.6; font-family: 'Courier New', monospace; color: #1a3a5c; }
+.journal-corr { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; font-family: 'Courier New', monospace; }
+.journal-corr td { padding: 4px 10px; border: 1px solid #c0e0c0; }
+.journal-corr .jc-date { background: #1a3a5c; color: white; font-weight: 700; text-align: center; }
+.journal-corr .jc-d { background: #f0f8ff; }
+.journal-corr .jc-c { background: #f8fff8; }
+.journal-corr .jc-compte { font-weight: 700; color: #1a3a5c; width: 65px; }
+.journal-corr .jc-indent { padding-left: 28px; }
+.journal-corr .jc-num { text-align: right; width: 110px; }
 
-        /* ── CATEGORY BUDGET ROWS ── */
-        .budget-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-        .budget-row .cat-label { flex: 1; font-size: 0.88rem; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .budget-row input { width: 100px; margin: 0; flex-shrink: 0; }
+.alert { border-radius: 7px; padding: 10px 14px; font-size: 13px; margin: 8px 0; line-height: 1.6; }
+.alert-info { background: #e8f4fd; border-left: 4px solid #2d6a9f; color: #1a3a5c; }
+.alert-success { background: #e8fdf4; border-left: 4px solid #2d9f6a; color: #1a5c3a; }
+.alert-warning { background: #fff8e1; border-left: 4px solid #f0a500; color: #7a4e00; }
+.alert-danger { background: #fdecea; border-left: 4px solid #d9534f; color: #7a1a1a; }
 
-        .add-cat-box { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--bg2); }
-        .add-cat-box input { margin: 0; flex: 1; }
-        .btn-add-cat { width: 44px; height: 44px; padding: 0; flex-shrink: 0; border-radius: var(--radius-sm); border: none; background: var(--main); color: white; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.info-pill { display: inline-flex; align-items: center; background: #e8f4fd; color: #1a3a5c; border-radius: 20px; padding: 3px 11px; font-size: 12px; font-weight: 600; margin: 2px; }
+.info-pill.green { background: #e8fdf4; color: #1a5c3a; }
+.info-pill.orange { background: #fff3cd; color: #7a4e00; }
+.info-pill.red { background: #fdecea; color: #7a1a1a; }
 
-        /* ── PLAN SUMMARY ── */
-        .plan-summary { margin-top: 14px; padding: 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--bg2); font-size: 0.85rem; }
-        .plan-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .plan-row:last-child { margin-bottom: 0; }
-        .text-danger { color: var(--danger); font-weight: 700; }
-        .text-success { color: var(--success); font-weight: 700; }
+.timeline { position: relative; padding-left: 22px; margin: 12px 0; }
+.timeline::before { content:''; position:absolute; left:6px; top:0; bottom:0; width:2px; background:#c8d8f0; border-radius:2px; }
+.tl-item { position: relative; margin-bottom: 12px; font-size: 13px; }
+.tl-item::before { content:''; position:absolute; left:-18px; top:4px; width:10px; height:10px; border-radius:50%; background:#2d6a9f; border:2px solid white; box-shadow:0 0 0 2px #2d6a9f; }
 
-        /* ── EXPENSE FORM ── */
-        .expense-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .expense-grid .field-full { grid-column: span 2; }
-        .recurring-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }
-        .recurring-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--main); cursor: pointer; margin: 0; flex-shrink: 0; }
+.recap-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.recap-table th { background: #1a3a5c; color: white; padding: 8px 10px; }
+.recap-table td { padding: 7px 10px; border-bottom: 1px solid #e0e6f0; text-align: right; }
+.recap-table td:first-child { text-align: left; font-weight: 600; }
+.recap-table .blank { background: #f0f6ff; color: #aaa; font-style: italic; text-align: center; }
+.recap-table .revealed { background: #f0fff6; font-weight: 700; color: #1a5c3a; }
 
-        /* ── TABLE ── */
-        .table-scroll { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--bg2); -webkit-overflow-scrolling: touch; }
-        .table-scroll table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        thead th { text-align: left; font-size: 0.72rem; color: var(--text-muted); padding: 10px 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1.5px solid var(--bg2); background: var(--bg); position: sticky; top: 0; z-index: 2; white-space: nowrap; }
-        tbody td { padding: 11px 14px; border-top: 1px solid var(--bg2); font-size: 0.86rem; vertical-align: middle; }
-        tbody tr { transition: background var(--transition); }
-        tbody tr:hover { background: var(--bg); }
-        [data-theme="dark"] thead th { background: var(--bg2); }
+/* quiz */
+.quiz-option { display: block; width: 100%; text-align: left; padding: 9px 14px; border-radius: 8px; border: 1.5px solid #c8d8f0; background: white; cursor: pointer; font-size: 13px; margin-bottom: 7px; transition: all 0.2s; }
+.quiz-option:hover:not(:disabled) { border-color: #2d6a9f; background: #f0f6ff; }
+.quiz-option.correct { border-color: #2d9f6a !important; background: #e8fdf4 !important; color: #1a5c3a; font-weight: 600; }
+.quiz-option.wrong { border-color: #d9534f !important; background: #fdecea !important; color: #7a1a1a; }
 
-        /* ── SCROLLABLE EXPENSE LIST (mobile) ── */
-        .expense-list-scroll {
-            max-height: 55vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--bg2);
-        }
-        .expense-list-scroll::-webkit-scrollbar { width: 4px; }
-        .expense-list-scroll::-webkit-scrollbar-track { background: transparent; }
-        .expense-list-scroll::-webkit-scrollbar-thumb { background: var(--main-light); border-radius: 2px; }
-        .expense-list-scroll table { width: 100%; border-collapse: collapse; min-width: 300px; }
+.score-display { text-align: center; padding: 16px; background: #f0f6ff; border-radius: 10px; border: 2px solid #2d6a9f; margin-top: 16px; display: none; }
+.score-num { font-size: 42px; font-weight: 700; color: #2d6a9f; }
 
-        .cat-pill { background: var(--bg2); padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; white-space: nowrap; }
-        .recurring-tag { font-size: 0.65rem; color: var(--main); font-weight: 700; margin-left: 4px; background: var(--main-glow); padding: 1px 6px; border-radius: 20px; }
-        .status-ok { background: rgba(16,185,129,0.1); color: #059669; border: 1px solid rgba(16,185,129,0.25); padding: 2px 8px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
-        .status-over { background: rgba(239,68,68,0.1); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); padding: 2px 8px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
-
-        /* ── SEARCH ── */
-        .search-wrap { margin-bottom: 10px; }
-        .search-wrap input { margin: 0; }
-
-        /* ── PROGRESS BAR ── */
-        .progress-wrap { display: flex; align-items: center; gap: 8px; min-width: 100px; }
-        .progress-bg { flex: 1; height: 6px; border-radius: 3px; background: var(--bg2); overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 3px; background: var(--main); transition: width 0.7s cubic-bezier(.4,0,.2,1); }
-        .progress-fill.over { background: var(--danger); }
-        .progress-pct { font-size: 0.72rem; color: var(--text-muted); min-width: 30px; text-align: right; }
-
-        /* ── BILAN LAYOUT ── */
-        .bilan-layout { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
-        .bilan-table-side { flex: 2; min-width: 280px; overflow: hidden; }
-        .bilan-chart-side { flex: 0 0 260px; }
-
-        /* ── EPARGNE TOTAL ── */
-        .epargne-total { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding: 14px 16px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.25); border-radius: 12px; }
-        .epargne-total .label { font-size: 0.85rem; color: #b45309; font-weight: 600; }
-        .epargne-total .value { font-size: 1.25rem; font-weight: 700; color: #b45309; }
-
-        /* ── ARCHIVES ── */
-        .archives-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-        .archive-card { background: var(--bg); border: 1px solid var(--bg2); border-radius: 14px; padding: 16px; }
-        .arc-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
-        .arc-date { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; }
-        .arc-chart-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
-        .arc-stats { font-size: 0.78rem; color: var(--text-muted); }
-        .arc-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--bg2); }
-        .arc-stat-row:last-child { border-bottom: none; }
-        .arc-stat-row strong { color: var(--text); font-weight: 600; }
-        .arc-actions { display: flex; gap: 8px; margin-top: 12px; }
-        .arc-actions .btn { flex: 1; padding: 8px 10px; font-size: 0.78rem; border-radius: 8px; min-height: 36px; }
-        .btn-pdf { background: var(--main); color: white; }
-        .btn-pdf:hover { background: #4a4de0; }
-        .btn-del { background: var(--bg2); color: var(--text-muted); }
-        .btn-del:hover { background: rgba(239,68,68,0.1); color: var(--danger); }
-        .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
-        .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .empty-state p { font-size: 0.85rem; line-height: 1.6; }
-        .chart-title { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; }
-        .evolution-wrap { position: relative; height: 220px; }
-
-        /* ── THEME TOGGLE ── */
-        .theme-toggle {
-            width: 52px; height: 28px; background: var(--bg2); border-radius: 999px;
-            border: 2px solid var(--card-border); cursor: pointer; position: relative;
-            transition: background var(--transition); flex-shrink: 0;
-        }
-        .theme-toggle::after {
-            content: '☀️'; position: absolute; top: 1px; left: 2px;
-            width: 22px; height: 22px; background: white; border-radius: 50%;
-            font-size: 12px; display: flex; align-items: center; justify-content: center;
-            transition: transform var(--transition); text-align: center; line-height: 22px;
-        }
-        [data-theme="dark"] .theme-toggle::after { content: '🌙'; transform: translateX(24px); }
-
-        .btn-cloture {
-            background: var(--bg2); color: var(--text-muted); padding: 10px 18px;
-            border-radius: var(--radius-sm); border: none; font-family: 'DM Sans', sans-serif;
-            font-weight: 600; font-size: 0.85rem; cursor: pointer;
-            transition: all var(--transition); width: auto; min-height: 44px; white-space: nowrap;
-        }
-        .btn-cloture:hover { background: var(--main); color: white; }
-
-        /* ── MODAL ── */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 24px 64px rgba(0,0,0,0.25); }
-        .modal-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 8px; }
-        .modal-box p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.6; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
-        .modal-actions .btn { flex: 1; margin: 0; }
-        .btn-cancel { background: var(--bg2); color: var(--text-muted); }
-
-        /* ── TOAST ── */
-        #toast-container { position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; max-width: calc(100vw - 32px); }
-        .toast { padding: 12px 18px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; color: white; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; pointer-events: auto; max-width: 360px; }
-        .toast.success { background: #10b981; }
-        .toast.danger  { background: #ef4444; }
-        .toast.info    { background: var(--main); }
-        .toast.warning { background: #f59e0b; }
-        @keyframes toastIn  { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
-        @keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateX(40px); } }
-        .toast { animation: toastIn 0.3s ease; }
-
-        /* ── MOBILE FAB ── */
-        .mobile-fab {
-            display: none; position: fixed;
-            bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px);
-            right: 16px; width: 52px; height: 52px;
-            background: var(--main); color: white; border: none; border-radius: 50%;
-            font-size: 1.4rem; cursor: pointer; z-index: 80;
-            align-items: center; justify-content: center;
-            box-shadow: 0 4px 20px var(--main-glow);
-            transition: all var(--transition);
-        }
-        .mobile-fab:active { transform: scale(0.95); }
-
-        /* ── MOBILE STAT ROWS ── */
-        .mobile-stat-row {
-            display: none; gap: 10px; margin-bottom: 14px;
-        }
-        .mobile-stat-row .stat-box { flex: 1; padding: 12px 10px; }
-        .mobile-stat-row .stat-value { font-size: 1.4rem; }
-
-        /* ══════════════════════════════
-           RESPONSIVE — MOBILE
-        ══════════════════════════════ */
-        @media (max-width: 768px) {
-            :root { --nav-h: 60px; --header-h: 54px; }
-
-            .desktop-header { display: none !important; }
-            .mobile-header { display: flex; }
-            .mobile-nav { display: block; }
-            .mobile-fab { display: flex; }
-
-            html { overflow-x: clip; }
-            body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
-            .container { padding: 10px 12px calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px); max-width: 100%; }
-
-            #page-bilan { overflow: visible; }
-            #page-bilan .card { overflow: visible; }
-            #page-bilan .bilan-table-side {
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            #page-bilan .table-scroll {
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-                margin: 0 -14px;
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-            }
-            #page-bilan .table-scroll table { min-width: 500px; }
-
-            .page { display: none; }
-            .page.active { display: block; }
-
-            .stat-grid { display: none; }
-            .mobile-stat-row { display: flex; gap: 8px; }
-            .mobile-stat-row .stat-box { padding: 10px 8px; border-radius: 12px; min-width: 0; }
-            .mobile-stat-row .stat-value { font-size: 1.25rem; }
-            .mobile-stat-row .stat-label { font-size: 0.6rem; }
-
-            .card { border-radius: 14px; padding: 14px; margin-bottom: 12px; }
-            .card-title { font-size: 0.7rem; margin-bottom: 12px; }
-
-            .grid-top { grid-template-columns: 1fr; gap: 12px; }
-            .expense-grid { grid-template-columns: 1fr; gap: 8px; }
-            .expense-grid .field-full { grid-column: span 1; }
-            .archives-grid { grid-template-columns: 1fr; gap: 12px; }
-
-            .bilan-layout { flex-direction: column; }
-            .bilan-chart-side { width: 100%; flex: none; display: flex; justify-content: center; }
-            .bilan-chart-side canvas { max-width: 180px !important; max-height: 180px !important; }
-            .bilan-table-side { width: 100%; min-width: 0; }
-
-            .budget-row { gap: 6px; }
-            .budget-row input { width: 75px; min-height: 38px; padding: 8px 8px; font-size: 0.88rem; }
-            .budget-row .cat-label { font-size: 0.82rem; }
-            .btn-icon-sm { width: 32px; height: 32px; font-size: 0.72rem; }
-
-            /* Table scroll plein écran */
-            .table-scroll { margin: 0 -12px; border-radius: 0; border-left: none; border-right: none; -webkit-overflow-scrolling: touch; overflow-x: auto; }
-            .table-scroll table { min-width: 340px; }
-            thead th { padding: 8px 10px; font-size: 0.68rem; }
-            tbody td { padding: 9px 10px; font-size: 0.82rem; }
-
-            /* Évite le zoom iOS sur les inputs */
-            input[type="text"], input[type="number"], select { font-size: 16px; padding: 10px 12px; min-height: 44px; }
-
-            /* Modal bottom sheet */
-            .modal-overlay { align-items: flex-end; padding: 0; }
-            .modal-box { border-radius: 20px 20px 0 0; position: relative; width: 100%; max-width: 100%; padding: 24px 16px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
-
-            /* Toast en bas */
-            #toast-container { top: auto; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px); right: 10px; left: 10px; }
-            .toast { max-width: 100%; font-size: 0.82rem; padding: 10px 14px; }
-
-            .mobile-fab { bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px); right: 14px; width: 48px; height: 48px; font-size: 1.2rem; }
-            .plan-summary { padding: 12px; font-size: 0.82rem; }
-            .epargne-total { padding: 12px 14px; }
-            .epargne-total .value { font-size: 1.1rem; }
-            .recurring-row { font-size: 0.82rem; gap: 8px; }
-
-            /* Scroll dépenses sur mobile */
-            .expense-list-scroll { max-height: 50vh; }
-        }
-
-        @media (max-width: 375px) {
-            :root { --nav-h: 58px; }
-            .container { padding: 8px 10px calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px); }
-            .card { padding: 12px; }
-            .mobile-stat-row .stat-value { font-size: 1.1rem; }
-            .mobile-stat-row .stat-label { font-size: 0.58rem; }
-            .nav-btn span { font-size: 9px; }
-            .nav-btn svg { width: 20px; height: 20px; }
-            .budget-row input { width: 68px; font-size: 0.85rem; }
-            thead th { font-size: 0.64rem; padding: 7px 8px; }
-            tbody td { padding: 8px; font-size: 0.8rem; }
-            .table-scroll table { min-width: 300px; }
-        }
-
-        @media (min-width: 769px) {
-            .page { display: block !important; }
-            .desktop-header { display: flex; }
-        }
-    </style>
+.method-card { border-radius: 10px; padding: 16px 18px; border: 2px solid; }
+.method-card.achevement { border-color: #2d6a9f; background: #f0f6ff; }
+.method-card.avancement { border-color: #2d9f6a; background: #f0fff6; }
+.method-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.method-card.achevement h4 { color: #1a3a5c; }
+.method-card.avancement h4 { color: #1a5c3a; }
+.method-card p { font-size: 13px; line-height: 1.65; }
+</style>
 </head>
 <body>
 
-<div id="toast-container"></div>
-
-<!-- ── MODAL ── -->
-<div id="modal-cloture" class="modal-overlay" style="display:none;">
-    <div class="modal-box">
-        <h3>📁 Clôturer le mois</h3>
-        <p>Donne un nom à ce mois pour l'archiver avec son graphique. Tu pourras le télécharger en PDF et comparer les mois.</p>
-        <label>Nom du mois</label>
-        <input type="text" id="modal-mois-nom" placeholder="Ex : Janvier 2025...">
-        <div class="modal-actions">
-            <button class="btn btn-cancel" onclick="fermerModal()">Annuler</button>
-            <button class="btn btn-primary" onclick="confirmerCloture()">✅ Archiver</button>
-        </div>
-    </div>
+<div class="header">
+  <h1>🏗️ Chantier "La Vague" — Contrats à Long Terme</h1>
+  <p>Comptabilité approfondie — UE 441 — Thème 18</p>
+  <span class="badge">✏️ Exercice étudiant</span>
+  <span class="badge">✅ Corrections à révéler</span>
+  <span class="badge">🎯 Niveau DCG</span>
 </div>
 
-<!-- ── MOBILE HEADER ── -->
-<div class="mobile-header">
-    <span class="mobile-header-title">💰 Mon Coach Finance</span>
-    <div class="mobile-header-actions">
-        <button class="theme-toggle" onclick="toggleTheme()"></button>
-    </div>
+<div class="tabs">
+  <div class="tab active" onclick="show('contexte')">🏄 Contexte</div>
+  <div class="tab" onclick="show('rappels')">📖 Rappels</div>
+  <div class="tab" onclick="show('achevement')">⏹ Méthode Achèvement</div>
+  <div class="tab" onclick="show('avancement')">📈 Méthode Avancement</div>
+  <div class="tab" onclick="show('deficit')">🔴 Contrat Déficitaire</div>
+  <div class="tab" onclick="show('quiz')">🎯 Quiz</div>
+  <div class="tab" onclick="show('comparatif')">📊 Comparatif</div>
 </div>
 
-<!-- ── MOBILE NAV ── -->
-<nav class="mobile-nav">
-    <div class="mobile-nav-inner">
-        <button class="nav-btn active" id="nav-tableau" onclick="goTo('tableau')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            <span>Tableau</span>
-        </button>
-        <button class="nav-btn" id="nav-budget" onclick="goTo('budget')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Budget</span>
-        </button>
-        <button class="nav-btn" id="nav-depenses" onclick="goTo('depenses')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Dépense</span>
-        </button>
-        <button class="nav-btn" id="nav-bilan" onclick="goTo('bilan')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span>Bilan</span>
-        </button>
-        <button class="nav-btn" id="nav-archives" onclick="goTo('archives')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-            <span>Archives</span>
-        </button>
-    </div>
-</nav>
+<!-- ========== CONTEXTE ========== -->
+<div id="contexte" class="content section active">
+  <div class="scenario-box">
+    <h2>🌊 Le chantier "La Vague" — OUESTBUILD SA</h2>
+    <p>La société <strong>OUESTBUILD SA</strong> est spécialisée dans la construction d'équipements sportifs. Elle vient de décrocher un <strong>contrat de 3 ans</strong> pour construire la nouvelle piscine olympique de Biarritz, baptisée <em>"La Vague"</em>. C'est le plus gros contrat de son histoire !</p>
+  </div>
 
-<button class="mobile-fab" onclick="ouvrirModal()">📁</button>
+  <div class="two-col">
+    <div class="card">
+      <h3>📋 Données du contrat</h3>
+      <table>
+        <tr><td>Client</td><td><strong>Ville de Biarritz</strong></td></tr>
+        <tr><td>Début</td><td>1er janvier 2023</td></tr>
+        <tr><td>Livraison prévue</td><td>31 décembre 2025</td></tr>
+        <tr class="highlight"><td><strong>Prix de vente HT</strong></td><td><strong>3 000 000 €</strong></td></tr>
+        <tr class="highlight"><td><strong>Coût total prévu HT</strong></td><td><strong>2 400 000 €</strong></td></tr>
+        <tr><td>Marge prévue</td><td>600 000 € (20%)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>📅 Charges réelles engagées</h3>
+      <table>
+        <tr><th>Exercice</th><th>Charges de l'exercice</th><th>Cumulé</th></tr>
+        <tr><td>2023</td><td class="num">600 000 €</td><td class="num">600 000 €</td></tr>
+        <tr><td>2024</td><td class="num">1 080 000 €</td><td class="num">1 680 000 €</td></tr>
+        <tr><td>2025</td><td class="num">720 000 €</td><td class="num">2 400 000 €</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td class="num">2 400 000 €</td><td></td></tr>
+      </table>
+      <div style="margin-top:10px;">
+        <span class="info-pill">2023 : 25% avancé</span>
+        <span class="info-pill">2024 : 70% avancé</span>
+        <span class="info-pill green">2025 : 100% livré ✓</span>
+      </div>
+    </div>
+  </div>
 
-<!-- ── DESKTOP HEADER ── -->
-<div class="desktop-header">
-    <div class="header-title">
-        <h1>Mon Coach <em>Finance</em></h1>
-        <p>Prévu vs Réel — suivi de budget mensuel</p>
+  <div class="card">
+    <h3>🗓️ Chronologie</h3>
+    <div class="timeline">
+      <div class="tl-item"><strong>1er jan. 2023 :</strong> Démarrage — Fondations et terrassement</div>
+      <div class="tl-item"><strong>31 déc. 2023 :</strong> Clôture N — 600 000 € engagés (25% du coût total)</div>
+      <div class="tl-item"><strong>31 déc. 2024 :</strong> Clôture N+1 — 1 680 000 € cumulés (70% du coût total)</div>
+      <div class="tl-item"><strong>31 déc. 2025 :</strong> Livraison et réception par la Ville de Biarritz — Facturation finale</div>
     </div>
-    <div class="header-actions">
-        <button class="theme-toggle" onclick="toggleTheme()"></button>
-        <button class="btn-cloture" onclick="ouvrirModal()">📁 Clôturer le mois</button>
-    </div>
+  </div>
+
+  <div class="alert alert-info">
+    💡 <strong>Le problème comptable :</strong> Les travaux démarrent en 2023 mais la piscine n'est livrée qu'en 2025. Quand faut-il comptabiliser le CA et la marge ? Deux méthodes s'affrontent : <strong>l'achèvement</strong> et <strong>l'avancement</strong>.
+  </div>
 </div>
 
-<div class="container">
+<!-- ========== RAPPELS ========== -->
+<div id="rappels" class="content section">
+  <div class="card">
+    <h3>📖 Définition d'un contrat à long terme</h3>
+    <p style="font-size:14px;line-height:1.7;margin-bottom:10px;">Un CLT est un contrat dont l'exécution s'étend sur <strong>au moins deux exercices comptables</strong>. Il concerne le BTP, la construction navale, les travaux publics, l'ingénierie industrielle…</p>
+  </div>
 
-    <!-- STATS DESKTOP -->
-    <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">💸 Dépensé</div><div class="stat-value"><span id="view_total_dep">0</span><small> €</small></div></div>
-        <div class="stat-box"><div class="stat-label">🌱 Épargné</div><div class="stat-value" style="color:var(--success)"><span id="view_total_ep">0</span><small> €</small></div></div>
-        <div class="stat-box"><div class="stat-label">⚖️ Solde</div><div class="stat-value" id="view_solde_wrapper"><span id="view_solde">0</span><small> €</small></div></div>
-        <div class="stat-box stat-box-gold"><div class="stat-label">🏦 Coffre-fort</div><div class="stat-value"><span id="view_global_ep">0</span><small> €</small></div><button class="reset-coffre" onclick="resetCoffre()">Reset</button></div>
+  <div class="two-col">
+    <div class="method-card achevement">
+      <h4>⏹ Méthode de l'achèvement</h4>
+      <p>CA et résultat reconnus <strong>uniquement à la livraison</strong>. En cours de chantier, seule la production stockée est constatée (compte 335).</p>
+      <br><p style="font-size:12px;color:#555;"><strong>Principe :</strong> Prudence maximale.</p>
     </div>
-
-    <!-- ════════════════════════════
-         PAGE TABLEAU (mobile)
-    ════════════════════════════ -->
-    <div id="page-tableau" class="page active">
-        <!-- Stats mobiles -->
-        <div class="mobile-stat-row">
-            <div class="stat-box"><div class="stat-label">💸 Dépensé</div><div class="stat-value"><span id="m_dep">0</span><small> €</small></div></div>
-            <div class="stat-box"><div class="stat-label">🌱 Épargné</div><div class="stat-value" style="color:var(--success)"><span id="m_ep">0</span><small> €</small></div></div>
-        </div>
-        <div class="mobile-stat-row">
-            <div class="stat-box"><div class="stat-label">⚖️ Solde</div><div class="stat-value" id="m_solde_wrap"><span id="m_solde">0</span><small> €</small></div></div>
-            <div class="stat-box stat-box-gold"><div class="stat-label">🏦 Coffre-fort</div><div class="stat-value"><span id="m_coffre">0</span><small> €</small></div><button class="reset-coffre" onclick="resetCoffre()">Reset</button></div>
-        </div>
-
-        <!-- Résumé rapide dépenses récentes -->
-        <div class="card">
-            <div class="card-title">🧾 Dépenses récentes</div>
-            <div class="search-wrap">
-                <input type="text" id="search_input_tableau" placeholder="Rechercher..." oninput="majAffichage()">
-            </div>
-            <div class="expense-list-scroll">
-                <table id="log_table_tableau">
-                    <thead><tr><th>Date</th><th>Nom</th><th>Cat.</th><th>Prix</th><th></th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Épargne résumé -->
-        <div class="card">
-            <div class="card-title">🏦 Épargne</div>
-            <div class="expense-list-scroll" style="max-height:200px;">
-                <table id="epargne_history_table">
-                    <thead><tr><th>Date</th><th>Nom</th><th>Montant</th><th></th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="epargne-total">
-                <span class="label">Total</span>
-                <span class="value"><span id="local_epargne_total">0</span> €</span>
-            </div>
-        </div>
+    <div class="method-card avancement">
+      <h4>📈 Méthode de l'avancement</h4>
+      <p>CA et résultat constatés <strong>au fur et à mesure</strong> de l'avancement réel des travaux, proportionnellement aux charges engagées.</p>
+      <br><p style="font-size:12px;color:#555;"><strong>Principe :</strong> Image fidèle.</p>
     </div>
+  </div>
 
-    <!-- ════════════════════════════
-         PAGE BUDGET (mobile)
-    ════════════════════════════ -->
-    <div id="page-budget" class="page">
-        <div class="card">
-            <div class="card-title"><span class="badge">1</span> Je prévois mon mois</div>
-            <label>Salaire / Revenus (€)</label>
-            <input type="number" inputmode="decimal" id="prev_revenu" placeholder="Ex: 1800" onchange="sauvegarder()">
-            <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;font-weight:500;">Limites par catégorie :</p>
-            <div id="setup_categories"></div>
-            <div class="add-cat-box">
-                <input type="text" id="new_cat_name" placeholder="Nouvelle catégorie...">
-                <button class="btn-add-cat" onclick="ajouterNouvelleCategorie()">+</button>
-            </div>
-            <div class="plan-summary">
-                <div class="plan-row"><span>Total planifié</span><strong id="total_prevu_val">0 €</strong></div>
-                <div class="plan-row" id="status_plan_container"><span>Reste à répartir</span><span class="text-success">0 €</span></div>
-            </div>
-            <button class="btn btn-primary" onclick="sauvegarder()" style="margin-top:14px;">Mettre à jour</button>
-        </div>
+  <div class="card">
+    <h3>🧮 Formule clé — Taux d'avancement</h3>
+    <div style="background:#f0f6ff;border:2px solid #2d6a9f;border-radius:10px;padding:16px;text-align:center;font-size:15px;font-weight:700;color:#1a3a5c;margin-bottom:10px;">
+      Taux d'avancement = Charges cumulées ÷ Charges totales prévues
     </div>
-
-    <!-- ════════════════════════════
-         PAGE DÉPENSES (mobile)
-    ════════════════════════════ -->
-    <div id="page-depenses" class="page">
-        <!-- Formulaire ajout -->
-        <div class="card">
-            <div class="card-title"><span class="badge">2</span> Ajouter une dépense</div>
-            <div class="expense-grid">
-                <div class="field-full"><label>Objet</label><input type="text" id="add_desc" placeholder="Ex: Courses Lidl"></div>
-                <div><label>Montant (€)</label><input type="number" inputmode="decimal" id="add_mt" placeholder="0.00"></div>
-                <div><label>Catégorie</label><select id="add_cat"></select></div>
-            </div>
-            <div class="recurring-row">
-                <input type="checkbox" id="add_recurring">
-                <label for="add_recurring" style="margin:0;cursor:pointer;">🔄 Dépense récurrente</label>
-            </div>
-            <button class="btn btn-primary" onclick="ajouterDepense()">+ Ajouter</button>
-        </div>
-
-        <!-- Historique scrollable -->
-        <div class="card">
-            <div class="card-title">🔎 Historique</div>
-            <div class="search-wrap">
-                <input type="text" id="search_input" placeholder="Rechercher..." oninput="majAffichage()">
-            </div>
-            <div style="position:relative;">
-                <div class="expense-list-scroll" id="expense-scroll">
-                    <table id="log_table">
-                        <thead><tr><th>Date</th><th>Nom</th><th>Cat.</th><th>Prix</th><th></th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <button id="scroll-down-btn" onclick="scrollDepenses()" style="
-                    position:absolute; bottom:8px; right:8px;
-                    width:34px; height:34px;
-                    background: var(--main); color: white;
-                    border: none; border-radius: 50%;
-                    font-size: 1rem; cursor: pointer;
-                    display: flex; align-items: center; justify-content: center;
-                    box-shadow: 0 2px 8px var(--main-glow);
-                    z-index: 10; transition: opacity 0.2s, transform 0.2s;
-                ">↓</button>
-            </div>
-        </div>
+    <div style="background:#f0fff6;border:2px solid #2d9f6a;border-radius:10px;padding:16px;text-align:center;font-size:15px;font-weight:700;color:#1a5c3a;">
+      CA cumulé à reconnaître = Prix de vente × Taux d'avancement
     </div>
+  </div>
 
-    <!-- ════════════════════════════
-         PAGE BILAN (mobile)
-    ════════════════════════════ -->
-    <div id="page-bilan" class="page">
-        <div class="card">
-            <div class="card-title"><span class="badge">3</span> Bilan</div>
-            <div class="bilan-layout">
-                <div class="bilan-table-side">
-                    <div class="table-scroll" style="-webkit-overflow-scrolling:touch;">
-                        <table id="bilan_table">
-                            <thead><tr><th>Catégorie</th><th>Prévu</th><th>Réel</th><th>Écart</th><th>%</th><th>Statut</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="bilan-chart-side">
-                    <canvas id="budgetChart" style="max-width:260px;max-height:260px;"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-title">🏦 Espace Épargne</div>
-            <div class="expense-list-scroll" style="max-height:220px;">
-                <table id="epargne_history_table_bilan">
-                    <thead><tr><th>Date</th><th>Nom</th><th>Montant</th><th></th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="epargne-total">
-                <span class="label">Total épargné</span>
-                <span class="value"><span id="local_epargne_total_bilan">0</span> €</span>
-            </div>
-        </div>
-    </div>
+  <div class="card">
+    <h3>📝 Comptes utilisés</h3>
+    <table>
+      <tr><th>Compte</th><th>Intitulé</th><th>Méthode</th></tr>
+      <tr><td><strong>335</strong></td><td>Travaux en cours</td><td>Achèvement</td></tr>
+      <tr><td><strong>7135</strong></td><td>Variation des travaux en cours</td><td>Achèvement</td></tr>
+      <tr><td><strong>418</strong></td><td>Clients — Produits non encore facturés</td><td>Avancement</td></tr>
+      <tr><td><strong>706</strong></td><td>Prestations de services</td><td>Avancement + livraison</td></tr>
+      <tr><td><strong>1518</strong></td><td>Provisions pour pertes à terminaison</td><td>Les deux</td></tr>
+      <tr><td><strong>6815</strong></td><td>Dotation aux provisions risques et charges</td><td>Les deux</td></tr>
+    </table>
+  </div>
 
-    <!-- ════════════════════════════
-         PAGE ARCHIVES (mobile)
-    ════════════════════════════ -->
-    <div id="page-archives" class="page">
-        <div class="card">
-            <div class="card-title">📅 Mois archivés</div>
-            <div id="evolution-section" style="display:none;margin-bottom:24px;">
-                <div class="chart-title">📈 Évolution mois par mois</div>
-                <div class="evolution-wrap"><canvas id="evolutionChart"></canvas></div>
-            </div>
-            <div id="archives-container"></div>
-        </div>
-    </div>
-
-    <!-- ════════════════════════════
-         DESKTOP : sections supplémentaires
-         (cachées sur mobile via CSS)
-    ════════════════════════════ -->
-    <div class="grid-top" style="margin-top:0;">
-        <!-- Budget prévisionnel desktop -->
-        <div class="card desktop-budget">
-            <div class="card-title"><span class="badge">1</span> Je prévois mon mois</div>
-            <label>Salaire / Revenus (€)</label>
-            <input type="number" inputmode="decimal" id="prev_revenu_d" placeholder="Ex: 1800" onchange="sauvegarder()">
-            <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;font-weight:500;">Limites par catégorie :</p>
-            <div id="setup_categories_d"></div>
-            <div class="add-cat-box">
-                <input type="text" id="new_cat_name_d" placeholder="Nouvelle catégorie...">
-                <button class="btn-add-cat" onclick="ajouterNouvelleCategorie()">+</button>
-            </div>
-            <div class="plan-summary">
-                <div class="plan-row"><span>Total planifié</span><strong id="total_prevu_val_d">0 €</strong></div>
-                <div class="plan-row" id="status_plan_container_d"><span>Reste à répartir</span><span class="text-success">0 €</span></div>
-            </div>
-            <button class="btn btn-primary" onclick="sauvegarder()" style="margin-top:14px;">Mettre à jour</button>
-        </div>
-
-        <!-- Dépenses desktop -->
-        <div class="card desktop-depenses">
-            <div class="card-title"><span class="badge">2</span> J'ajoute mes dépenses</div>
-            <div class="expense-grid">
-                <div><label>Objet</label><input type="text" id="add_desc_d" placeholder="Ex: Courses Lidl"></div>
-                <div><label>Montant (€)</label><input type="number" inputmode="decimal" id="add_mt_d" placeholder="0.00"></div>
-                <div class="field-full"><label>Catégorie</label><select id="add_cat_d"></select></div>
-            </div>
-            <div class="recurring-row">
-                <input type="checkbox" id="add_recurring_d">
-                <label for="add_recurring_d" style="margin:0;cursor:pointer;">🔄 Dépense récurrente (conservée en fin de mois)</label>
-            </div>
-            <button class="btn btn-primary" onclick="ajouterDepenseDesktop()">+ Ajouter la dépense</button>
-            <div style="margin-top:16px;">
-                <div class="card-title" style="margin-bottom:10px;">🔎 Historique</div>
-                <div class="search-wrap"><input type="text" id="search_input_d" placeholder="Rechercher..." oninput="majAffichage()"></div>
-                <div class="table-scroll" style="max-height:220px;overflow-y:auto;">
-                    <table id="log_table_d">
-                        <thead><tr><th>Date</th><th>Nom</th><th>Cat.</th><th>Prix</th><th></th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bilan desktop -->
-    <div class="card desktop-bilan">
-        <div class="card-title"><span class="badge">3</span> Bilan — Ai-je respecté mes engagements ?</div>
-        <div class="bilan-layout">
-            <div class="bilan-table-side">
-                <div class="table-scroll">
-                    <table id="bilan_table_d">
-                        <thead><tr><th>Catégorie</th><th>Prévu</th><th>Réel</th><th>Écart</th><th>%</th><th>Statut</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="bilan-chart-side">
-                <canvas id="budgetChart_d" style="max-width:260px;max-height:260px;"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Épargne desktop -->
-    <div class="card desktop-epargne">
-        <div class="card-title">🏦 Espace Épargne (Suivi détaillé)</div>
-        <div class="table-scroll" style="max-height:220px;overflow-y:auto;">
-            <table id="epargne_history_table_d">
-                <thead><tr><th>Date</th><th>Nom</th><th>Montant</th><th></th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="epargne-total">
-            <span class="label">Total de cet espace</span>
-            <span class="value"><span id="local_epargne_total_d">0</span> €</span>
-        </div>
-    </div>
-
-    <!-- Archives desktop -->
-    <div class="card desktop-archives">
-        <div class="card-title">📅 Historique des mois archivés</div>
-        <div id="evolution-section-d" style="display:none;margin-bottom:24px;">
-            <div class="chart-title">📈 Évolution mois par mois</div>
-            <div class="evolution-wrap"><canvas id="evolutionChartD"></canvas></div>
-        </div>
-        <div id="archives-container-d"></div>
-    </div>
-
+  <div class="alert alert-danger">
+    🔴 <strong>Contrat déficitaire :</strong> dès qu'une perte à terminaison est probable, elle doit être intégralement provisionnée (compte 1518), quelle que soit la méthode. Principe de prudence.
+  </div>
 </div>
 
-<style>
-    /* Desktop : cacher les pages mobiles, montrer les sections desktop */
-    @media (min-width: 769px) {
-        #page-tableau, #page-budget, #page-depenses, #page-bilan, #page-archives { display: none !important; }
-        .desktop-budget, .desktop-depenses, .desktop-bilan, .desktop-epargne, .desktop-archives { display: block !important; }
-    }
-    @media (max-width: 768px) {
-        .desktop-budget, .desktop-depenses, .desktop-bilan, .desktop-epargne, .desktop-archives, .grid-top { display: none !important; }
-    }
-</style>
+<!-- ========== ACHEVEMENT ========== -->
+<div id="achevement" class="content section">
+  <div class="alert alert-info">
+    📌 Avec la méthode de l'achèvement : les charges sont stockées en travaux en cours (compte 335 / 7135). Aucun CA n'est reconnu avant la livraison.
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block">
+    <div class="q-label">Question 1 — Exercice 2023</div>
+    <div class="q-text">Calculez la valeur des travaux en cours au 31/12/2023 et présentez l'écriture de régularisation au journal.</div>
+    <div class="q-hint">💡 Méthode de l'achèvement = on stocke les charges à leur coût de production. Aucun CA n'est constaté.</div>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:6px;">Votre calcul :</p>
+    <textarea class="input-zone" id="calc-a1" placeholder="Exemple : Travaux en cours = charges cumulées = …" oninput="checkFilled('calc-a1')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Votre écriture au journal (31/12/2023) :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2023</td>
+        <td class="compte-col"><input type="text" id="a1-d-cpt" placeholder="3xx" oninput="checkFilled('a1-d-cpt')"></td>
+        <td><input type="text" id="a1-d-lib" placeholder="Libellé débit…" oninput="checkFilled('a1-d-lib')"></td>
+        <td class="montant-col"><input type="number" id="a1-d-mt" placeholder="0" oninput="checkFilled('a1-d-mt')"></td>
+        <td class="montant-col"></td>
+      </tr>
+      <tr class="credit-row">
+        <td class="compte-col"><input type="text" id="a1-c-cpt" placeholder="7xxx" oninput="checkFilled('a1-c-cpt')"></td>
+        <td><input type="text" id="a1-c-lib" placeholder="Libellé crédit…" oninput="checkFilled('a1-c-lib')"></td>
+        <td class="montant-col"></td>
+        <td class="montant-col"><input type="number" id="a1-c-mt" placeholder="0" oninput="checkFilled('a1-c-mt')"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-a1" data-corr="corr-a1" data-fields="calc-a1,a1-d-cpt,a1-d-lib,a1-d-mt,a1-c-cpt,a1-c-lib,a1-c-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <button class="btn-clear" onclick="clearBlock(['calc-a1','a1-d-cpt','a1-d-lib','a1-d-mt','a1-c-cpt','a1-c-lib','a1-c-mt'],'btn-corr-a1')">🗑 Effacer</button>
+    <div class="warn-fill" id="warn-corr-a1">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+
+    <div id="corr-a1" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <div class="corr-formula">Travaux en cours au 31/12/2023 = Charges de production cumulées = <strong>600 000 €</strong></div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">31/12/2023 — Constatation des travaux en cours</td></tr>
+        <tr class="jc-d"><td class="jc-compte">335</td><td>Travaux en cours</td><td class="jc-num">600 000</td><td class="jc-num"></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;7135</td><td>Variation des travaux en cours</td><td class="jc-num"></td><td class="jc-num">600 000</td></tr>
+      </table>
+      <div class="alert alert-warning" style="margin-top:8px;">⚠️ Aucun CA comptabilisé en 2023 avec cette méthode. Résultat = 0.</div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block">
+    <div class="q-label">Question 2 — Exercice 2024</div>
+    <div class="q-text">Présentez les deux écritures de régularisation au 31/12/2024 : extourne du stock N-1 puis constatation du nouveau stock.</div>
+    <div class="q-hint">💡 Il faut d'abord extourner le stock de 2023 (au 01/01/2024), puis constater le nouveau stock cumulé.</div>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:6px;">Votre calcul du nouveau stock :</p>
+    <textarea class="input-zone" id="calc-a2" placeholder="Travaux en cours cumulés au 31/12/2024 = …" style="min-height:60px;" oninput="checkFilled('calc-a2')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Écriture 1 — Extourne au 01/01/2024 :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">01/01/2024</td>
+        <td><input type="text" id="a2e-d-cpt" placeholder="" oninput="checkFilled('a2e-d-cpt')"></td>
+        <td><input type="text" id="a2e-d-lib" placeholder="" oninput="checkFilled('a2e-d-lib')"></td>
+        <td><input type="number" id="a2e-d-mt" placeholder="0" oninput="checkFilled('a2e-d-mt')"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="a2e-c-cpt" placeholder="" oninput="checkFilled('a2e-c-cpt')"></td>
+        <td><input type="text" id="a2e-c-lib" placeholder="" oninput="checkFilled('a2e-c-lib')"></td>
+        <td></td>
+        <td><input type="number" id="a2e-c-mt" placeholder="0" oninput="checkFilled('a2e-c-mt')"></td>
+      </tr>
+    </table>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Écriture 2 — Nouveau stock au 31/12/2024 :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2024</td>
+        <td><input type="text" id="a2n-d-cpt" placeholder="" oninput="checkFilled('a2n-d-cpt')"></td>
+        <td><input type="text" id="a2n-d-lib" placeholder="" oninput="checkFilled('a2n-d-lib')"></td>
+        <td><input type="number" id="a2n-d-mt" placeholder="0" oninput="checkFilled('a2n-d-mt')"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="a2n-c-cpt" placeholder="" oninput="checkFilled('a2n-c-cpt')"></td>
+        <td><input type="text" id="a2n-c-lib" placeholder="" oninput="checkFilled('a2n-c-lib')"></td>
+        <td></td>
+        <td><input type="number" id="a2n-c-mt" placeholder="0" oninput="checkFilled('a2n-c-mt')"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-a2" data-corr="corr-a2" data-fields="calc-a2,a2e-d-cpt,a2e-d-lib,a2e-d-mt,a2e-c-cpt,a2e-c-lib,a2e-c-mt,a2n-d-cpt,a2n-d-lib,a2n-d-mt,a2n-c-cpt,a2n-c-lib,a2n-c-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <button class="btn-clear" onclick="clearBlock(['calc-a2','a2e-d-cpt','a2e-d-lib','a2e-d-mt','a2e-c-cpt','a2e-c-lib','a2e-c-mt','a2n-d-cpt','a2n-d-lib','a2n-d-mt','a2n-c-cpt','a2n-c-lib','a2n-c-mt'],'btn-corr-a2')">🗑 Effacer</button>
+    <div class="warn-fill" id="warn-corr-a2">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+
+    <div id="corr-a2" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <div class="corr-formula">Stock cumulé au 31/12/2024 = 600 000 + 1 080 000 = <strong>1 680 000 €</strong></div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">01/01/2024 — Extourne du stock 2023</td></tr>
+        <tr class="jc-d"><td class="jc-compte">7135</td><td>Variation des travaux en cours</td><td class="jc-num">600 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;335</td><td>Travaux en cours</td><td></td><td class="jc-num">600 000</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">31/12/2024 — Nouveau stock cumulé</td></tr>
+        <tr class="jc-d"><td class="jc-compte">335</td><td>Travaux en cours</td><td class="jc-num">1 680 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;7135</td><td>Variation des travaux en cours</td><td></td><td class="jc-num">1 680 000</td></tr>
+      </table>
+      <div class="alert alert-info" style="margin-top:8px;">📊 Impact 7135 sur 2024 = +1 680 000 − 600 000 (extourne) = +1 080 000 €. Résultat 2024 = 0.</div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block">
+    <div class="q-label">Question 3 — Exercice 2025 (livraison)</div>
+    <div class="q-text">Présentez toutes les écritures au 31/12/2025 : extourne du stock 2024, facturation définitive au client. Calculez le résultat de l'exercice 2025.</div>
+    <div class="q-hint">💡 En 2025 : on solde le stock (extourne), on facture le prix total au client (706), et toute la marge apparaît sur cet exercice.</div>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:6px;">Votre calcul du résultat 2025 :</p>
+    <textarea class="input-zone" id="calc-a3" placeholder="CA = …   Charges 2025 = …   Stock extourné = …   Résultat = …" style="min-height:70px;" oninput="checkFilled('calc-a3')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Vos écritures au journal :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">01/01/2025</td>
+        <td><input type="text" id="a3-1d-cpt" placeholder=""></td>
+        <td><input type="text" id="a3-1d-lib" placeholder="Extourne…"></td>
+        <td><input type="number" id="a3-1d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="a3-1c-cpt" placeholder=""></td>
+        <td><input type="text" id="a3-1c-lib" placeholder=""></td>
+        <td></td>
+        <td><input type="number" id="a3-1c-mt" placeholder="0"></td>
+      </tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="3">31/12/2025</td>
+        <td><input type="text" id="a3-2d-cpt" placeholder=""></td>
+        <td><input type="text" id="a3-2d-lib" placeholder="Facturation…"></td>
+        <td><input type="number" id="a3-2d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="a3-2c1-cpt" placeholder=""></td>
+        <td><input type="text" id="a3-2c1-lib" placeholder="Produit…"></td>
+        <td></td>
+        <td><input type="number" id="a3-2c1-mt" placeholder="0"></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="a3-2c2-cpt" placeholder=""></td>
+        <td><input type="text" id="a3-2c2-lib" placeholder="TVA…"></td>
+        <td></td>
+        <td><input type="number" id="a3-2c2-mt" placeholder="0"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-a3" data-corr="corr-a3" data-fields="calc-a3,a3-1d-cpt,a3-1d-lib,a3-1d-mt,a3-1c-cpt,a3-1c-lib,a3-1c-mt,a3-2d-cpt,a3-2d-lib,a3-2d-mt,a3-2c1-cpt,a3-2c1-lib,a3-2c1-mt,a3-2c2-cpt,a3-2c2-lib,a3-2c2-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <button class="btn-clear" onclick="clearBlock(['calc-a3','a3-1d-cpt','a3-1d-lib','a3-1d-mt','a3-1c-cpt','a3-1c-lib','a3-1c-mt','a3-2d-cpt','a3-2d-lib','a3-2d-mt','a3-2c1-cpt','a3-2c1-lib','a3-2c1-mt','a3-2c2-cpt','a3-2c2-lib','a3-2c2-mt'],'btn-corr-a3')">🗑 Effacer</button>
+    <div class="warn-fill" id="warn-corr-a3">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+
+    <div id="corr-a3" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">01/01/2025 — Extourne stock 2024</td></tr>
+        <tr class="jc-d"><td class="jc-compte">7135</td><td>Variation des travaux en cours</td><td class="jc-num">1 680 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;335</td><td>Travaux en cours</td><td></td><td class="jc-num">1 680 000</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">31/12/2025 — Facturation à la Ville de Biarritz</td></tr>
+        <tr class="jc-d"><td class="jc-compte">411</td><td>Clients — Ville de Biarritz</td><td class="jc-num">3 600 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;706</td><td>Prestations de services</td><td></td><td class="jc-num">3 000 000</td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;44571</td><td>TVA collectée (20%)</td><td></td><td class="jc-num">600 000</td></tr>
+      </table>
+      <div class="alert alert-success" style="margin-top:8px;">✅ Résultat 2025 = 3 000 000 (CA) − 720 000 (charges) + 1 680 000 (extourne stock) − 1 680 000 = <strong>600 000 €</strong> — Toute la marge est reconnue en une seule année.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== AVANCEMENT ========== -->
+<div id="avancement" class="content section">
+  <div class="alert alert-success">
+    📌 Avec la méthode de l'avancement : CA et marge sont reconnus proportionnellement aux charges engagées. Taux = charges cumulées ÷ charges totales prévues.
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block">
+    <div class="q-label">Question 4 — Calcul des taux d'avancement</div>
+    <div class="q-text">Complétez le tableau de calcul des taux d'avancement et du CA cumulé à reconnaître pour chaque exercice.</div>
+    <div class="q-hint">💡 Taux = Charges cumulées / Charges totales prévues (2 400 000 €) &nbsp;|&nbsp; CA cumulé = Prix total × Taux</div>
+
+    <table style="margin:10px 0; font-size:13px;">
+      <tr>
+        <th>Exercice</th><th>Charges cumulées</th><th>Taux d'avancement</th><th>CA cumulé à reconnaître</th><th>CA de l'exercice</th>
+      </tr>
+      <tr>
+        <td><strong>2023</strong></td>
+        <td class="num">600 000 €</td>
+        <td><input type="text" style="width:80px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="tx23" placeholder="…%"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="ca23" placeholder="… €"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="cae23" placeholder="… €"></td>
+      </tr>
+      <tr>
+        <td><strong>2024</strong></td>
+        <td class="num">1 680 000 €</td>
+        <td><input type="text" style="width:80px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="tx24" placeholder="…%"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="ca24" placeholder="… €"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="cae24" placeholder="… €"></td>
+      </tr>
+      <tr>
+        <td><strong>2025</strong></td>
+        <td class="num">2 400 000 €</td>
+        <td><input type="text" style="width:80px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="tx25" placeholder="…%"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="ca25" placeholder="… €"></td>
+        <td><input type="text" style="width:110px;border:1px solid #c8d8f0;border-radius:4px;padding:3px 6px;font-size:13px;" id="cae25" placeholder="… €"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-b0" data-corr="corr-b0" data-fields="tx23,ca23,cae23,tx24,ca24,cae24,tx25,ca25,cae25" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <div class="warn-fill" id="warn-corr-b0">✏️ Complétez d'abord tous les champs du tableau avant de voir la correction.</div>
+    <div id="corr-b0" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <table class="journal-corr" style="font-family:inherit;">
+        <tr><th style="background:#1a3a5c;color:white;padding:7px;">Exercice</th><th style="background:#1a3a5c;color:white;padding:7px;">Taux</th><th style="background:#1a3a5c;color:white;padding:7px;">CA cumulé</th><th style="background:#1a3a5c;color:white;padding:7px;">CA exercice</th><th style="background:#1a3a5c;color:white;padding:7px;">Marge</th></tr>
+        <tr><td style="padding:6px 10px;">2023</td><td style="padding:6px 10px;font-weight:700;">25%</td><td style="padding:6px 10px;">750 000 €</td><td style="padding:6px 10px;font-weight:700;">750 000 €</td><td style="padding:6px 10px;color:#1a5c3a;font-weight:700;">150 000 €</td></tr>
+        <tr style="background:#f8fafc;"><td style="padding:6px 10px;">2024</td><td style="padding:6px 10px;font-weight:700;">70%</td><td style="padding:6px 10px;">2 100 000 €</td><td style="padding:6px 10px;font-weight:700;">1 350 000 €</td><td style="padding:6px 10px;color:#1a5c3a;font-weight:700;">270 000 €</td></tr>
+        <tr><td style="padding:6px 10px;">2025</td><td style="padding:6px 10px;font-weight:700;">100%</td><td style="padding:6px 10px;">3 000 000 €</td><td style="padding:6px 10px;font-weight:700;">900 000 €</td><td style="padding:6px 10px;color:#1a5c3a;font-weight:700;">180 000 €</td></tr>
+      </table>
+      <div class="alert alert-success" style="margin-top:8px;">✅ Vérification : 150 000 + 270 000 + 180 000 = <strong>600 000 €</strong> = marge totale prévue ✓</div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-block">
+    <div class="q-label">Question 5 — Écritures 2023 et 2024 (avancement)</div>
+    <div class="q-text">Présentez les écritures de fin 2023 (CA reconnu) puis l'extourne du 01/01/2024 et l'écriture de fin 2024.</div>
+    <div class="q-hint">💡 Le CA non encore facturé passe par le compte 418 (actif). Il faut l'extourner en début d'exercice suivant pour ne comptabiliser que le différentiel de l'année.</div>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:6px;">Vos écritures :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2023</td>
+        <td><input type="text" id="b1-d-cpt" placeholder="4xx"></td>
+        <td><input type="text" id="b1-d-lib" placeholder="Clients…"></td>
+        <td><input type="number" id="b1-d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b1-c-cpt" placeholder="7xx"></td>
+        <td><input type="text" id="b1-c-lib" placeholder="Prestations…"></td>
+        <td></td>
+        <td><input type="number" id="b1-c-mt" placeholder="0"></td>
+      </tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">01/01/2024</td>
+        <td><input type="text" id="b2-d-cpt" placeholder="7xx"></td>
+        <td><input type="text" id="b2-d-lib" placeholder="Extourne…"></td>
+        <td><input type="number" id="b2-d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b2-c-cpt" placeholder="4xx"></td>
+        <td><input type="text" id="b2-c-lib" placeholder=""></td>
+        <td></td>
+        <td><input type="number" id="b2-c-mt" placeholder="0"></td>
+      </tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2024</td>
+        <td><input type="text" id="b3-d-cpt" placeholder="4xx"></td>
+        <td><input type="text" id="b3-d-lib" placeholder="CA cumulé…"></td>
+        <td><input type="number" id="b3-d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b3-c-cpt" placeholder="7xx"></td>
+        <td><input type="text" id="b3-c-lib" placeholder=""></td>
+        <td></td>
+        <td><input type="number" id="b3-c-mt" placeholder="0"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-b1" data-corr="corr-b1" data-fields="b1-d-cpt,b1-d-lib,b1-d-mt,b1-c-cpt,b1-c-lib,b1-c-mt,b2-d-cpt,b2-d-lib,b2-d-mt,b2-c-cpt,b2-c-lib,b2-c-mt,b3-d-cpt,b3-d-lib,b3-d-mt,b3-c-cpt,b3-c-lib,b3-c-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <button class="btn-clear" onclick="clearBlock(['b1-d-cpt','b1-d-lib','b1-d-mt','b1-c-cpt','b1-c-lib','b1-c-mt','b2-d-cpt','b2-d-lib','b2-d-mt','b2-c-cpt','b2-c-lib','b2-c-mt','b3-d-cpt','b3-d-lib','b3-d-mt','b3-c-cpt','b3-c-lib','b3-c-mt'],'btn-corr-b1')">🗑 Effacer</button>
+    <div class="warn-fill" id="warn-corr-b1">✏️ Complétez d'abord tous les champs du journal avant de voir la correction.</div>
+
+    <div id="corr-b1" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">31/12/2023 — CA selon avancement (25%)</td></tr>
+        <tr class="jc-d"><td class="jc-compte">418</td><td>Clients — Produits non encore facturés</td><td class="jc-num">750 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;706</td><td>Prestations de services</td><td></td><td class="jc-num">750 000</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">01/01/2024 — Extourne du compte 418</td></tr>
+        <tr class="jc-d"><td class="jc-compte">706</td><td>Prestations de services</td><td class="jc-num">750 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;418</td><td>Clients — Produits non encore facturés</td><td></td><td class="jc-num">750 000</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">31/12/2024 — CA cumulé selon avancement (70%)</td></tr>
+        <tr class="jc-d"><td class="jc-compte">418</td><td>Clients — Produits non encore facturés</td><td class="jc-num">2 100 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;706</td><td>Prestations de services</td><td></td><td class="jc-num">2 100 000</td></tr>
+      </table>
+      <div class="alert alert-info" style="margin-top:8px;">📊 CA 2024 = 2 100 000 (crédit 706) − 750 000 (extourne) = <strong>1 350 000 €</strong> net sur l'exercice.</div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-block">
+    <div class="q-label">Question 6 — Exercice 2025 (livraison + avancement)</div>
+    <div class="q-text">Présentez l'extourne du 01/01/2025 et la facturation définitive au 31/12/2025. Vérifiez que la somme des marges = 600 000 €.</div>
+
+    <textarea class="input-zone" id="calc-b3" placeholder="Calcul du CA 2025 = CA total − CA déjà reconnu cumulé = …&#10;Marge 2025 = …&#10;Vérification : 150 000 + 270 000 + 180 000 = …" style="min-height:80px;" oninput="checkFilled('calc-b3')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Vos écritures :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">01/01/2025</td>
+        <td><input type="text" id="b6-1d-cpt"></td>
+        <td><input type="text" id="b6-1d-lib" placeholder="Extourne…"></td>
+        <td><input type="number" id="b6-1d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b6-1c-cpt"></td>
+        <td><input type="text" id="b6-1c-lib"></td>
+        <td></td>
+        <td><input type="number" id="b6-1c-mt" placeholder="0"></td>
+      </tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="3">31/12/2025</td>
+        <td><input type="text" id="b6-2d-cpt"></td>
+        <td><input type="text" id="b6-2d-lib" placeholder="Facturation…"></td>
+        <td><input type="number" id="b6-2d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b6-2c1-cpt"></td>
+        <td><input type="text" id="b6-2c1-lib" placeholder="Produit…"></td>
+        <td></td>
+        <td><input type="number" id="b6-2c1-mt" placeholder="0"></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="b6-2c2-cpt"></td>
+        <td><input type="text" id="b6-2c2-lib" placeholder="TVA…"></td>
+        <td></td>
+        <td><input type="number" id="b6-2c2-mt" placeholder="0"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-b3" data-corr="corr-b3" data-fields="calc-b3,b6-1d-cpt,b6-1d-lib,b6-1d-mt,b6-1c-cpt,b6-1c-lib,b6-1c-mt,b6-2d-cpt,b6-2d-lib,b6-2d-mt,b6-2c1-cpt,b6-2c1-lib,b6-2c1-mt,b6-2c2-cpt,b6-2c2-lib,b6-2c2-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <div class="warn-fill" id="warn-corr-b3">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+    <div id="corr-b3" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <div class="corr-formula">CA 2025 = 3 000 000 − 2 100 000 = <strong>900 000 €</strong> &nbsp;|&nbsp; Marge 2025 = 900 000 − 720 000 = <strong>180 000 €</strong></div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">01/01/2025 — Extourne du compte 418</td></tr>
+        <tr class="jc-d"><td class="jc-compte">706</td><td>Prestations de services</td><td class="jc-num">2 100 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;418</td><td>Clients — Produits non encore facturés</td><td></td><td class="jc-num">2 100 000</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">31/12/2025 — Facturation définitive</td></tr>
+        <tr class="jc-d"><td class="jc-compte">411</td><td>Clients — Ville de Biarritz</td><td class="jc-num">3 600 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;706</td><td>Prestations de services</td><td></td><td class="jc-num">3 000 000</td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;44571</td><td>TVA collectée</td><td></td><td class="jc-num">600 000</td></tr>
+      </table>
+      <div class="alert alert-success" style="margin-top:8px;">✅ 150 000 + 270 000 + 180 000 = <strong>600 000 €</strong> ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DEFICIT ========== -->
+<div id="deficit" class="content section">
+  <div class="scenario-box" style="background:linear-gradient(135deg,#7a1a1a,#c0392b);">
+    <h2>🚨 Scénario catastrophe — Le chantier dérape !</h2>
+    <p>Des découvertes archéologiques imposent des travaux supplémentaires. Le coût total révisé passe à <strong>3 200 000 €</strong> au lieu de 2 400 000 €. Le prix de vente reste bloqué à <strong>3 000 000 €</strong>.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>📋 Contrat initial</h3>
+      <table>
+        <tr><td>Prix de vente</td><td class="num">3 000 000 €</td></tr>
+        <tr><td>Coût prévu initial</td><td class="num">2 400 000 €</td></tr>
+        <tr><td style="color:#2d9f6a;"><strong>Marge initiale</strong></td><td class="num" style="color:#2d9f6a;"><strong>+ 600 000 €</strong></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>⚠️ Après révision (fin 2023)</h3>
+      <table>
+        <tr><td>Prix de vente</td><td class="num">3 000 000 €</td></tr>
+        <tr><td>Coût total révisé</td><td class="num">3 200 000 €</td></tr>
+        <tr><td style="color:#d9534f;"><strong>Perte à terminaison</strong></td><td class="num" style="color:#d9534f;"><strong>− 200 000 €</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-block">
+    <div class="q-label">Question 7 — Méthode de l'achèvement</div>
+    <div class="q-text">Calculez la perte à terminaison et présentez l'écriture de provision à constater au 31/12/2023.</div>
+    <div class="q-hint">💡 La perte à terminaison = Coût total révisé − Prix de vente. Elle doit être provisionnée intégralement dès sa détection (principe de prudence).</div>
+
+    <textarea class="input-zone" id="calc-d1" placeholder="Perte à terminaison = … − … = … €" style="min-height:60px;" oninput="checkFilled('calc-d1')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Écriture au journal :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2023</td>
+        <td><input type="text" id="d1-d-cpt" placeholder="6xxx"></td>
+        <td><input type="text" id="d1-d-lib" placeholder="Dotation…"></td>
+        <td><input type="number" id="d1-d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="d1-c-cpt" placeholder="1xxx"></td>
+        <td><input type="text" id="d1-c-lib" placeholder="Provision…"></td>
+        <td></td>
+        <td><input type="number" id="d1-c-mt" placeholder="0"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-d1" data-corr="corr-d1" data-fields="calc-d1,d1-d-cpt,d1-d-lib,d1-d-mt,d1-c-cpt,d1-c-lib,d1-c-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <button class="btn-clear" onclick="clearBlock(['calc-d1','d1-d-cpt','d1-d-lib','d1-d-mt','d1-c-cpt','d1-c-lib','d1-c-mt'],'btn-corr-d1')">🗑 Effacer</button>
+    <div class="warn-fill" id="warn-corr-d1">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+
+    <div id="corr-d1" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <div class="corr-formula">Perte à terminaison = 3 200 000 − 3 000 000 = <strong>200 000 €</strong></div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">31/12/2023 — Provision pour perte à terminaison</td></tr>
+        <tr class="jc-d"><td class="jc-compte">6815</td><td>Dotation aux provisions pour risques et charges</td><td class="jc-num">200 000</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;1518</td><td>Provisions pour pertes à terminaison</td><td></td><td class="jc-num">200 000</td></tr>
+      </table>
+      <div class="alert alert-warning" style="margin-top:8px;">⚠️ Toute la perte est provisionnée en 2023 même si les travaux ne sont pas terminés. Résultat 2023 = −200 000 €.</div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-block">
+    <div class="q-label">Question 8 — Méthode de l'avancement (contrat déficitaire)</div>
+    <div class="q-text">Avec la méthode de l'avancement et le coût révisé de 3 200 000 €, calculez : le nouveau taux d'avancement 2023, le CA à reconnaître, la perte dégagée sur 2023, et la provision complémentaire à constituer.</div>
+    <div class="q-hint">💡 Taux d'avancement = 600 000 / 3 200 000. La perte dégagée via le résultat vient s'imputer sur la perte totale : la provision = perte totale − perte déjà constatée.</div>
+
+    <textarea class="input-zone" id="calc-d2" placeholder="Nouveau taux = … / … = …%&#10;CA 2023 = 3 000 000 × … = … €&#10;Perte 2023 = CA − charges = … − 600 000 = … €&#10;Provision complémentaire = 200 000 − … = … €" oninput="checkFilled('calc-d2')"></textarea>
+
+    <p style="font-size:13px;font-weight:600;color:#1a3a5c;margin:10px 0 6px;">Vos deux écritures au 31/12/2023 :</p>
+    <table class="journal-grid">
+      <tr><th>Date</th><th>N° Compte</th><th class="libelle-col">Libellé</th><th>Débit</th><th>Crédit</th></tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2023 (1)</td>
+        <td><input type="text" id="d2-1d-cpt" placeholder=""></td>
+        <td><input type="text" id="d2-1d-lib" placeholder="CA avancement…"></td>
+        <td><input type="number" id="d2-1d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="d2-1c-cpt" placeholder=""></td>
+        <td><input type="text" id="d2-1c-lib" placeholder=""></td>
+        <td></td>
+        <td><input type="number" id="d2-1c-mt" placeholder="0"></td>
+      </tr>
+      <tr class="debit-row">
+        <td class="date-cell" rowspan="2">31/12/2023 (2)</td>
+        <td><input type="text" id="d2-2d-cpt" placeholder=""></td>
+        <td><input type="text" id="d2-2d-lib" placeholder="Provision…"></td>
+        <td><input type="number" id="d2-2d-mt" placeholder="0"></td>
+        <td></td>
+      </tr>
+      <tr class="credit-row">
+        <td><input type="text" id="d2-2c-cpt" placeholder=""></td>
+        <td><input type="text" id="d2-2c-lib" placeholder=""></td>
+        <td></td>
+        <td><input type="number" id="d2-2c-mt" placeholder="0"></td>
+      </tr>
+    </table>
+
+    <button class="btn-reveal" id="btn-corr-d2" data-corr="corr-d2" data-fields="calc-d2,d2-1d-cpt,d2-1d-lib,d2-1d-mt,d2-1c-cpt,d2-1c-lib,d2-1c-mt,d2-2d-cpt,d2-2d-lib,d2-2d-mt,d2-2c-cpt,d2-2c-lib,d2-2c-mt" onclick="tryReveal(this)">🔒 Voir la correction</button>
+    <div class="warn-fill" id="warn-corr-d2">✏️ Complétez d'abord tous les champs avant de voir la correction.</div>
+    <div id="corr-d2" class="correction-box">
+      <div class="corr-title">✅ Correction</div>
+      <div class="corr-formula">Taux = 600 000 / 3 200 000 = <strong>18,75%</strong><br>CA 2023 = 3 000 000 × 18,75% = <strong>562 500 €</strong><br>Perte constatée = 562 500 − 600 000 = <strong>−37 500 €</strong><br>Provision complémentaire = 200 000 − 37 500 = <strong>162 500 €</strong></div>
+      <table class="journal-corr">
+        <tr><td class="jc-date" colspan="4">31/12/2023 — CA selon avancement</td></tr>
+        <tr class="jc-d"><td class="jc-compte">418</td><td>Clients — Produits non encore facturés</td><td class="jc-num">562 500</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;706</td><td>Prestations de services</td><td></td><td class="jc-num">562 500</td></tr>
+      </table>
+      <table class="journal-corr" style="margin-top:8px;">
+        <tr><td class="jc-date" colspan="4">31/12/2023 — Provision perte complémentaire</td></tr>
+        <tr class="jc-d"><td class="jc-compte">6815</td><td>Dotation aux provisions risques et charges</td><td class="jc-num">162 500</td><td></td></tr>
+        <tr class="jc-c"><td class="jc-compte jc-indent">&nbsp;&nbsp;1518</td><td>Provisions pour pertes à terminaison</td><td></td><td class="jc-num">162 500</td></tr>
+      </table>
+      <div class="alert alert-danger" style="margin-top:8px;">🔴 Résultat 2023 = −37 500 (résultat) − 162 500 (provision) = <strong>−200 000 €</strong> au total. Cohérent avec la perte totale.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== QUIZ ========== -->
+<div id="quiz" class="content section">
+  <div class="card">
+    <h3>🎯 Quiz — 5 questions pour valider vos acquis</h3>
+    <p style="font-size:13px;color:#666;margin-bottom:18px;">Cliquez sur la bonne réponse. Vous n'avez qu'une chance !</p>
+
+    <div style="margin-bottom:18px;">
+      <p style="font-weight:600;font-size:14px;margin-bottom:8px;">1. La méthode de l'achèvement est-elle la méthode de référence du PCG ?</p>
+      <button class="quiz-option" id="q1a" onclick="checkQ(1,'a','b')">A — Oui, c'est la méthode recommandée par défaut</button>
+      <button class="quiz-option" id="q1b" onclick="checkQ(1,'b','b')">B — Non, le PCG ne retient pas de méthode de référence entre les deux</button>
+      <button class="quiz-option" id="q1c" onclick="checkQ(1,'c','b')">C — Non, la méthode de l'avancement est la seule méthode autorisée</button>
+      <div id="fb1" class="alert alert-success" style="display:none;margin-top:6px;">✅ Exact ! Le PCG autorise les deux méthodes. En revanche, les normes IFRS (IFRS 15) imposent uniquement la méthode de l'avancement.</div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <p style="font-weight:600;font-size:14px;margin-bottom:8px;">2. Quel compte est débité pour constater le CA non encore facturé (méthode avancement) ?</p>
+      <button class="quiz-option" id="q2a" onclick="checkQ(2,'a','b')">A — 335 Travaux en cours</button>
+      <button class="quiz-option" id="q2b" onclick="checkQ(2,'b','b')">B — 418 Clients, produits non encore facturés</button>
+      <button class="quiz-option" id="q2c" onclick="checkQ(2,'c','b')">C — 411 Clients</button>
+      <div id="fb2" class="alert alert-success" style="display:none;margin-top:6px;">✅ Exact ! Le compte 418 est un compte de bilan (actif) qui matérialise la créance sur le client avant facturation officielle.</div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <p style="font-weight:600;font-size:14px;margin-bottom:8px;">3. Avec la méthode de l'avancement, charges cumulées = 840 000 € sur 1 200 000 € prévus. Quel est le taux d'avancement ?</p>
+      <button class="quiz-option" id="q3a" onclick="checkQ(3,'a','b')">A — 50%</button>
+      <button class="quiz-option" id="q3b" onclick="checkQ(3,'b','b')">B — 70%</button>
+      <button class="quiz-option" id="q3c" onclick="checkQ(3,'c','b')">C — 60%</button>
+      <div id="fb3" class="alert alert-success" style="display:none;margin-top:6px;">✅ Exact ! 840 000 / 1 200 000 = <strong>70%</strong>. Simple division des charges cumulées par les charges totales prévues.</div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <p style="font-weight:600;font-size:14px;margin-bottom:8px;">4. Une perte à terminaison de 120 000 € est détectée en cours de chantier. Que faut-il faire ?</p>
+      <button class="quiz-option" id="q4a" onclick="checkQ(4,'a','a')">A — Provisionner 120 000 € immédiatement, quelle que soit la méthode</button>
+      <button class="quiz-option" id="q4b" onclick="checkQ(4,'b','a')">B — Attendre la livraison pour constater la perte réelle</button>
+      <button class="quiz-option" id="q4c" onclick="checkQ(4,'c','a')">C — Provisionner uniquement avec la méthode de l'achèvement</button>
+      <div id="fb4" class="alert alert-success" style="display:none;margin-top:6px;">✅ Bravo ! Principe de prudence : toute perte probable est provisionnée dès sa détection, sans attendre la réalisation (compte 1518).</div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <p style="font-weight:600;font-size:14px;margin-bottom:8px;">5. À la fin du chantier (toutes années confondues), quelle méthode dégage la plus grande marge totale ?</p>
+      <button class="quiz-option" id="q5a" onclick="checkQ(5,'a','c')">A — La méthode de l'achèvement</button>
+      <button class="quiz-option" id="q5b" onclick="checkQ(5,'b','c')">B — La méthode de l'avancement</button>
+      <button class="quiz-option" id="q5c" onclick="checkQ(5,'c','c')">C — Elles dégagent exactement la même marge totale</button>
+      <div id="fb5" class="alert alert-success" style="display:none;margin-top:6px;">✅ Exactement ! La marge totale est identique avec les deux méthodes (600 000 €). La différence porte uniquement sur la <em>répartition dans le temps</em>.</div>
+    </div>
+
+    <div id="score-box" class="score-display">
+      <div class="score-num" id="score-num">0/5</div>
+      <div class="score-label">Votre score</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== COMPARATIF ========== -->
+<div id="comparatif" class="content section">
+  <div class="card">
+    <h3>📊 Tableau comparatif final — Les 2 méthodes face à face</h3>
+    <table>
+      <tr><th>Exercice</th><th colspan="2" style="text-align:center;background:#2d6a9f;">⏹ Achèvement</th><th colspan="2" style="text-align:center;background:#2d9f6a;">📈 Avancement</th></tr>
+      <tr><th></th><th>CA</th><th>Résultat</th><th>CA</th><th>Résultat</th></tr>
+      <tr><td><strong>2023</strong></td><td class="num">0 €</td><td class="num">0 €</td><td class="num">750 000 €</td><td class="num" style="color:#2d9f6a;font-weight:700;">150 000 €</td></tr>
+      <tr><td><strong>2024</strong></td><td class="num">0 €</td><td class="num">0 €</td><td class="num">1 350 000 €</td><td class="num" style="color:#2d9f6a;font-weight:700;">270 000 €</td></tr>
+      <tr class="highlight"><td><strong>2025</strong></td><td class="num">3 000 000 €</td><td class="num" style="color:#2d9f6a;font-weight:700;">600 000 €</td><td class="num">900 000 €</td><td class="num" style="color:#2d9f6a;font-weight:700;">180 000 €</td></tr>
+      <tr class="total-row"><td><strong>TOTAL</strong></td><td class="num">3 000 000 €</td><td class="num">600 000 €</td><td class="num">3 000 000 €</td><td class="num">600 000 €</td></tr>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="method-card achevement">
+      <h4>⏹ Achèvement — Points clés</h4>
+      <p>✅ Simple à appliquer<br>✅ Très prudent<br>❌ Image distordue : tout en 2025<br>❌ Résultat = 0 pendant 2 ans<br>❌ Non conforme IFRS</p>
+    </div>
+    <div class="method-card avancement">
+      <h4>📈 Avancement — Points clés</h4>
+      <p>✅ Image fidèle de la performance<br>✅ Marge lissée sur 3 exercices<br>✅ Conforme IFRS<br>❌ Plus complexe<br>❌ Requiert des estimations fiables</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🏆 À retenir absolument pour l'examen</h3>
+    <div class="alert alert-info" style="margin-bottom:8px;">📌 La marge totale est <strong>identique</strong> avec les deux méthodes. Seule la répartition temporelle diffère.</div>
+    <div class="alert alert-warning" style="margin-bottom:8px;">📌 Toujours <strong>vérifier</strong> que la somme des CA sur toutes les années = prix de vente total du contrat.</div>
+    <div class="alert alert-success" style="margin-bottom:8px;">📌 Avec l'avancement : <strong>extourner le compte 418</strong> en début d'exercice suivant pour ne comptabiliser que le différentiel annuel.</div>
+    <div class="alert alert-danger">📌 <strong>Perte à terminaison</strong> = provisionnée immédiatement et intégralement (compte 1518), sans attendre la livraison.</div>
+  </div>
+</div>
 
 <script>
-    /* ═══════════ DATA ═══════════ */
-    let db = JSON.parse(localStorage.getItem('budget_vGestion')) || {
-        revenu: 0,
-        categories: [
-            { id:"Fixe",    label:"Loyers/Charges" },
-            { id:"Courses", label:"Alimentation" },
-            { id:"Loisirs", label:"Sorties/Plaisirs" },
-            { id:"Epargne", label:"Épargne" },
-            { id:"Autres",  label:"Divers" }
-        ],
-        previsions: { Fixe:0, Courses:0, Loisirs:0, Epargne:0, Autres:0 },
-        depenses: [],
-        historiqueEpargne: []
-    };
-    let globalSavings = parseFloat(localStorage.getItem('globalSavings')) || 0;
-    let archives = JSON.parse(localStorage.getItem('budget_archives')) || [];
-    let chartInstance = null, chartInstanceD = null;
-    let evolutionChartInstance = null, evolutionChartInstanceD = null;
-    const colors = ['#5b5ef4','#10b981','#f59e0b','#ef4444','#94a3b8','#06b6d4','#a855f7','#f97316'];
+const tabIds = ['contexte','rappels','achevement','avancement','deficit','quiz','comparatif'];
 
-    /* ═══════════ THEME ═══════════ */
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
-    function toggleTheme() {
-        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        majAffichage(); afficherEvolution();
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const i = tabIds.indexOf(id);
+  document.querySelectorAll('.tab')[i].classList.add('active');
+}
+
+/* ---- Vérifie si un champ est rempli ---- */
+function isFilled(el) {
+  if (!el) return false;
+  return el.value.trim().length > 0;
+}
+
+/* ---- Mise à jour visuelle d'un champ ---- */
+function checkFilled(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('filled', isFilled(el));
+  /* après chaque frappe, mettre à jour l'état du bouton de la question parente */
+  const block = el.closest('.question-block');
+  if (block) {
+    const btn = block.querySelector('.btn-reveal');
+    if (btn && !btn.classList.contains('done')) updateBtnState(btn);
+  }
+}
+
+/* ---- Met à jour l'apparence du bouton selon si tous les champs sont remplis ---- */
+function updateBtnState(btn) {
+  const fieldIds = btn.dataset.fields ? btn.dataset.fields.split(',') : [];
+  const allFilled = fieldIds.every(id => {
+    const el = document.getElementById(id.trim());
+    return el && isFilled(el);
+  });
+  if (allFilled) {
+    btn.classList.add('ready');
+    btn.textContent = '👁 Voir la correction';
+  } else {
+    btn.classList.remove('ready');
+    btn.textContent = '🔒 Voir la correction';
+  }
+}
+
+/* ---- Tentative de révélation : bloquée si champs incomplets ---- */
+function tryReveal(btn) {
+  /* Si déjà révélé, ne rien faire */
+  if (btn.classList.contains('done')) return;
+
+  const corrId  = btn.dataset.corr;
+  const warnId  = 'warn-' + corrId;
+  const fieldIds = btn.dataset.fields ? btn.dataset.fields.split(',') : [];
+
+  /* Identifier les champs vides */
+  const emptyIds = fieldIds.filter(id => {
+    const el = document.getElementById(id.trim());
+    return !el || !isFilled(el);
+  });
+
+  if (emptyIds.length > 0) {
+    /* Mettre en évidence les champs vides */
+    emptyIds.forEach(id => {
+      const el = document.getElementById(id.trim());
+      if (!el) return;
+      el.style.outline = '2px solid #e07000';
+      el.style.background = '#fff8e1';
+      /* Retirer la mise en évidence après 2 s */
+      setTimeout(() => {
+        el.style.outline = '';
+        el.style.background = el.classList.contains('filled') ? '#f8fff8' : '';
+      }, 2000);
+    });
+
+    /* Afficher l'avertissement */
+    const warn = document.getElementById(warnId);
+    if (warn) {
+      warn.classList.add('show');
+      setTimeout(() => warn.classList.remove('show'), 3500);
     }
 
-    /* ═══════════ MOBILE NAV ═══════════ */
-    const PAGES = ['tableau','budget','depenses','bilan','archives'];
-    function goTo(name) {
-        PAGES.forEach(p => {
-            const el = document.getElementById('page-' + p);
-            const btn = document.getElementById('nav-' + p);
-            if (el) el.classList.remove('active');
-            if (btn) btn.classList.remove('active');
-        });
-        const el = document.getElementById('page-' + name);
-        const btn = document.getElementById('nav-' + name);
-        if (el) el.classList.add('active');
-        if (btn) btn.classList.add('active');
-        window.scrollTo(0, 0);
+    /* Animation de secousse sur le bouton */
+    btn.classList.remove('shake');
+    void btn.offsetWidth; /* force reflow pour redémarrer l'animation */
+    btn.classList.add('shake');
+    setTimeout(() => btn.classList.remove('shake'), 500);
+    return;
+  }
+
+  /* Tous les champs sont remplis → révéler */
+  const corrBox = document.getElementById(corrId);
+  if (corrBox) {
+    corrBox.classList.add('show');
+    corrBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  btn.classList.remove('ready');
+  btn.classList.add('done');
+  btn.textContent = '✅ Correction affichée';
+
+  /* Masquer l'avertissement si visible */
+  const warn = document.getElementById(warnId);
+  if (warn) warn.classList.remove('show');
+}
+
+/* ---- Effacer tous les champs d'un bloc et réinitialiser le bouton ---- */
+function clearBlock(ids, btnId) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = '';
+    el.classList.remove('filled');
+    el.style.outline = '';
+    el.style.background = '';
+  });
+
+  if (btnId) {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.classList.remove('ready','done','shake');
+      btn.textContent = '🔒 Voir la correction';
     }
-
-    /* ═══════════ TOAST ═══════════ */
-    function showToast(msg, type='success', duration=3000) {
-        const icons = { success:'✅', danger:'❌', info:'ℹ️', warning:'⚠️' };
-        const t = document.createElement('div');
-        t.className = 'toast ' + type;
-        t.innerHTML = `<span>${icons[type]||'📢'}</span> ${msg}`;
-        document.getElementById('toast-container').appendChild(t);
-        setTimeout(() => { t.style.animation = 'toastOut 0.3s ease both'; setTimeout(() => t.remove(), 300); }, duration);
+    /* Masquer la correction */
+    const corrId = btn ? btn.dataset.corr : null;
+    if (corrId) {
+      const corrBox = document.getElementById(corrId);
+      if (corrBox) corrBox.classList.remove('show');
     }
+    /* Masquer l'avertissement */
+    const warn = document.getElementById('warn-' + (btn ? btn.dataset.corr : ''));
+    if (warn) warn.classList.remove('show');
+  }
+}
 
-    /* ═══════════ MODAL ═══════════ */
-    function ouvrirModal() {
-        const now = new Date();
-        const mois = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-        document.getElementById('modal-mois-nom').value = `${mois[now.getMonth()]} ${now.getFullYear()}`;
-        document.getElementById('modal-cloture').style.display = 'flex';
-        setTimeout(() => document.getElementById('modal-mois-nom').focus(), 100);
-    }
-    function fermerModal() { document.getElementById('modal-cloture').style.display = 'none'; }
-    document.getElementById('modal-cloture').addEventListener('click', e => { if (e.target===e.currentTarget) fermerModal(); });
-    document.getElementById('modal-mois-nom').addEventListener('keydown', e => { if (e.key==='Enter') confirmerCloture(); if (e.key==='Escape') fermerModal(); });
+/* ---- Initialisation : écouter les changements sur tous les inputs du journal ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  /* Couvre tous les inputs/textareas à l'intérieur des blocs question */
+  document.querySelectorAll('.question-block input, .question-block textarea').forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.classList.toggle('filled', isFilled(inp));
+      const block = inp.closest('.question-block');
+      if (block) {
+        const btn = block.querySelector('.btn-reveal');
+        if (btn && !btn.classList.contains('done')) updateBtnState(btn);
+      }
+    });
+  });
+  /* Initialiser l'état de tous les boutons */
+  document.querySelectorAll('.btn-reveal[data-fields]').forEach(btn => updateBtnState(btn));
+});
 
-    function confirmerCloture() {
-        const nom = document.getElementById('modal-mois-nom').value.trim() || 'Mois sans nom';
-        fermerModal();
-        let totaux = {}; db.categories.forEach(c => { totaux[c.id]=0; });
-        let totalDep=0, totalEp=0;
-        db.depenses.forEach(d => {
-            if (d.ct in totaux) totaux[d.ct]+=d.mt;
-            const cat=db.categories.find(c=>c.id===d.ct);
-            if (cat && cat.label.toLowerCase().includes("épargne")) totalEp+=d.mt; else totalDep+=d.mt;
-        });
-        const archive = { id:Date.now(), nom, date:new Date().toLocaleDateString('fr-FR'), revenu:db.revenu, totalDep, totalEp, solde:db.revenu-totalDep-totalEp, labels:db.categories.map(c=>c.label), data:db.categories.map(c=>totaux[c.id]||0) };
-        archives.push(archive);
-        localStorage.setItem('budget_archives', JSON.stringify(archives));
-        let epargneMois=0;
-        db.depenses.forEach(d => { const cat=db.categories.find(c=>c.id===d.ct); if(cat&&cat.label.toLowerCase().includes("épargne")) epargneMois+=d.mt; });
-        globalSavings+=epargneMois; localStorage.setItem('globalSavings', globalSavings);
-        db.depenses=db.depenses.filter(d=>d.recurring===true);
-        sauvegarder(); afficherArchives(); afficherEvolution();
-        showToast(`"${nom}" archivé ! +${epargneMois}€ au coffre 🎉`, 'success', 4000);
-    }
+/* ---- Quiz ---- */
+let quizScore = 0;
+let answered = {};
 
-    /* ═══════════ CATÉGORIES ═══════════ */
-    function ajouterNouvelleCategorie() {
-        const inp = document.getElementById('new_cat_name') || document.getElementById('new_cat_name_d');
-        const name = inp ? inp.value.trim() : '';
-        if (!name) return;
-        const newId = 'cat_' + Date.now();
-        db.categories.push({ id:newId, label:name });
-        db.previsions[newId]=0;
-        if (inp) inp.value='';
-        sauvegarder();
-        showToast(`Catégorie "${name}" ajoutée`, 'info');
-    }
-    function supprimerCategorie(id) {
-        const cat=db.categories.find(c=>c.id===id);
-        if (confirm(`Supprimer "${cat?cat.label:''}" ?`)) {
-            db.categories=db.categories.filter(c=>c.id!==id);
-            delete db.previsions[id];
-            sauvegarder(); showToast('Catégorie supprimée','warning');
-        }
-    }
+function checkQ(qNum, choice, correct) {
+  if (answered[qNum]) return;
+  answered[qNum] = true;
 
-    /* ═══════════ DÉPENSES ═══════════ */
-    function _ajouter(descId, mtId, catId, recurId) {
-        const descEl=document.getElementById(descId), mtEl=document.getElementById(mtId);
-        const catEl=document.getElementById(catId), recurEl=document.getElementById(recurId);
-        if (!descEl||!mtEl||!catEl) { showToast('Formulaire introuvable','danger'); return; }
-        const desc=descEl.value.trim(), mt=parseFloat(mtEl.value), ctId=catEl.value;
-        const isRec=recurEl?recurEl.checked:false;
-        if (!desc||isNaN(mt)||mt<=0) { showToast('Remplis tous les champs correctement','warning'); return; }
-        if (!ctId) { showToast('Sélectionne une catégorie','warning'); return; }
-        const expense={ id:Date.now(), date:new Date().toLocaleDateString('fr-FR'), desc, mt, ct:ctId, recurring:isRec };
-        db.depenses.push(expense);
-        const catObj=db.categories.find(c=>c.id===ctId);
-        if (catObj&&catObj.label.toLowerCase().includes("épargne")) db.historiqueEpargne.push(expense);
-        descEl.value=''; mtEl.value=''; if(recurEl) recurEl.checked=false;
-        localStorage.setItem('budget_vGestion', JSON.stringify(db));
-        majAffichage();
-        showToast(`${desc} — ${mt}€ ajouté${isRec?' 🔄':''}`, 'success');
-    }
-    function ajouterDepense()        { _ajouter('add_desc','add_mt','add_cat','add_recurring'); }
-    function ajouterDepenseDesktop() { _ajouter('add_desc_d','add_mt_d','add_cat_d','add_recurring_d'); }
+  const letters = ['a','b','c'];
+  letters.forEach(l => {
+    const btn = document.getElementById('q' + qNum + l);
+    if (!btn) return;
+    btn.disabled = true;
+    if (l === correct) btn.classList.add('correct');
+    else if (l === choice && choice !== correct) btn.classList.add('wrong');
+  });
 
-    function supprimer(id) {
-        const idx=db.historiqueEpargne.findIndex(d=>d.id===id);
-        if (idx!==-1) { globalSavings=Math.max(0,globalSavings-db.historiqueEpargne[idx].mt); localStorage.setItem('globalSavings',globalSavings); db.historiqueEpargne.splice(idx,1); }
-        db.depenses=db.depenses.filter(d=>d.id!==id);
-        localStorage.setItem('budget_vGestion', JSON.stringify(db));
-        majAffichage(); showToast('Dépense supprimée','danger');
-    }
-    function resetCoffre() {
-        if (confirm("Vider le coffre-fort ET l'historique d'épargne ?")) {
-            globalSavings=0; db.historiqueEpargne=[];
-            localStorage.setItem('globalSavings',0); sauvegarder(); showToast('Coffre-fort vidé','warning');
-        }
-    }
+  const fb = document.getElementById('fb' + qNum);
+  if (fb) fb.style.display = 'block';
 
-    /* ═══════════ SAUVEGARDER ═══════════ */
-    function sauvegarder() {
-        const revEl=document.getElementById('prev_revenu')||document.getElementById('prev_revenu_d');
-        if (revEl && revEl.value!=='') db.revenu=parseFloat(revEl.value)||0;
-        document.querySelectorAll('.prev-input').forEach(inp => { db.previsions[inp.dataset.cat]=parseFloat(inp.value)||0; });
-        localStorage.setItem('budget_vGestion', JSON.stringify(db));
-        majAffichage();
-    }
+  if (choice === correct) quizScore++;
 
-    /* ═══════════ AFFICHAGE PRINCIPAL ═══════════ */
-    function majAffichage() {
-
-        /* ── 1. CALCUL UNIQUE ── */
-        let totaux={}; db.categories.forEach(c => { totaux[c.id]=0; });
-        let totalGeneral=0, totalEpargne=0;
-        db.depenses.forEach(d => {
-            if (d.ct in totaux) totaux[d.ct]+=d.mt;
-            const cat=db.categories.find(c=>c.id===d.ct);
-            if (cat&&cat.label.toLowerCase().includes("épargne")) totalEpargne+=d.mt; else totalGeneral+=d.mt;
-        });
-        const solde=db.revenu-totalGeneral-totalEpargne;
-
-        /* ── 2. STATS ── */
-        const setN=(id,v)=>{ const el=document.getElementById(id); if(el) el.innerText=Math.round(v); };
-        setN('view_total_dep',totalGeneral); setN('view_total_ep',totalEpargne); setN('view_solde',solde); setN('view_global_ep',globalSavings);
-        setN('m_dep',totalGeneral); setN('m_ep',totalEpargne); setN('m_solde',solde); setN('m_coffre',globalSavings);
-        const sc=solde<0?'var(--danger)':'var(--success)';
-        ['view_solde_wrapper','m_solde_wrap'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.color=sc; });
-
-        /* ── 3. REVENU ── */
-        ['prev_revenu','prev_revenu_d'].forEach(id=>{ const el=document.getElementById(id); if(el&&document.activeElement!==el) el.value=db.revenu||''; });
-
-        /* ── 4. SETUP CATÉGORIES ── */
-        const renderSetup=(containerId,totalId,statusId,inputW)=>{
-            const div=document.getElementById(containerId); if(!div) return;
-            div.innerHTML=''; let total=0;
-            db.categories.forEach(cat=>{
-                const val=db.previsions[cat.id]||0; total+=val;
-                div.innerHTML+=`<div class="budget-row">
-                    <button class="btn-icon-sm" onclick="supprimerCategorie('${cat.id}')">✕</button>
-                    <span class="cat-label">${cat.label}</span>
-                    <input type="number" inputmode="decimal" class="prev-input" data-cat="${cat.id}" value="${val}" onchange="sauvegarder()" style="width:${inputW};margin:0;min-height:36px;">
-                </div>`;
-            });
-            const tEl=document.getElementById(totalId); if(tEl) tEl.innerText=total.toFixed(0)+' €';
-            const reste=db.revenu-total;
-            const sEl=document.getElementById(statusId);
-            if(sEl) sEl.innerHTML=reste<0
-                ?`<span>Dépassement</span><span class="text-danger">${Math.abs(reste).toFixed(0)} €</span>`
-                :`<span>Reste à répartir</span><span class="text-success">${reste.toFixed(0)} €</span>`;
-        };
-        renderSetup('setup_categories',  'total_prevu_val',  'status_plan_container',  '90px');
-        renderSetup('setup_categories_d','total_prevu_val_d','status_plan_container_d','90px');
-
-        /* ── 5. SELECTS ── */
-        ['add_cat','add_cat_d'].forEach(id=>{
-            const sel=document.getElementById(id); if(!sel) return;
-            const cur=sel.value; sel.innerHTML='';
-            db.categories.forEach(cat=>{ sel.innerHTML+=`<option value="${cat.id}">${cat.label}</option>`; });
-            if(cur) sel.value=cur;
-        });
-
-        /* ── 6. RECHERCHE ── */
-        const sm=(document.getElementById('search_input')||{}).value||'';
-        const st=(document.getElementById('search_input_tableau')||{}).value||'';
-        const sd=(document.getElementById('search_input_d')||{}).value||'';
-        const searchTerm=(sm||st||sd).toLowerCase();
-
-        /* ── 7. HISTORIQUE DÉPENSES ── */
-        const renderLog=(tbodyId)=>{
-            const tbody=document.querySelector('#'+tbodyId+' tbody'); if(!tbody) return;
-            tbody.innerHTML='';
-            [...db.depenses].reverse().forEach(d=>{
-                const cat=db.categories.find(c=>c.id===d.ct), catLabel=cat?cat.label.toLowerCase():'';
-                if (!searchTerm||d.desc.toLowerCase().includes(searchTerm)||catLabel.includes(searchTerm)){
-                    tbody.innerHTML+=`<tr>
-                        <td style="color:var(--text-muted);font-size:0.76rem;white-space:nowrap">${d.date}</td>
-                        <td>${d.desc}${d.recurring?'<span class="recurring-tag">🔄</span>':''}</td>
-                        <td><span class="cat-pill">${cat?cat.label:'N/A'}</span></td>
-                        <td><strong>${d.mt}€</strong></td>
-                        <td><button class="btn-delete" onclick="supprimer(${d.id})">✕</button></td>
-                    </tr>`;
-                }
-            });
-        };
-        renderLog('log_table'); renderLog('log_table_d'); renderLog('log_table_tableau');
-
-        /* ── 8. ÉPARGNE ── */
-        db.historiqueEpargne.sort((a,b)=>a.desc.toLowerCase().localeCompare(b.desc.toLowerCase()));
-        const renderEp=(tbodyId,totalId)=>{
-            const tbody=document.querySelector('#'+tbodyId+' tbody'); if(!tbody) return;
-            tbody.innerHTML=''; let total=0;
-            db.historiqueEpargne.forEach(d=>{
-                tbody.innerHTML+=`<tr>
-                    <td style="color:var(--text-muted);font-size:0.76rem;white-space:nowrap">${d.date}</td>
-                    <td>${d.desc}${d.recurring?'<span class="recurring-tag">🔄</span>':''}</td>
-                    <td><strong>${d.mt}€</strong></td>
-                    <td><button class="btn-delete" onclick="supprimer(${d.id})">✕</button></td>
-                </tr>`;
-                total+=d.mt;
-            });
-            const el=document.getElementById(totalId); if(el) el.innerText=total.toFixed(0);
-        };
-        renderEp('epargne_history_table','local_epargne_total');
-        renderEp('epargne_history_table_d','local_epargne_total_d');
-        renderEp('epargne_history_table_bilan','local_epargne_total_bilan');
-
-        /* ── 9. BILAN + GRAPHIQUE ── */
-        const renderBilan=(tbodyId,chartId,oldChart)=>{
-            const tbody=document.querySelector('#'+tbodyId+' tbody'); if(!tbody) return oldChart;
-            tbody.innerHTML=''; let labels=[], data=[];
-            db.categories.forEach(cat=>{
-                const prev=db.previsions[cat.id]||0, reel=totaux[cat.id]||0;
-                const pct=prev>0?Math.min((reel/prev)*100,100):0, over=reel>prev, ecart=prev-reel;
-                tbody.innerHTML+=`<tr style="${over?'background:rgba(239,68,68,0.03)':''}">
-                    <td style="font-weight:600;white-space:nowrap">${cat.label}</td>
-                    <td style="color:var(--text-muted);white-space:nowrap">${prev} €</td>
-                    <td style="font-weight:700;white-space:nowrap">${reel} €</td>
-                    <td style="color:${ecart<0?'var(--danger)':'var(--success)'};font-weight:700;white-space:nowrap">${ecart>=0?'+':''}${ecart.toFixed(0)} €</td>
-                    <td><div class="progress-wrap"><div class="progress-bg"><div class="progress-fill ${over?'over':''}" style="width:${pct}%"></div></div><span class="progress-pct">${pct.toFixed(0)}%</span></div></td>
-                    <td>${over?'<span class="status-over">⚠ Dépassé</span>':'<span class="status-ok">✓ OK</span>'}</td>
-                </tr>`;
-                labels.push(cat.label); data.push(reel);
-            });
-            if(oldChart){ oldChart.destroy(); oldChart=null; }
-            const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-            const ctx=document.getElementById(chartId); if(!ctx) return null;
-            return new Chart(ctx,{
-                type:'pie',
-                data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderWidth:3,borderColor:isDark?'#1c1e2b':'#fff',hoverOffset:5}]},
-                options:{responsive:true,maintainAspectRatio:true,aspectRatio:1,
-                    plugins:{legend:{position:'bottom',labels:{color:isDark?'#9ca3af':'#6b7280',font:{family:'DM Sans',size:10},padding:8,usePointStyle:true,pointStyleWidth:6}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}€`}}},
-                    animation:{animateRotate:true,duration:600}}
-            });
-        };
-        chartInstance  = renderBilan('bilan_table',  'budgetChart',   chartInstance);
-        chartInstanceD = renderBilan('bilan_table_d','budgetChart_d', chartInstanceD);
-    }
-
-    /* ═══════════ ARCHIVES ═══════════ */
-    function buildArchiveCards(containerId) {
-        const container=document.getElementById(containerId); if(!container) return;
-        if(archives.length===0){ container.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><p>Aucun mois archivé.<br>Clôture ton premier mois pour le voir ici.</p></div>`; return; }
-        container.innerHTML='<div class="archives-grid"></div>';
-        const grid=container.querySelector('.archives-grid');
-        archives.slice().reverse().forEach(arc=>{
-            const card=document.createElement('div'); card.className='archive-card';
-            const sc=arc.solde<0?'var(--danger)':'var(--success)';
-            card.innerHTML=`
-                <div class="arc-name">${arc.nom}</div><div class="arc-date">Archivé le ${arc.date}</div>
-                <div class="arc-chart-wrap"><canvas id="arc-chart-${arc.id}-${containerId}" width="120" height="120"></canvas></div>
-                <div class="arc-stats">
-                    <div class="arc-stat-row"><span>💸 Dépensé</span><strong>${arc.totalDep} €</strong></div>
-                    <div class="arc-stat-row"><span>🌱 Épargné</span><strong style="color:var(--success)">${arc.totalEp} €</strong></div>
-                    <div class="arc-stat-row"><span>⚖️ Solde</span><strong style="color:${sc}">${arc.solde} €</strong></div>
-                    <div class="arc-stat-row"><span>📥 Revenus</span><strong>${arc.revenu} €</strong></div>
-                </div>
-                <div class="arc-actions">
-                    <button class="btn btn-pdf" onclick="telechargerPDF(${arc.id})">📄 PDF</button>
-                    <button class="btn btn-del" onclick="supprimerArchive(${arc.id})">🗑️</button>
-                </div>`;
-            grid.appendChild(card);
-            setTimeout(()=>{
-                const ctx=document.getElementById(`arc-chart-${arc.id}-${containerId}`); if(!ctx||ctx._done) return; ctx._done=true;
-                new Chart(ctx,{type:'pie',data:{labels:arc.labels,datasets:[{data:arc.data,backgroundColor:colors.slice(0,arc.labels.length),borderWidth:2,borderColor:'#fff',hoverOffset:3}]},options:{responsive:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}€`}}},animation:{duration:500}}});
-            },60);
-        });
-    }
-
-    function afficherArchives() {
-        buildArchiveCards('archives-container');
-        buildArchiveCards('archives-container-d');
-    }
-
-    function buildEvolution(canvasId, sectionId) {
-        const section=document.getElementById(sectionId); if(!section) return;
-        if(archives.length<1){ section.style.display='none'; return; }
-        section.style.display='block';
-        const sorted=[...archives].sort((a,b)=>a.id-b.id);
-        const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-        const gc=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.05)', tc=isDark?'#9ca3af':'#6b7280';
-        const ctx=document.getElementById(canvasId); if(!ctx) return;
-        const inst = canvasId==='evolutionChart'?evolutionChartInstance:evolutionChartInstanceD;
-        if(inst){ inst.destroy(); }
-        const newInst=new Chart(ctx,{
-            type:'line',
-            data:{labels:sorted.map(a=>a.nom),datasets:[
-                {label:'Revenus', data:sorted.map(a=>a.revenu),  borderColor:'#5b5ef4',borderWidth:2.5,pointBackgroundColor:'#5b5ef4',pointRadius:4,fill:false,tension:0.35},
-                {label:'Dépenses',data:sorted.map(a=>a.totalDep),borderColor:'#ef4444',borderWidth:2.5,pointBackgroundColor:'#ef4444',pointRadius:4,fill:false,tension:0.35},
-                {label:'Épargne', data:sorted.map(a=>a.totalEp), borderColor:'#10b981',borderWidth:2.5,pointBackgroundColor:'#10b981',pointRadius:4,fill:false,tension:0.35},
-                {label:'Solde',   data:sorted.map(a=>a.solde),   borderColor:'#f59e0b',borderWidth:2,borderDash:[5,3],pointBackgroundColor:'#f59e0b',pointRadius:3,fill:false,tension:0.35}
-            ]},
-            options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-                plugins:{legend:{position:'top',labels:{color:tc,font:{family:'DM Sans',size:11},padding:14,usePointStyle:true,pointStyleWidth:7}},
-                tooltip:{backgroundColor:isDark?'#1c1e2b':'#fff',titleColor:isDark?'#e8eaf2':'#1a1d2e',bodyColor:tc,borderColor:isDark?'rgba(255,255,255,0.1)':'#e5e7eb',borderWidth:1,padding:10,callbacks:{label:c=>` ${c.dataset.label} : ${c.parsed.y} €`}}},
-                scales:{x:{ticks:{color:tc,font:{family:'DM Sans',size:10}},grid:{color:gc}},y:{ticks:{color:tc,font:{family:'DM Sans',size:10},callback:v=>v+' €'},grid:{color:gc}}},
-                animation:{duration:700}}
-        });
-        if(canvasId==='evolutionChart') evolutionChartInstance=newInst; else evolutionChartInstanceD=newInst;
-    }
-
-    function afficherEvolution() {
-        buildEvolution('evolutionChart','evolution-section');
-        buildEvolution('evolutionChartD','evolution-section-d');
-    }
-
-    function supprimerArchive(id) {
-        if(!confirm("Supprimer cette archive ?")) return;
-        archives=archives.filter(a=>a.id!==id);
-        localStorage.setItem('budget_archives',JSON.stringify(archives));
-        afficherArchives(); afficherEvolution(); showToast('Archive supprimée','warning');
-    }
-
-    function telechargerPDF(id) {
-        const arc=archives.find(a=>a.id===id); if(!arc) return;
-        const canvasIds=[`arc-chart-${arc.id}-archives-container`,`arc-chart-${arc.id}-archives-container-d`];
-        let chartImg='';
-        for(const cid of canvasIds){ const c=document.getElementById(cid); if(c){ chartImg=c.toDataURL('image/png'); break; } }
-        const sc=arc.solde<0?'#ef4444':'#10b981';
-        const legendRows=arc.labels.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${colors[i%colors.length]};flex-shrink:0;"></span><span style="flex:1;">${l}</span><strong>${arc.data[i]} €</strong></div>`).join('');
-        const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan ${arc.nom}</title><style>@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',Arial,sans-serif;background:white;color:#1a1d2e;padding:48px 40px;max-width:620px;margin:auto;}.header{border-bottom:3px solid #5b5ef4;padding-bottom:18px;margin-bottom:28px;}.title{font-size:1.6rem;font-weight:700;color:#5b5ef4;margin-bottom:4px;}.sub{color:#6b7280;font-size:0.84rem;}.chart-section{display:flex;gap:28px;align-items:center;margin-bottom:28px;}.chart-section img{width:150px;height:150px;}.legend{flex:1;font-size:0.84rem;}.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px;}.stat{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:14px;text-align:center;}.stat .lbl{font-size:0.68rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}.stat .val{font-size:1.5rem;font-weight:700;}.footer{margin-top:28px;font-size:0.7rem;color:#9ca3af;text-align:center;border-top:1px solid #e5e7eb;padding-top:14px;}@media print{body{padding:20px;}}</style></head><body><div class="header"><div class="title">📊 ${arc.nom}</div><div class="sub">Archivé le ${arc.date} · Mon Coach Finance</div></div><div class="chart-section">${chartImg?`<img src="${chartImg}">`:''}<div class="legend">${legendRows}</div></div><div class="stats-grid"><div class="stat"><div class="lbl">💸 Dépensé</div><div class="val">${arc.totalDep} €</div></div><div class="stat"><div class="lbl">🌱 Épargné</div><div class="val" style="color:#10b981">${arc.totalEp} €</div></div><div class="stat"><div class="lbl">⚖️ Solde</div><div class="val" style="color:${sc}">${arc.solde} €</div></div><div class="stat"><div class="lbl">📥 Revenus</div><div class="val">${arc.revenu} €</div></div></div><div class="footer">Généré par Mon Coach Finance</div></body></html>`;
-        const blob=new Blob([html],{type:'text/html'});
-        const url=URL.createObjectURL(blob);
-        const win=window.open(url,'_blank');
-        if(win) win.addEventListener('load',()=>setTimeout(()=>win.print(),500));
-        showToast('PDF prêt — utilise "Enregistrer en PDF"','info',4000);
-    }
-
-    /* ═══════════ INIT ═══════════ */
-    majAffichage();
-    afficherArchives();
-    afficherEvolution();
-    document.getElementById('new_cat_name').addEventListener('keydown', e=>{ if(e.key==='Enter') ajouterNouvelleCategorie(); });
-
-    /* ═══════════ SCROLL DÉPENSES ═══════════ */
-    function scrollDepenses() {
-        const el = document.getElementById('expense-scroll');
-        if (!el) return;
-        const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 10;
-        if (atBottom) {
-            // Si déjà en bas → remonter en haut
-            el.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-        }
-    }
-
-    // Met à jour la flèche selon la position du scroll
-    function updateScrollBtn() {
-        const el = document.getElementById('expense-scroll');
-        const btn = document.getElementById('scroll-down-btn');
-        if (!el || !btn) return;
-        const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 10;
-        btn.innerText = atBottom ? '↑' : '↓';
-        // Cacher si pas de contenu à scroller
-        btn.style.opacity = el.scrollHeight > el.clientHeight ? '1' : '0';
-        btn.style.pointerEvents = el.scrollHeight > el.clientHeight ? 'auto' : 'none';
-    }
-
-    // Écoute le scroll pour changer la flèche
-    document.getElementById('expense-scroll').addEventListener('scroll', updateScrollBtn);
-
-    // Mise à jour après chaque affichage
-    const _origMaj = majAffichage;
-    majAffichage = function() { _origMaj(); setTimeout(updateScrollBtn, 100); };
+  if (Object.keys(answered).length === 5) {
+    const box = document.getElementById('score-box');
+    document.getElementById('score-num').textContent = quizScore + '/5';
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth' });
+  }
+}
 </script>
 </body>
 </html>
