@@ -24,17 +24,19 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+        html { height: 100%; }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text);
-            min-height: 100vh;
+            height: 100%;
         }
 
         /* ══ LOGIN ══════════════════════════════ */
         #login-screen {
             display: flex; align-items: center; justify-content: center;
-            min-height: 100vh; padding: 24px;
+            height: 100%; padding: 24px;
             position: relative; overflow: hidden;
         }
 
