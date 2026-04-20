@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche de Révision Complète – UE 443 Contrôle de Gestion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1826;
+    --surface2: #231f35;
+    --accent1: #ff6b6b;
+    --accent2: #ffd93d;
+    --accent3: #6bcb77;
+    --accent4: #4d96ff;
+    --accent5: #c77dff;
+    --text: #fffffe;
+    --text-muted: #a7a3b8;
+    --border: rgba(255,255,255,0.08);
+    --formula-bg: #0d1117;
+    --formula-border: #30363d;
+    /* light palette for concept blocks */
+    --lb-blue: rgba(29,78,216,0.18);
+    --lb-green: rgba(22,101,52,0.18);
+    --lb-orange: rgba(146,64,14,0.18);
+    --lb-red: rgba(153,27,27,0.18);
+    --lb-purple: rgba(91,33,182,0.18);
+    --lb-teal: rgba(19,78,74,0.18);
+    --cb-blue: #93c5fd;
+    --cb-green: #86efac;
+    --cb-orange: #fcd34d;
+    --cb-red: #fca5a5;
+    --cb-purple: #c4b5fd;
+    --cb-teal: #5eead4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a0533 0%, #0f0e17 40%, #001a33 100%);
+    padding: 48px 40px 38px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; top:-80px; right:-80px;
+    width:350px; height:350px;
+    background:radial-gradient(circle,rgba(77,150,255,0.15) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero::after {
+    content:''; position:absolute; bottom:-60px; left:-60px;
+    width:280px; height:280px;
+    background:radial-gradient(circle,rgba(199,125,255,0.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero-tag {
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent4); background:rgba(77,150,255,0.12);
+    border:1px solid rgba(77,150,255,0.3);
+    padding:5px 14px; border-radius:20px; margin-bottom:18px;
+  }
+  .hero h1 {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.9rem,5vw,3.6rem); font-weight:900; line-height:1.1;
+    margin-bottom:8px;
+  }
+  .hero h1 span { color:var(--accent2); }
+  .hero-sub { color:var(--text-muted); font-size:15px; font-weight:300; margin-top:10px; }
+  .hero-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .hero-pill {
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px; padding:3px 12px;
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted);
+  }
+  .btn-pdf {
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:20px; padding:11px 22px;
+    background:rgba(77,150,255,0.15); border:1px solid rgba(77,150,255,0.4);
+    border-radius:24px; color:#7db8ff;
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    letter-spacing:1px; text-transform:uppercase; text-decoration:none;
+    transition:background .2s,border-color .2s,color .2s;
+  }
+  .btn-pdf:hover { background:rgba(77,150,255,0.28); border-color:rgba(77,150,255,0.7); color:#b8d8ff; }
+
+  /* ── NAV ── */
+  .nav-wrapper {
+    position:sticky; top:0; z-index:100;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    backdrop-filter:blur(10px);
+  }
+  .nav-toggle {
+    display:none; width:100%; background:none; border:none;
+    color:var(--text); font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:1px; text-transform:uppercase;
+    padding:14px 20px; cursor:pointer; align-items:center; gap:10px;
+  }
+  .nav-toggle .arrow { margin-left:auto; transition:transform .25s; font-size:14px; }
+  .nav-toggle.open .arrow { transform:rotate(180deg); }
+  .nav-index { padding:14px 40px 18px; display:flex; flex-wrap:wrap; gap:8px; }
+  .nav-index a {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px;
+    text-transform:uppercase; padding:5px 12px; border-radius:20px;
+    border:1px solid var(--border); color:var(--text-muted);
+    text-decoration:none; transition:all .2s; white-space:nowrap;
+  }
+  .nav-index a:hover,.nav-index a:active { color:var(--text); border-color:rgba(255,255,255,0.3); }
+
+  /* ── CONTAINER ── */
+  .container { max-width:1100px; margin:0 auto; padding:40px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom:56px; scroll-margin-top:56px; }
+  .section-header {
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:24px; padding-bottom:12px; border-bottom:1px solid var(--border);
+  }
+  .section-icon {
+    width:36px; height:36px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; flex-shrink:0;
+  }
+  .section h2 { font-family:'Playfair Display',serif; font-size:1.55rem; font-weight:700; flex:1; }
+  .section-num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted); letter-spacing:2px; }
+  .sbadge {
+    font-family:'JetBrains Mono',monospace; font-size:9px; padding:2px 8px;
+    border-radius:4px; font-weight:600; letter-spacing:1px; text-transform:uppercase; flex-shrink:0;
+  }
+  .sb-s3 { background:rgba(29,78,216,0.25); color:#93c5fd; }
+  .sb-s4 { background:rgba(157,23,77,0.2); color:#f9a8d4; }
+  .sb-both { background:rgba(107,33,168,0.2); color:#c4b5fd; }
+  .sb-exam { background:rgba(255,107,107,0.2); color:#ff6b6b; }
+
+  /* ── CARDS GRID ── */
+  .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(460px,1fr)); gap:16px; }
+  .cards-grid.single { grid-template-columns:1fr; }
+  .cards-grid.g3 { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+  .cards-grid.g4 { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+
+  .card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:20px 22px; position:relative; overflow:hidden;
+    transition:border-color .2s,transform .2s;
+  }
+  .card:hover { border-color:rgba(255,255,255,0.16); transform:translateY(-2px); }
+  .card::before {
+    content:''; position:absolute; top:0; left:0; right:0;
+    height:3px; border-radius:12px 12px 0 0;
+  }
+  .c-red::before   { background:var(--accent1); }
+  .c-yellow::before{ background:var(--accent2); }
+  .c-green::before { background:var(--accent3); }
+  .c-blue::before  { background:var(--accent4); }
+  .c-purple::before{ background:var(--accent5); }
+  .c-teal::before  { background:#3dd6c7; }
+  .c-grey::before  { background:#6b7280; }
+
+  .card h3 {
+    font-family:'Source Sans 3',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing:.5px; text-transform:uppercase; margin-bottom:12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* ── FORMULA BOX ── */
+  .formula {
+    background:var(--formula-bg); border:1px solid var(--formula-border);
+    border-radius:8px; padding:11px 15px; margin:9px 0;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.8;
+    color:#e6edf3; white-space:pre-wrap; overflow-x:auto;
+  }
+  .formula .kw  { color:#ff7b72; }
+  .formula .val { color:#ffd93d; }
+  .formula .cmt { color:#8b949e; font-style:italic; }
+  .formula .ok  { color:#6bcb77; }
+  .formula .bad { color:#ff6b6b; }
+
+  /* ── CONCEPT BLOCKS (from light fiche) ── */
+  .cb {
+    border-radius:8px; padding:11px 14px; margin:6px 0; border:1px solid;
+  }
+  .cb.blue   { background:var(--lb-blue);   border-color:var(--cb-blue); }
+  .cb.green  { background:var(--lb-green);  border-color:var(--cb-green); }
+  .cb.red    { background:var(--lb-red);    border-color:var(--cb-red); }
+  .cb.orange { background:var(--lb-orange); border-color:var(--cb-orange); }
+  .cb.purple { background:var(--lb-purple); border-color:var(--cb-purple); }
+  .cb.teal   { background:var(--lb-teal);   border-color:var(--cb-teal); }
+  .cb-title { font-weight:700; font-size:12px; margin-bottom:4px; }
+  .cb.blue   .cb-title { color:var(--cb-blue); }
+  .cb.green  .cb-title { color:var(--cb-green); }
+  .cb.red    .cb-title { color:var(--cb-red); }
+  .cb.orange .cb-title { color:var(--cb-orange); }
+  .cb.purple .cb-title { color:var(--cb-purple); }
+  .cb.teal   .cb-title { color:var(--cb-teal); }
+  .cb-body { font-size:12.5px; line-height:1.5; color:var(--text-muted); }
+
+  /* ── DEF BOX ── */
+  .def-box {
+    background:rgba(77,150,255,0.06); border-left:3px solid var(--accent4);
+    border-radius:0 8px 8px 0; padding:11px 15px; margin:9px 0;
+    font-size:13.5px; color:#c8d8f0;
+  }
+  .def-label {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); margin-bottom:5px;
+  }
+
+  /* ── RULE / WARN / TIP ── */
+  .rule {
+    background:rgba(255,217,61,0.06); border-left:3px solid var(--accent2);
+    border-radius:0 8px 8px 0; padding:11px 15px; margin:9px 0;
+    color:#f5e8b0; font-size:13.5px;
+  }
+  .warn {
+    background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.25);
+    border-radius:8px; padding:9px 13px; margin:9px 0;
+    font-size:12.5px; color:#ffb3b3; display:flex; gap:8px; align-items:flex-start;
+  }
+  .warn::before { content:'⚠'; flex-shrink:0; }
+  .tip {
+    background:rgba(107,203,119,0.07); border:1px solid rgba(107,203,119,0.2);
+    border-radius:8px; padding:9px 13px; margin:9px 0;
+    font-size:12.5px; color:#b3f0b8; display:flex; gap:8px; align-items:flex-start;
+  }
+  .tip::before { content:'✦'; flex-shrink:0; }
+  .info-box {
+    background:rgba(77,150,255,0.08); border:1px solid rgba(77,150,255,0.2);
+    border-radius:8px; padding:9px 13px; margin:9px 0;
+    font-size:12.5px; color:#93c5fd; display:flex; gap:8px; align-items:flex-start;
+  }
+  .info-box::before { content:'ℹ'; flex-shrink:0; }
+
+  /* ── TABLE ── */
+  .fiche-table {
+    width:100%; border-collapse:collapse; font-size:12.5px; margin:9px 0;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden;
+  }
+  .fiche-table th {
+    background:rgba(255,255,255,0.05); color:var(--text-muted);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:1px; text-transform:uppercase;
+    padding:8px 12px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  .fiche-table td { padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:top; }
+  .fiche-table tr:last-child td { border-bottom:none; }
+  .fiche-table tr:hover td { background:rgba(255,255,255,0.03); }
+
+  /* ── STEPS ── */
+  .steps { }
+  .step { display:flex; gap:12px; margin:8px 0; align-items:flex-start; }
+  .step-num {
+    flex-shrink:0; width:22px; height:22px; background:var(--surface2);
+    border:1px solid var(--border); color:var(--text-muted); border-radius:50%;
+    font-size:10px; font-weight:700; font-family:'JetBrains Mono',monospace;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-content { font-size:13px; color:var(--text-muted); line-height:1.55; padding-top:2px; }
+  .step-content strong { color:var(--text); }
+
+  /* ── BADGE / TAG ── */
+  .badge { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:600; }
+  .badge-fav { background:rgba(107,203,119,0.2); color:var(--accent3); }
+  .badge-def { background:rgba(255,107,107,0.2); color:var(--accent1); }
+  .badge-neu { background:rgba(167,163,184,0.15); color:var(--text-muted); border:1px solid var(--border); }
+
+  /* ── FLOW ── */
+  .flow { display:flex; gap:6px; flex-wrap:wrap; align-items:center; padding:8px 0; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .flow-step { background:var(--surface2); border:1px solid var(--border); padding:4px 10px; border-radius:4px; color:var(--text-muted); }
+  .flow-step.primary { background:rgba(77,150,255,0.2); border-color:rgba(77,150,255,0.4); color:#93c5fd; }
+  .flow-arrow { color:var(--text-muted); }
+
+  /* ── MISC ── */
+  .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent); margin:14px 0; }
+  p { margin:5px 0; font-size:13.5px; color:#d0ccdd; }
+  strong { color:var(--text); font-weight:600; }
+  ul { padding-left:16px; margin:7px 0; }
+  li { margin-bottom:5px; font-size:13.5px; color:#d0ccdd; }
+  ul.fiche { list-style:none; padding:0; }
+  ul.fiche li { padding:5px 0 5px 16px; position:relative; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12.5px; }
+  ul.fiche li::before { content:'→'; position:absolute; left:0; color:var(--text-muted); font-size:11px; top:7px; }
+  ul.fiche li:last-child { border-bottom:none; }
+  ul.fiche li strong { color:var(--text); }
+
+  footer {
+    background:var(--surface); border-top:1px solid var(--border);
+    padding:20px 40px; text-align:center; color:var(--text-muted);
+    font-size:11px; font-family:'JetBrains Mono',monospace;
+  }
+
+  /* ── MOBILE ── */
+  @media(max-width:700px){
+    .hero { padding:26px 16px 22px; }
+    .hero h1 { font-size:1.75rem; }
+    .hero-sub { font-size:12.5px; }
+    .hero-tag { font-size:9.5px; margin-bottom:10px; }
+    .container { padding:18px 13px; }
+    .nav-toggle { display:flex; }
+    .nav-index { padding:0 13px 12px; display:none; flex-direction:column; gap:7px; }
+    .nav-index.open { display:flex; }
+    .nav-index a { font-size:12px; padding:8px 13px; }
+    .cards-grid,.cards-grid.g3,.cards-grid.g4 { grid-template-columns:1fr; }
+    .section h2 { font-size:1.2rem; }
+    .formula { font-size:11px; padding:9px 11px; }
+    .fiche-table { font-size:11.5px; }
+    .card { padding:14px 13px; }
+    footer { padding:14px 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-tag">CNAM INTEC · UE 443 · Licence CCA</div>
+  <h1>Contrôle de <span>Gestion</span></h1>
+  <p class="hero-sub">Fiche de révision complète — Formules, méthodes &amp; notions clés · Sessions 2023–2025 · Cours 3 &amp; 4</p>
+  <div class="hero-pills">
+    <span class="hero-pill">Cours 3 · Prévision &amp; Budgets</span>
+    <span class="hero-pill">Cours 4 · Évaluation &amp; Contrôle</span>
+    <span class="hero-pill">Formules · Définitions · Méthodes</span>
+  </div>
+  <a class="btn-pdf" href="fiche_UE443_revision.pdf" download="Fiche_Revision_UE443_CDG.pdf">
+    ⬇ Télécharger la fiche PDF complète
+  </a>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav-wrapper">
+  <button class="nav-toggle" id="navToggle" onclick="toggleNav()">
+    <span>📚 Navigation</span><span class="arrow">▾</span>
+  </button>
+  <nav class="nav-index" id="navIndex">
+    <a href="#budget"     onclick="closeNav()">Budget</a>
+    <a href="#centres"    onclick="closeNav()">Centres resp.</a>
+    <a href="#ecarts"     onclick="closeNav()">Écarts</a>
+    <a href="#ventes"     onclick="closeNav()">Prévisions ventes</a>
+    <a href="#tresorerie" onclick="closeNav()">Trésorerie</a>
+    <a href="#stocks"     onclick="closeNav()">Stocks Wilson</a>
+    <a href="#production" onclick="closeNav()">Production</a>
+    <a href="#contrainte" onclick="closeNav()">Contrainte</a>
+    <a href="#seuil"      onclick="closeNav()">Seuil rentabilité</a>
+    <a href="#masse"      onclick="closeNav()">Masse salariale</a>
+    <a href="#charges"    onclick="closeNav()">Charges indirectes</a>
+    <a href="#cible"      onclick="closeNav()">Coût cible</a>
+    <a href="#tdb"        onclick="closeNav()">Tableau de bord</a>
+    <a href="#qualite"    onclick="closeNav()">Qualité</a>
+    <a href="#methode"    onclick="closeNav()">Méthode examen</a>
+  </nav>
+</div>
+
+<div class="container">
+
+<!-- ════════════════════════════════════════
+     01 · PROCÉDURE BUDGÉTAIRE
+═════════════════════════════════════════ -->
+<section class="section" id="budget">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(77,150,255,0.15)">📋</div>
+    <div>
+      <div class="section-num">01 · P.08</div>
+      <h2 style="color:var(--accent4)">Procédure budgétaire</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Définitions</h3>
+      <div class="def-box">
+        <div class="def-label">Budget</div>
+        Ensemble cohérent de <strong>prévisions chiffrées</strong> (ventes, production, approvisionnements, investissements, personnel…) exprimé en valeur monétaire sur une période annuelle. Les budgets s'articulent en réseau et permettent d'établir des <strong>documents de synthèse prévisionnels</strong>.
+      </div>
+      <div class="def-box">
+        <div class="def-label">Gestion budgétaire</div>
+        Mode de gestion à <strong>court terme</strong> englobant tous les aspects de l'activité, comprenant une phase de <strong>budgétisation</strong> (prévision) puis une phase de <strong>contrôle budgétaire</strong> (analyse des écarts).
+      </div>
+    </div>
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Objectifs &amp; articulation</h3>
+      <ul class="fiche">
+        <li><strong>Planification :</strong> traduire les objectifs stratégiques en plans d'actions chiffrés</li>
+        <li><strong>Coordination :</strong> assurer la cohérence entre services</li>
+        <li><strong>Motivation :</strong> fixer des objectifs aux responsables</li>
+        <li><strong>Contrôle :</strong> comparer réalisations aux prévisions</li>
+        <li><strong>Communication :</strong> diffuser les objectifs dans toute l'organisation</li>
+      </ul>
+      <div class="divider"></div>
+      <p style="font-size:12px;margin-bottom:6px"><strong>Articulation :</strong> Plan stratégique (3–5 ans) → Plan opérationnel (1–3 ans) → Budget annuel → Contrôle mensuel</p>
+    </div>
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Ordre d'élaboration des budgets</h3>
+      <div class="flow">
+        <span class="flow-step primary">① Ventes</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">② Production</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">③ Appro.</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">④ Investis.</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">⑤ Trésorerie</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step primary">⑥ Synthèse</span>
+      </div>
+      <div class="info-box">Le budget des ventes est le <strong>budget directeur</strong> : tous les autres en découlent.</div>
+      <div class="divider"></div>
+      <div class="formula"><span class="kw">Budget flexible</span> : B = vN + F
+v = coût variable/UO · N = nb UO · F = charges fixes
+<span class="cmt">→ Permet 3 scénarios : bas / moyen / haut</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     02 · CENTRES DE RESPONSABILITÉ
+═════════════════════════════════════════ -->
+<section class="section" id="centres">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(199,125,255,0.15)">🏢</div>
+    <div>
+      <div class="section-num">02 · P.08</div>
+      <h2 style="color:var(--accent5)">Centres de responsabilité</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid single">
+    <div class="card c-purple">
+      <h3><span class="dot" style="background:var(--accent5)"></span>Définition &amp; types</h3>
+      <div class="def-box">Subdivision d'une organisation regroupée autour d'un responsable disposant de moyens et d'une <strong>autonomie de gestion</strong> pour atteindre l'objectif assigné. Nécessite un <strong>indicateur de performance</strong> et la maîtrise du domaine par le responsable.</div>
+      <table class="fiche-table" style="margin-top:10px">
+        <thead><tr><th>Type</th><th>Indicateur</th><th>Objectif</th><th>Exemple</th><th>Risque / effet pervers</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#93c5fd">Centre de coûts</td><td>Niveau de coûts</td><td>Minimiser/optimiser les coûts</td><td>Usine, atelier</td><td>Coupes sur compétences stratégiques</td></tr>
+          <tr><td style="color:#86efac">Centre de CA</td><td>Chiffre d'affaires</td><td>Maximiser les ventes</td><td>Agence commerciale</td><td>Casser les prix pour "faire du chiffre"</td></tr>
+          <tr><td style="color:#fcd34d">Centre de profit</td><td>Résultat / marge</td><td>Maximiser la marge</td><td>Division, filiale</td><td>Prix de cession internes délicats</td></tr>
+          <tr><td style="color:#c4b5fd">Centre d'investissement</td><td>Rentabilité du capital (ROI, EVA)</td><td>Maximiser la rentabilité des actifs</td><td>Grande division autonome</td><td>Sous-investissement si horizon CT</td></tr>
+        </tbody>
+      </table>
+      <div class="warn" style="margin-top:10px">Risque de "culture des territoires" : l'autonomie ne doit pas conduire à privilégier l'intérêt individuel au détriment de l'organisation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     03 · ANALYSE DES ÉCARTS
+═════════════════════════════════════════ -->
+<section class="section" id="ecarts">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,107,107,0.15)">📊</div>
+    <div>
+      <div class="section-num">03 · P.13</div>
+      <h2 style="color:var(--accent1)">Analyse des écarts</h2>
+    </div>
+    <span class="sbadge sb-s4">Cours 4</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Définition &amp; convention</h3>
+      <div class="def-box">
+        <div class="def-label">Convention INTEC</div>
+        Écart = Réel − Prévu · Toujours préciser <span class="badge badge-fav">fav.</span> ou <span class="badge badge-def">déf.</span>
+      </div>
+      <div class="warn">Piège examen : le signe seul est insuffisant. Un + sur coût = défavorable. Un + sur CA = favorable. Toujours interpréter !</div>
+      <div class="divider"></div>
+      <p><strong>Gestion par exception :</strong> seuls les écarts significatifs (&gt;5% du prévu) nécessitent une action corrective. Exprimer en valeur absolue ET en % relatif.</p>
+      <div class="formula"><span class="cmt">Règle : Somme des sous-écarts = Écart total</span></div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écart total sur coût de production</h3>
+      <div class="formula"><span class="kw">Écart total</span> = Coût réel − Coût prévu (budget)
+<span class="cmt">→ Calculer pour chaque élément : MOD, Matières, CI</span>
+
+<span class="ok">Favorable (F)</span> si Coût réel &lt; Coût prévu
+<span class="bad">Défavorable (D)</span> si Coût réel &gt; Coût prévu</div>
+      <div class="warn">Un écart global favorable peut masquer des écarts de coûts défavorables cachés par l'effet volume. Toujours décomposer.</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écart sur volume (charges directes)</h3>
+      <div class="formula"><span class="kw">Écart / volume MOD</span>    = (Qté réelle − Qté prévue) × Coût std MOD
+<span class="kw">Écart / volume Matières</span> = (Qté réelle − Qté prévue) × Coût std MP
+<span class="kw">Écart / volume CI</span>       = (Qté réelle − Qté prévue) × Coût std CI
+
+<span class="cmt">Qté = volume de production (nb produits finis)</span></div>
+      <div class="tip">Un écart volume favorable signifie qu'on a produit MOINS que prévu — c'est un problème commercial, pas une performance.</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Décomposition écart sur MOD</h3>
+      <div class="formula"><span class="kw">Écart sur taux</span>  = (Taux réel − Taux std) × Heures réelles
+<span class="kw">Écart sur temps</span>  = (H réelles − H std pour Qté réelle) × Taux std
+
+<span class="cmt">Écart total MOD = Écart taux + Écart temps</span></div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Décomposition écart sur Matières</h3>
+      <div class="formula"><span class="kw">Écart sur coût unitaire</span> = (Prix réel − Prix std) × Qté réelle consommée
+<span class="kw">Écart sur quantités</span>     = (Qté réelle − Qté std pour Qté prod réelle) × Prix std
+
+<span class="cmt">Écart total Matières = Écart prix + Écart quantités</span></div>
+      <div class="tip">Si l'écart vient uniquement du prix → problème d'achat ou marché. Si quantités → gaspillage en production.</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écarts sur charges indirectes (3 sous-écarts)</h3>
+      <div class="formula"><span class="kw">Écart sur budget</span>    = Budget flexible (act. réelle) − Charges réelles
+                    = (CF budget + CV × Act. réelle) − Charges réelles
+
+<span class="kw">Écart sur activité</span>  = (Act. réelle − Act. normale) × Taux unitaire CF
+(sous-activité)
+
+<span class="kw">Écart sur rendement</span> = (Qté réelle × Nbre UO/unité std − UO réelles) × Coût UO
+
+<span class="cmt">Σ des 3 = Écart total CI</span></div>
+      <div class="rule"><strong>Responsabilités :</strong> Budget → resp. production · Activité → non imputable production · Rendement → resp. production</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écarts sur Chiffre d'affaires</h3>
+      <div class="formula"><span class="kw">Écart total CA</span>  = (Pr × Qr) − (Pp × Qp)
+
+<span class="kw">Écart / Volume</span>  = (Qr − Qp) × <span class="val">Pp</span>   <span class="cmt">← valorisé au prix prévu</span>
+<span class="kw">Écart / Prix</span>    = (Pr − Pp) × <span class="val">Qr</span>   <span class="cmt">← valorisé aux qté réelles</span>
+<span class="kw">Écart / Mix</span>     = Σ[(Qr ajustée − Qp ajustée) × Pp]
+<span class="cmt">  (quand ≥2 produits substituables)</span>
+
+<span class="cmt">Écart total = Volume + Prix (+ Mix si multi-produits)</span></div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écart de marge sur coût préétabli</h3>
+      <div class="formula"><span class="kw">Marge unitaire / coût préétabli</span> = Prix de vente − Coût std de production
+
+<span class="kw">Écart total</span> = (Qr × Marge unitaire réelle) − (Qp × Marge unitaire prévue)
+
+<span class="kw">Écart / volume ventes</span> = (Qr − Qp) × Marge unitaire prévue
+<span class="kw">Écart / prix de vente</span>  = (Marge unit. réelle − Marge unit. prévue) × Qr</div>
+      <div class="def-box">Mesure la contribution de la <strong>fonction commerciale</strong> à la variation du résultat, indépendamment des coûts de production.</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écart global sur charges de production</h3>
+      <div class="formula"><span class="kw">Écart global</span> = Coût réel (Qr) − Coût std (Qr)
+              = Qr × (Coût unitaire réel − Coût unitaire standard)
+
+<span class="cmt">≠ Écart total (compare Qr réel vs Qp prévue)</span>
+<span class="cmt">→ Mesure la performance de la PRODUCTION uniquement</span></div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Logiques de décomposition de l'écart sur résultat</h3>
+      <div class="formula"><span class="kw">Logique soustractive</span> (R = CA − C)
+└ Δ/CA → Δ/Volume (× Pp) + Δ/Prix (× Qr) + Δ/Mix
+└ Δ/Coût → Δ/Volume prod + Δ/Coût unitaire
+          → Δ/Charges directes (quantité + prix)
+          → Δ/Charges indirectes (rendement + activité + budget)
+
+<span class="kw">Logique multiplicative</span> (R = Volume × Marge unitaire)
+└ Δ/Volume de marge (= Δ/Vp + Δ/Vc)
+└ Δ/Marge unitaire (= Δ/Prix + Δ/Coût unitaire global)
+
+<span class="cmt">→ Mêmes sous-écarts finaux. Choisir selon l'énoncé.</span></div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écart sur marge commerciale (coût préétabli)</h3>
+      <div class="formula"><span class="cmt">Pourquoi ? → Évaluer les commerciaux sur une marge au coût STANDARD
+pour ne pas les pénaliser des écarts de production.</span>
+
+<span class="kw">Marge prévue</span>         = Vp × (Pp − Cup)
+<span class="kw">Marge réelle / coût prévu</span> = Vr × (Pr − Cup)
+<span class="kw">Δ/Marge commerciale</span>   = Marge réelle/coût prévu − Marge prévue
+
+<span class="cmt">Décomposition :</span>
+  Effet prix   = (Pr − Pp) × Vr
+  Effet volume = (Vr − Vp) × Marge unitaire prévue</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Écarts de composition (Mix)</h3>
+      <div class="def-box"><div class="def-label">Quand l'utiliser ?</div>En cas de multiproduction (≥ 2 produits <strong>substituables</strong>). Isole l'effet de substitution entre produits.</div>
+      <ul class="fiche">
+        <li><strong>Écart de composition sur CA</strong> = Vr × (Prix moyen réel − Prix moyen prévu sur mix prévu)</li>
+        <li><strong>Écart total = Volume global + Composition + Prix</strong></li>
+        <li>Applicable aussi sur les écarts de marge</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     04 · PRÉVISIONS DES VENTES
+═════════════════════════════════════════ -->
+<section class="section" id="ventes">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,217,61,0.15)">📈</div>
+    <div>
+      <div class="section-num">04 · P.09</div>
+      <h2 style="color:var(--accent2)">Prévisions des ventes &amp; méthodes statistiques</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Composantes d'une série chronologique</h3>
+      <div class="cb blue"><div class="cb-title">Tendance (Trend)</div><div class="cb-body">Évolution générale de longue durée — captée par la droite de régression y = ax + b</div></div>
+      <div class="cb orange"><div class="cb-title">Variations saisonnières</div><div class="cb-body">Fluctuations récurrentes aux mêmes périodes → coefficients saisonniers</div></div>
+      <div class="cb" style="background:var(--surface2);border-color:var(--border)"><div class="cb-title" style="color:var(--text-muted)">Aléas (résidus)</div><div class="cb-body">Mouvements imprévisibles (grèves, accidents…) → impossibles à prévoir</div></div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Droite de tendance — Moindres carrés</h3>
+      <div class="formula"><span class="kw">Modèle</span> : Y = aX + b
+
+<span class="val">a</span> = Cov(X,Y) / Var(X)
+  = [Σ(XᵢYᵢ) − N·X̄·Ȳ] / [Σ(Xᵢ²) − N·X̄²]
+
+<span class="val">b</span> = Ȳ − a·X̄
+<span class="val">X̄</span> = Σ(Xᵢ)/N   ·   <span class="val">Ȳ</span> = Σ(Yᵢ)/N
+
+<span class="cmt">Tableau : Xᵢ | Yᵢ | Xᵢ² | Yᵢ² | XᵢYᵢ</span>
+
+<span class="kw">Coeff. corrélation</span> : r = √R²
+<span class="cmt">r ≈ 1 → très forte corrélation, ajustement fiable</span></div>
+      <div class="tip">À l'examen : utiliser les fonctions statistiques de la calculatrice pour obtenir a et b directement.</div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Moyennes mobiles centrées &amp; coefficients saisonniers</h3>
+      <div class="formula"><span class="kw">MM centrée(t)</span> = (0,5·Y(t-2)+Y(t-1)+Y(t)+Y(t+1)+0,5·Y(t+2)) / 4
+
+<span class="kw">Indice saisonnier brut</span> = Valeur observée / MM centrée
+
+<span class="kw">Coeff. saisonnier moyen (Cs)</span>
+  = Moyenne des indices bruts du même trimestre
+
+<span class="cmt">Vérif : Σ Cs (4 trimestres) = 4</span>
+
+<span class="kw">Prévision saisonnalisée</span> = Tendance Y'ᵢ × Cs du trimestre</div>
+      <div class="warn">La saisonnalité ne peut s'observer que sur une série d'au moins 2 ans complets.</div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Loi normale — Probabilité d'atteindre un seuil</h3>
+      <div class="formula"><span class="kw">Variable centrée réduite</span> : T = (X − m) / σ
+
+P(X &gt; seuil) : T = (seuil − m) / σ
+Si T &lt; 0 : P(T &gt; t) = P(T &lt; |t|)  <span class="cmt">(symétrie)</span>
+Si T &gt; 0 : P(T &gt; t) = 1 − P(T &lt; t)</div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Élasticité-prix &amp; approches marketing</h3>
+      <div class="formula"><span class="kw">Élasticité-prix</span> : e = (ΔQ/Q) / (ΔP/P)
+
+e &lt; 0 : bien normal (prix ↑ → demande ↓)
+e &gt; 0 : bien de Giffen ou luxe (paradoxe)
+<span class="kw">Élasticité croisée</span> : impact du prix d'un bien sur la demande d'un autre</div>
+      <ul class="fiche" style="margin-top:8px">
+        <li><strong>Cycle de vie :</strong> Lancement → Croissance → Maturité → Déclin</li>
+        <li><strong>Études qualitatives :</strong> panels, focus groups, méthode Delphi</li>
+        <li><strong>Objectifs volontaristes :</strong> fixés top-down</li>
+        <li><strong>Marketing mix 4P :</strong> Prix, Produit, Distribution, Communication</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     05 · BUDGET DE TRÉSORERIE
+═════════════════════════════════════════ -->
+<section class="section" id="tresorerie">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(107,203,119,0.15)">💰</div>
+    <div>
+      <div class="section-num">05 · P.08</div>
+      <h2 style="color:var(--accent3)">Budget de trésorerie</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Structure du tableau de trésorerie</h3>
+      <div class="formula"><span class="kw">Trésorerie finale</span> = Tréso initiale + Encaissements − Décaissements
+<span class="kw">Flux net mensuel</span> = Encaissements − Décaissements</div>
+      <table class="fiche-table" style="margin-top:10px">
+        <tr><th>Encaissements</th><th>Décaissements</th></tr>
+        <tr><td>CA TTC (selon délais clients)</td><td>Achats TTC (délais fournisseurs)</td></tr>
+        <tr><td>Créances bilan au 1er du mois</td><td>Salaires bruts + charges sociales</td></tr>
+        <tr><td>Autres créances diverses</td><td>TVA à payer (mois M−1)</td></tr>
+        <tr><td></td><td>Loyers, IS, investissements TTC</td></tr>
+      </table>
+    </div>
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Budget de TVA</h3>
+      <div class="formula"><span class="kw">TVA collectée</span>    = CA HT × taux TVA
+<span class="kw">TVA déductible</span>    = Achats HT soumis × taux + Autres charges soumises × taux
+<span class="kw">TVA nette à payer</span> = TVA collectée − TVA déductible
+<span class="cmt">(si &lt; 0 → crédit de TVA, à reporter)</span>
+<span class="kw">Décaissement TVA</span>  : payée le mois M+1 (décalage d'1 mois)</div>
+    </div>
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Délais de paiement</h3>
+      <div class="formula"><span class="cmt">Clients : X% au comptant, Y% à 30 jours :</span>
+  Mois M   : CA TTC × X%
+  Mois M+1 : CA TTC × Y%
+
+<span class="cmt">Fournisseurs à 60 jours fin de mois :</span>
+  Achat mois M → décaissé mois M+2</div>
+      <div class="tip">Solutions face à un déficit : découvert bancaire, escompte des créances clients, négocier délais fournisseurs, réduire délais clients.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     06 · GESTION DES STOCKS — WILSON
+═════════════════════════════════════════ -->
+<section class="section" id="stocks">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(77,150,255,0.15)">📦</div>
+    <div>
+      <div class="section-num">06 · P.10</div>
+      <h2 style="color:var(--accent4)">Gestion des stocks — Modèle de Wilson</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Formules fondamentales de Wilson</h3>
+      <div class="formula"><span class="kw">Coût de lancement total</span>  = N × Cl
+<span class="kw">Coût de possession total</span> = (Q/2) × Pu × t   <span class="cmt">ou (Q/2) × Cp unitaire</span>
+
+<span class="kw">Coût total (CT)</span>  = N × Cl + (Q/2) × Pu × t
+<span class="kw">CT en fonction de n</span> = Co × n + Cs × (a/2n)
+
+<span class="kw">Q* (lot économique)</span> = √[ (2 × Conso annuelle × Cl) / (Pu × t) ]
+<span class="kw">N* (nb commandes)</span>   = Conso annuelle / Q*
+<span class="kw">T* (période en jours)</span> = 360 / N*
+
+<span class="cmt">À l'optimum : Coût lancement = Coût possession</span></div>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Stock de sécurité &amp; stock d'alerte</h3>
+      <div class="formula"><span class="kw">CG avec stock de sécurité (S)</span>
+  = Co × n + Cs × (Q/2 + S)
+
+<span class="cmt">Stock moyen = Q/2 + S</span>
+<span class="cmt">Q*, N*, T* restent INCHANGÉS (S = constante)</span>
+<span class="cmt">Seul le CG augmente de : Cs × S</span>
+
+<span class="kw">Stock d'alerte</span>
+  = Conso pendant délai livraison + Stock de sécurité
+<span class="cmt">→ Niveau qui déclenche la commande</span></div>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Remises quantitatives — Méthode de comparaison</h3>
+      <div class="formula"><span class="cmt">Pour chaque tranche de prix :</span>
+1. Calculer Q* avec le prix de la tranche
+2. Vérifier si Q* compatible avec la tranche
+3. Si incompatible → prendre la borne minimale
+
+<span class="kw">Coût total à comparer</span>
+  = Coût d'achat + Coût lancement + Coût possession
+
+<span class="cmt">Retenir la solution au coût total le plus faible</span></div>
+      <div class="warn">Ne comparer que le coût de gestion est insuffisant : l'économie sur les achats peut largement compenser l'augmentation des coûts de stockage.</div>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Juste-à-temps (JAT) &amp; Kanban</h3>
+      <div class="cb teal"><div class="cb-title">Philosophie des 5 zéros (Toyota)</div><div class="cb-body">Zéro papier · Zéro stock · Zéro défaut · Zéro délai · Zéro panne</div></div>
+      <ul class="fiche" style="margin-top:8px">
+        <li>Production en <strong>flux tendus</strong> — tirée par la demande (PULL)</li>
+        <li>Outil interne : <strong>Kanban</strong> (étiquette de déclenchement de production)</li>
+        <li>Le stock révèle les dysfonctionnements (≠ régulateur)</li>
+        <li>S'oppose au pilotage par l'amont (PUSH = production sur prévisions)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     07 · GESTION DE LA PRODUCTION
+═════════════════════════════════════════ -->
+<section class="section" id="production">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(61,214,199,0.15)">⚙️</div>
+    <div>
+      <div class="section-num">07 · P.11</div>
+      <h2 style="color:#3dd6c7">Gestion de la production — Ordonnancement</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-teal">
+      <h3><span class="dot" style="background:#3dd6c7"></span>Programmation linéaire — Optimisation sous contrainte</h3>
+      <div class="formula"><span class="kw">Étape 1</span> : Identifier la contrainte limitante (facteur rare)
+<span class="kw">Étape 2</span> : Calculer MCV / unité de facteur rare pour chaque produit
+<span class="kw">Étape 3</span> : Classer par MCV/FR décroissante (rang 1 = prioritaire)
+<span class="kw">Étape 4</span> : Allouer séquentiellement jusqu'à épuisement du facteur
+
+<span class="cmt">Forme canonique :</span>
+  Maximiser : MCV = mcv_a·Qa + mcv_b·Qb + ...
+  Sous contraintes : Qa ≤ demande_a · α·Qa + β·Qb ≤ Capacité</div>
+    </div>
+
+    <div class="card c-teal">
+      <h3><span class="dot" style="background:#3dd6c7"></span>Méthode MPM — Ordonnancement de projet</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content">Représenter les tâches (carrés) et leurs contraintes de succession (arcs avec durée)</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Calcul au plus tôt :</strong> G→D · début au plus tôt = max des (début prédécesseur + durée)</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Calcul au plus tard :</strong> D→G · début au plus tard = min des (début successeur − durée)</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Marge totale :</strong> début au plus tard − début au plus tôt</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><strong>Chemin critique :</strong> tâches de marge totale nulle → durée minimale du projet</div></div>
+      </div>
+    </div>
+
+    <div class="card c-teal">
+      <h3><span class="dot" style="background:#3dd6c7"></span>Diagramme de Gantt</h3>
+      <ul class="fiche">
+        <li><strong>Planning visuel :</strong> tâches en lignes, temps en colonnes</li>
+        <li>Deux lignes par tâche : <strong>prévision</strong> et <strong>réalisation</strong></li>
+        <li>Permet de suivre et de <strong>réestimer le coût</strong> en cours de projet</li>
+        <li>Ne montre pas le chemin critique ni les dates au plus tard (≠ MPM)</li>
+      </ul>
+      <div class="rule"><strong>MPM vs Gantt :</strong> MPM = outil d'analyse (chemin critique, marges) · Gantt = outil de suivi opérationnel.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     08 · CONTRAINTE (FACTEUR RARE)
+═════════════════════════════════════════ -->
+<section class="section" id="contrainte">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(199,125,255,0.15)">⚙️</div>
+    <div>
+      <div class="section-num">08 · P.11</div>
+      <h2 style="color:var(--accent5)">Optimisation sous contrainte (facteur rare)</h2>
+    </div>
+    <span class="sbadge sb-both">S3 &amp; S4</span>
+  </div>
+  <div class="cards-grid">
+    <div class="card c-purple">
+      <h3><span class="dot" style="background:var(--accent5)"></span>Méthode d'allocation du facteur rare</h3>
+      <div class="formula"><span class="kw">Étape 1</span> : Identifier le facteur rare (goulet d'étranglement)
+  → Comparer ressource disponible vs ressource nécessaire
+
+<span class="kw">Étape 2</span> : MCV / FR = MCV unitaire / Nb d'unités de FR/produit
+
+<span class="kw">Étape 3</span> : Classer par MCV/FR décroissante (rang 1 = prioritaire)
+
+<span class="kw">Étape 4</span> : Allouer séquentiellement
+  → Saturer la demande rang 1, puis rang 2, etc.
+  → Arrêter quand le facteur rare est épuisé</div>
+    </div>
+    <div class="card c-purple">
+      <h3><span class="dot" style="background:var(--accent5)"></span>Forme canonique du programme</h3>
+      <div class="formula"><span class="kw">Variables</span> : Qa, Qb... (quantités fabriquées)
+
+<span class="kw">Fonction économique</span> (maximiser) :
+  MCV = mcv_a × Qa + mcv_b × Qb + ...
+  ou Résultat = MCV − CF
+
+<span class="kw">Contraintes</span> :
+  Qa ≤ demande_a  <span class="cmt">(contrainte de marché)</span>
+  Qb ≤ demande_b
+  α·Qa + β·Qb ≤ Capacité  <span class="cmt">(contrainte de production)</span>
+  Qa, Qb ≥ 0              <span class="cmt">(non-négativité)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     09 · SEUIL DE RENTABILITÉ
+═════════════════════════════════════════ -->
+<section class="section" id="seuil">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,107,107,0.15)">🎯</div>
+    <div>
+      <div class="section-num">09 · P.13</div>
+      <h2 style="color:var(--accent1)">Seuil de rentabilité &amp; analyse du risque</h2>
+    </div>
+    <span class="sbadge sb-both">S3 &amp; S4</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Compte de résultat différentiel</h3>
+      <table class="fiche-table">
+        <tr><th>Élément</th><th>Formule</th></tr>
+        <tr><td>Chiffre d'affaires (CA)</td><td>Prix × Quantités</td></tr>
+        <tr><td>− Charges variables (CV)</td><td>CV unitaire × Quantités</td></tr>
+        <tr><td>= Marge / coût variable (MCV)</td><td>CA − CV</td></tr>
+        <tr><td>Taux de MCV</td><td>MCV / CA</td></tr>
+        <tr><td>− Charges fixes (CF)</td><td>Constantes</td></tr>
+        <tr><td>= Résultat</td><td>MCV − CF</td></tr>
+      </table>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Formules du seuil de rentabilité</h3>
+      <div class="formula"><span class="kw">SR en valeur</span>       = CF / Taux de MCV
+<span class="kw">SR en volume</span>       = CF / MCV unitaire
+                      = SR valeur / Prix de vente
+
+<span class="kw">Indice de sécurité</span>  = (CA prévu − SR) / CA prévu
+<span class="kw">Levier opérationnel</span> = MCV / Résultat = 1 / Indice de sécurité</div>
+    </div>
+
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Probabilité d'atteindre le seuil (loi normale)</h3>
+      <div class="formula"><span class="kw">Données</span> : demande X ~ N(m, σ)
+<span class="kw">P(atteindre le SR)</span> = P(X &gt; SR en volume)
+
+T = (SR − m) / σ
+
+<span class="cmt">Si T &lt; 0 : P(X &gt; SR) = P(T &lt; |T|)  → proba élevée</span>
+<span class="cmt">Si T &gt; 0 : P(X &gt; SR) = 1 − P(T &lt; T)  → proba plus faible</span></div>
+      <div class="rule"><strong>Élasticité prix :</strong> e = (ΔD/D) / (ΔP/P). Pour un bien normal : e &lt; 0.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     10 · MASSE SALARIALE
+═════════════════════════════════════════ -->
+<section class="section" id="masse">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,217,61,0.15)">👥</div>
+    <div>
+      <div class="section-num">10 · P.12</div>
+      <h2 style="color:var(--accent2)">Masse salariale — Effets &amp; prévisions</h2>
+    </div>
+    <span class="sbadge sb-s3">Cours 3</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Effets masse, report et niveau (variations collectives)</h3>
+      <div class="formula"><span class="kw">Effet masse (année N)</span>
+  = MS(N) / [12 × MS mensuelle décembre(N-1)]
+  <span class="cmt">→ impact des augmentations données EN N sur la MS de N</span>
+
+<span class="kw">Effet report de N sur N+1</span>
+  = [12 × MS mensuelle décembre(N)] / MS(N)
+  <span class="cmt">→ impact en N+1 des hausses accordées en N (sans nouvelle hausse)</span>
+
+<span class="kw">Effet niveau (taux nominal de N à N+1)</span>
+  = MS(N+1) / MS(N)
+  = Effet report de N sur N+1 × Effet masse de N+1</div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Effets GVT et Noria (variations individuelles)</h3>
+      <div class="cb purple"><div class="cb-title">Effet GVT (Glissement – Vieillissement – Technicité)</div><div class="cb-body"><strong>G — Glissement :</strong> hausse liée au mérite (hors ancienneté)<br><strong>V — Vieillissement :</strong> hausse automatique selon grille d'ancienneté<br><strong>T — Technicité :</strong> hausse liée à l'accès à une qualification supérieure</div></div>
+      <div class="cb green" style="margin-top:8px"><div class="cb-title">Effet de noria</div><div class="cb-body">Remplacement de salariés anciens (bien payés) par des entrants (moins payés). Généralement <span class="badge badge-fav">favorable</span>.<br><br><strong>Formule :</strong> Σ (Salaire entrant − Salaire sortant) × prorata temporis si décalé</div></div>
+      <div class="warn">Seuls les sortants remplacés <strong>poste à poste</strong> entrent dans l'effet de noria. Les non-remplacés → effet effectif.</div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Décomposition globale de la variation de MS</h3>
+      <div class="formula"><span class="kw">Masse 2023 (A)</span>
+         ↓  Écart salaire   = A − B    <span class="cmt">(hausses collectives)</span>
+<span class="kw">Masse à structure 2023, salaires 2022 (B)</span>
+         ↓  Écart structure = B − C    <span class="cmt">(mix des catégories)</span>
+<span class="kw">Masse à effectif 2023, salaire moyen 2022 (C)</span>
+         ↓  Écart effectif  = C − D    <span class="cmt">(embauches/départs)</span>
+<span class="kw">Masse 2022 (D)</span>
+
+<span class="cmt">Variation totale = A − D</span>
+<span class="cmt">En % : chaque écart / Masse de référence (D)</span></div>
+      <div class="flow" style="margin-top:10px;font-size:10px">
+        <span class="flow-step">Effet report</span><span class="flow-arrow">×</span>
+        <span class="flow-step">Effet masse</span><span class="flow-arrow">×</span>
+        <span class="flow-step">Effet GVT</span><span class="flow-arrow">×</span>
+        <span class="flow-step">Effet noria</span><span class="flow-arrow">×</span>
+        <span class="flow-step">Effet effectif</span><span class="flow-arrow">=</span>
+        <span class="flow-step primary">Variation totale MS</span>
+      </div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>MS prévisionnelle avec mouvements du personnel</h3>
+      <div class="formula"><span class="kw">Méthode A — Effectif stable</span>
+  1. MS effectif stable = MS déc.(N-1) sans partants × indice annuel
+  2. + MS des partants (période présente)
+  3. + MS des entrants (à partir de leur date d'entrée)
+
+<span class="kw">Méthode B — Effectif constant</span>
+  1. Partir de MS effectif constant
+  2. − MS du partant (période après son départ)
+  3. + MS du remplaçant + nouveaux embauchés
+
+<span class="cmt">Les deux méthodes donnent le même résultat.</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     11 · CHARGES INDIRECTES
+═════════════════════════════════════════ -->
+<section class="section" id="charges">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(107,203,119,0.15)">🔧</div>
+    <div>
+      <div class="section-num">11 · P.08</div>
+      <h2 style="color:var(--accent3)">Traitement des charges indirectes</h2>
+    </div>
+    <span class="sbadge sb-both">S3 &amp; S4</span>
+  </div>
+  <div class="cards-grid">
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Coût d'unité d'œuvre (UO)</h3>
+      <div class="formula"><span class="kw">Coût UO</span> = Total charges du centre / Nombre d'UO
+
+<span class="kw">Charges imputées au produit</span>
+  = Consommation d'UO par unité de produit × Coût UO
+
+<span class="cmt">UO courantes : heure MOD, heure machine, kg traité, unité produite…</span></div>
+    </div>
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Effet de subventionnement</h3>
+      <div class="def-box">Lorsqu'un centre n'est pas homogène (ressources non utilisées dans les mêmes proportions par les produits), l'UO unique crée un transfert artificiel de coûts entre produits.</div>
+      <div class="formula"><span class="cmt">Exemple :</span>
+A consomme beaucoup MOD, peu h machine
+B consomme peu MOD, beaucoup h machine
+
+→ Avec UO unique (h MOD) : A sur-coûté, B sous-coûté
+→ Solution : diviser le centre en 2 sections homogènes</div>
+      <div class="tip">Toujours vérifier l'homogénéité avant de choisir une UO. Un centre hétérogène doit être scindé.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     12 · COÛT CIBLE
+═════════════════════════════════════════ -->
+<section class="section" id="cible">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(77,150,255,0.15)">🎨</div>
+    <div>
+      <div class="section-num">12 · P.15</div>
+      <h2 style="color:var(--accent4)">Coût cible (Target Costing)</h2>
+    </div>
+    <span class="sbadge sb-s4">Cours 4</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Définition &amp; équation fondamentale</h3>
+      <div class="def-box"><div class="def-label">Définition</div>Ensemble de méthodes visant à <strong>adapter le coût complet prévisionnel</strong> aux objectifs de profitabilité fixés pour le cycle de vie entier, sous la contrainte du marché.</div>
+      <div class="formula"><span class="cmt">VISION INGÉNIEUR (traditionnelle) :</span>
+  Prix de vente = Coût de revient + Marge
+
+<span class="cmt">VISION MARKETING (coût cible) :</span>
+<span class="kw">Coût cible = Prix marché − Profit cible</span>
+
+<span class="cmt">→ Le prix est imposé par le marché. Le coût est la variable d'action.</span></div>
+      <ul class="fiche" style="margin-top:8px">
+        <li>Approche <strong>prospective</strong> : utilisée uniquement en phase de conception</li>
+        <li><strong>70–90 % des coûts</strong> sont figés dès la conception</li>
+        <li>Analyse sur l'ensemble du <strong>cycle de vie</strong> (conception → production → maintenance → destruction)</li>
+        <li>Développé dans l'<strong>industrie automobile japonaise</strong> (1970–1980)</li>
+        <li><strong>Ne peut pas</strong> servir à évaluer des stocks</li>
+      </ul>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Calcul du coût cible</h3>
+      <div class="formula"><span class="kw">Étape 1 : Prix de vente HT</span>
+  PV HT = PV TTC / (1 + taux TVA)
+
+<span class="kw">Étape 2 : Prix de vente au fabricant</span>
+  Marge distributeur = PV HT × taux marge distrib.
+  PV fabricant = PV HT − Marge distributeur
+
+<span class="kw">Étape 3 : Coût de revient cible</span>
+  Coût de revient cible = PV fabricant / (1 + taux marge fabricant)
+
+<span class="kw">Étape 4 : Coût cible des composants</span>
+  Coût cible composants = Coût de revient cible × % composants</div>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Ventilation par fonction et par composant</h3>
+      <div class="formula"><span class="kw">Coût cible par fonction</span>
+  = Coût cible composants × % importance de la fonction
+
+<span class="kw">Matrice des contributions</span>
+  Colonnes = Fonctions / Lignes = Composants
+  Chaque cellule = % de la fonction couverte par le composant
+
+<span class="kw">Coût cible par composant</span>
+  = Σ sur toutes les fonctions de :
+    (Coût cible de la fonction × % contribution du composant)</div>
+    </div>
+
+    <div class="card c-blue">
+      <h3><span class="dot" style="background:var(--accent4)"></span>Comparaison coût estimé / coût cible</h3>
+      <div class="formula"><span class="kw">Écart</span> = Coût estimé − Coût cible
+
+<span class="bad">&gt; 0 (positif)</span> → composant surévalué
+          → clients lui accordent moins de valeur → réduire
+
+<span class="ok">&lt; 0 (négatif)</span> → composant sous-évalué
+          → clients attendent plus de valeur → investir</div>
+      <div class="rule"><strong>Démarche globale :</strong> Prix cible → Profit cible → Coût cible → Ingénierie de la valeur → Cost Kaizen (amélioration continue)</div>
+      <div class="flow" style="margin-top:8px;font-size:10px;flex-wrap:wrap">
+        <span class="flow-step primary">Lancement</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Croissance</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Maturité</span><span class="flow-arrow">→</span>
+        <span class="flow-step">Déclin</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     13 · TABLEAU DE BORD
+═════════════════════════════════════════ -->
+<section class="section" id="tdb">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,217,61,0.15)">📉</div>
+    <div>
+      <div class="section-num">13 · P.14</div>
+      <h2 style="color:var(--accent2)">Tableaux de bord</h2>
+    </div>
+    <span class="sbadge sb-s4">Cours 4</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Rôles du tableau de bord</h3>
+      <div class="cb blue"><div class="cb-title">Outil de pilotage</div><div class="cb-body">Orienter les décisions en cours de période, anticiper, corriger les dérives</div></div>
+      <div class="cb green"><div class="cb-title">Outil de communication</div><div class="cb-body">Vecteur d'information entre niveaux hiérarchiques, assure la cohérence des actions</div></div>
+      <div class="cb orange"><div class="cb-title">Outil d'évaluation</div><div class="cb-body">Mesure la performance des centres de responsabilité et de leurs responsables</div></div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Méthode OVAR — Construction du TDB</h3>
+      <div class="def-box"><div class="def-label">OVAR = Objectifs · Variables d'action · Responsables</div>Méthode HEC (Michel, Fiol, Jordan, années 1980). Déclinaison des objectifs depuis la DG jusqu'aux opérationnels.</div>
+      <div class="steps" style="margin-top:10px">
+        <div class="step"><div class="step-num">1</div><div class="step-content">DG formule ses <strong>objectifs (O)</strong> généraux</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content">Identifier les <strong>variables d'action (VA)</strong> = facteurs clés de succès</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content">Affecter les <strong>responsables (R)</strong> à chaque VA</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content">Chaque responsable définit ses propres O, VA, R → cascade jusqu'aux opérationnels</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content">Pour chaque VA : <strong>1 à 3 indicateurs</strong> + norme de référence = TDB opérationnel</div></div>
+      </div>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Indicateurs &amp; présentation</h3>
+      <table class="fiche-table">
+        <thead><tr><th>Type</th><th>Exemples</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#93c5fd">Financiers</td><td>CA, résultat, marge, trésorerie, créances, dettes</td></tr>
+          <tr><td style="color:#86efac">Quantit. production</td><td>Vol. prod., rebuts, pannes, rendement, délais</td></tr>
+          <tr><td style="color:#fcd34d">Quantit. commercial</td><td>Ventes, PDM, carnet commandes, réclamations</td></tr>
+          <tr><td style="color:#c4b5fd">Qualitatifs</td><td>Satisfaction, motivation, image de marque</td></tr>
+        </tbody>
+      </table>
+      <ul class="fiche" style="margin-top:8px">
+        <li>Document <strong>synoptique</strong> : 1 page, ≈10 indicateurs max</li>
+        <li>Colonnes : Objectif · Réalisation · Écart (valeur + %) · Tendance · Cumul · N−1</li>
+        <li><strong>Emboîtement gigogne :</strong> un TDB par centre de responsabilité</li>
+      </ul>
+    </div>
+
+    <div class="card c-yellow">
+      <h3><span class="dot" style="background:var(--accent2)"></span>Limites &amp; effets pervers</h3>
+      <div class="warn">Les indicateurs quantitatifs modifient le comportement des personnes évaluées (ex. : douaniers qui augmentent les trafics pour atteindre leurs objectifs de saisies). → Toujours diversifier : financiers + non financiers.</div>
+      <ul class="fiche" style="margin-top:8px">
+        <li>Vision <strong>cloisonnée</strong> (≠ transversalité des processus)</li>
+        <li><strong>Effets pervers</strong> des indicateurs mal choisis</li>
+        <li>Figés dans le temps · orientés contrôle plutôt qu'amélioration</li>
+        <li>Pas de benchmarking dans les TDB classiques</li>
+        <li>TDB idéal : évolutif, lié aux processus, facilitant la prise d'initiative</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     14 · GESTION DE LA QUALITÉ
+═════════════════════════════════════════ -->
+<section class="section" id="qualite">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(107,203,119,0.15)">✅</div>
+    <div>
+      <div class="section-num">14 · P.15</div>
+      <h2 style="color:var(--accent3)">Gestion de la qualité</h2>
+    </div>
+    <span class="sbadge sb-s4">Cours 4</span>
+  </div>
+  <div class="cards-grid">
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Définition &amp; 4 types de coûts qualité</h3>
+      <div class="def-box"><div class="def-label">Définition ISO — Qualité</div>Aptitude d'un ensemble de caractéristiques à satisfaire des besoins ou des attentes exprimés ou implicites. La qualité se définit <strong>relativement à l'usage</strong>, pas de manière objective.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        <div class="cb green"><div class="cb-title">🛡 Prévention</div><div class="cb-body">Formation, maintenance préventive, études de conception, enquêtes fournisseurs</div></div>
+        <div class="cb blue"><div class="cb-title">🔍 Détection</div><div class="cb-body">Contrôles qualité, tests, sondages, équipements de mesure</div></div>
+        <div class="cb orange"><div class="cb-title">⚙ Non-qualité interne</div><div class="cb-body">Rebuts, retouches, inactivité — détectés <strong>avant</strong> livraison</div></div>
+        <div class="cb red"><div class="cb-title">📢 Non-qualité externe</div><div class="cb-body">Échanges, réparations, indemnités, perte d'image — détectés <strong>après</strong> livraison</div></div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Coûts cachés (H. Savall / ISEOR)</h3>
+      <div class="def-box">Coûts <strong>non repérés</strong> par les systèmes d'information classiques (budgets, comptabilité), par opposition aux coûts visibles.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+        <div>
+          <p style="font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-muted)">5 indicateurs de dysfonctionnement :</p>
+          <ul class="fiche">
+            <li>Absentéisme</li>
+            <li>Accidents du travail</li>
+            <li>Rotation du personnel</li>
+            <li>Non-qualité des produits</li>
+            <li>Sous-productivité directe</li>
+          </ul>
+        </div>
+        <div>
+          <p style="font-size:12px;font-weight:600;margin-bottom:5px;color:var(--text-muted)">5 composants :</p>
+          <ul class="fiche">
+            <li>Sursalaires</li>
+            <li>Surtemps</li>
+            <li>Surconsommations</li>
+            <li>Non-productions</li>
+            <li>Non-création de potentiel stratégique</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Diagramme de Pareto (loi 80/20)</h3>
+      <div class="def-box">Un <strong>petit nombre de causes</strong> (≈20 %) produit la grande majorité des effets (≈80 %).</div>
+      <div class="steps" style="margin-top:8px">
+        <div class="step"><div class="step-num">1</div><div class="step-content">Identifier et <strong>recenser</strong> les problèmes</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Classer</strong> par fréquence décroissante</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content">Calculer les <strong>fréquences cumulées</strong></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Représenter</strong> graphiquement (histogramme + courbe cumulée)</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content">Identifier les causes prioritaires → <strong>plan d'action</strong></div></div>
+      </div>
+    </div>
+
+    <div class="card c-green">
+      <h3><span class="dot" style="background:var(--accent3)"></span>Diagramme d'Ishikawa (5M) &amp; cercles de qualité</h3>
+      <div class="def-box"><div class="def-label">Diagramme causes-effets (arêtes de poisson)</div>Outil d'animation des cercles de qualité. Poser continuellement "Pourquoi ?" pour remonter aux causes profondes.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        <div class="cb blue"><div class="cb-title">Méthode</div><div class="cb-body">Méthodes de travail, procédures</div></div>
+        <div class="cb green"><div class="cb-title">Main-d'œuvre</div><div class="cb-body">Compétences, motivation, formation</div></div>
+        <div class="cb orange"><div class="cb-title">Matériel</div><div class="cb-body">Machines, équipements, outils</div></div>
+        <div class="cb red"><div class="cb-title">Milieu</div><div class="cb-body">Environnement, conditions de travail</div></div>
+        <div class="cb purple" style="grid-column:span 2"><div class="cb-title">Matières</div><div class="cb-body">Qualité des approvisionnements, matières premières</div></div>
+      </div>
+      <div class="divider"></div>
+      <p style="font-size:12px;font-weight:600;margin-bottom:6px">Cercles de qualité (Ishikawa, années 1960) :</p>
+      <ul class="fiche">
+        <li>4 à 15 salariés <strong>volontaires</strong>, niveaux différents, avec un animateur</li>
+        <li><strong>Technique :</strong> améliorer la qualité · <strong>Économique :</strong> réduire les coûts · <strong>Sociale :</strong> management participatif</li>
+        <li>Règles : volontariat · communication égalitaire · pas de pouvoir de décision</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     15 · MÉTHODE DE RÉDACTION
+═════════════════════════════════════════ -->
+<section class="section" id="methode">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(255,107,107,0.15)">✍️</div>
+    <div>
+      <div class="section-num">15</div>
+      <h2 style="color:var(--accent1)">Méthode de rédaction &amp; points clés examen</h2>
+    </div>
+    <span class="sbadge sb-exam">Examen</span>
+  </div>
+  <div class="cards-grid single">
+    <div class="card c-red">
+      <h3><span class="dot" style="background:var(--accent1)"></span>Règles absolues</h3>
+      <div class="rule"><strong>Orthographe obligatoire (−1 point si faute) :</strong> « chiffre d'affaires » · « contrôle » · « prix » · « taux »</div>
+      <div class="divider"></div>
+      <p><strong>Structure de chaque calcul (obligatoire) :</strong></p>
+      <div class="formula">1. Formule littérale   →  Résultat = A − B
+2. Application numérique →  = 5 000 − 3 000
+3. Résultat chiffré      →  = 2 000 € (si demandé)
+4. Phrase d'interprétation → "L'écart est favorable : ..."</div>
+      <div class="divider"></div>
+      <p><strong>Structure d'un commentaire :</strong></p>
+      <div class="formula">1. CONSTAT  → "L'écart sur coût de matières est défavorable de 600 000 €..."
+2. INTERPRÉTATION → "...uniquement dû à une hausse du prix d'achat (+4€/unité)."
+3. RECOMMANDATION (si demandé) → "Il convient de renégocier les contrats fournisseurs..."</div>
+      <div class="divider"></div>
+      <p><strong>Présentation :</strong> Privilégier les tableaux. Introduction et conclusion valorisées (+1 pt bonus possible).</p>
+      <div class="tip">Un 20/20 est possible et ne doit pas être considéré comme interdit selon les consignes des correcteurs.</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end container -->
+
+<footer>UE 443 – Contrôle de Gestion · CNAM INTEC · Fiche de révision complète · Sessions 2023–2025 · Cours 3 &amp; 4</footer>
+
+<script>
+  function toggleNav() {
+    const nav = document.getElementById('navIndex');
+    const btn = document.getElementById('navToggle');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+  function closeNav() {
+    const nav = document.getElementById('navIndex');
+    const btn = document.getElementById('navToggle');
+    nav.classList.remove('open');
+    btn.classList.remove('open');
+  }
+  function checkWidth() {
+    const nav = document.getElementById('navIndex');
+    if (window.innerWidth > 700) nav.style.display = 'flex';
+    else nav.style.display = '';
+  }
+  window.addEventListener('resize', checkWidth);
+  checkWidth();
+</script>
+</body>
+</html>
