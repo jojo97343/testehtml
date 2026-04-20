@@ -33,19 +33,13 @@
 
         /* ══ LOGIN ══════════════════════════════ */
         #login-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 24px;
+            position: relative; overflow: hidden;
         }
 
         #login-screen::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background:
                 radial-gradient(ellipse 600px 400px at 20% 50%, rgba(77,150,255,.07), transparent 70%),
                 radial-gradient(ellipse 400px 300px at 80% 30%, rgba(240,192,64,.05), transparent 70%);
@@ -53,14 +47,10 @@
         }
 
         .login-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 48px 44px;
-            width: 100%;
-            max-width: 420px;
-            position: relative;
-            z-index: 1;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 48px 44px;
+            width: 100%; max-width: 420px;
+            position: relative; z-index: 1;
             animation: slideUp .45s cubic-bezier(.4,0,.2,1);
         }
 
@@ -72,9 +62,8 @@
         .login-logo { display:flex; align-items:center; gap:14px; margin-bottom:32px; }
 
         .login-logo-icon {
-            width:46px; height:46px;
-            background:var(--accent); border-radius:12px;
-            display:grid; place-items:center; font-size:22px;
+            width:46px; height:46px; background:var(--accent);
+            border-radius:12px; display:grid; place-items:center; font-size:22px;
         }
 
         .login-logo-text {
@@ -129,6 +118,7 @@
 
         .btn-login:hover  { background:#3a80e8; }
         .btn-login:active { transform:scale(.98); }
+        .btn-login:disabled { opacity:.5; cursor:not-allowed; }
 
         .login-error {
             display:none; align-items:center; gap:8px;
@@ -143,6 +133,14 @@
             margin-top:28px; padding-top:20px; border-top:1px solid var(--border);
             font-size:.68rem; color:var(--muted); text-align:center; line-height:1.5;
         }
+
+        .spinner {
+            display:inline-block; width:15px; height:15px;
+            border:2px solid rgba(255,255,255,.3); border-top-color:#fff;
+            border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle;
+        }
+
+        @keyframes spin { to { transform:rotate(360deg); } }
 
         /* ══ HUB ════════════════════════════════ */
         #hub-screen { display:none; height:100vh; overflow:hidden; }
@@ -339,7 +337,6 @@
         }
 
         .stat-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
-
         .stat-value { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--white); }
         .stat-label { font-size:.72rem; color:var(--muted); margin-top:2px; }
 
@@ -376,18 +373,9 @@
 
         .btn-gen:hover { background:#f5cc55; }
         .btn-gen:active { transform:scale(.98); }
-
-        .btn-secondary {
-            background:var(--bg-hover); border:1px solid var(--border); border-radius:8px;
-            padding:9px 16px; font-family:'Inter',sans-serif; font-size:.78rem;
-            color:var(--text); cursor:pointer; white-space:nowrap;
-            transition:border-color .15s, color .15s;
-        }
-
-        .btn-secondary:hover { border-color:var(--accent2); color:var(--accent2); }
+        .btn-gen:disabled { opacity:.5; cursor:not-allowed; }
 
         .codes-table-wrap { overflow-x:auto; }
-
         .codes-table { width:100%; border-collapse:collapse; font-size:.8rem; }
 
         .codes-table th {
@@ -418,30 +406,61 @@
 
         .badge::before { content:''; width:5px; height:5px; border-radius:50%; }
 
-        .badge-active  { background:rgba(77,204,143,.12); color:var(--success); border:1px solid rgba(77,204,143,.2); }
-        .badge-active::before  { background:var(--success); }
-        .badge-used    { background:rgba(77,150,255,.10);  color:var(--accent2); border:1px solid rgba(77,150,255,.2); }
-        .badge-used::before    { background:var(--accent2); }
-        .badge-revoked { background:rgba(85,86,104,.12);   color:var(--muted);   border:1px solid rgba(85,86,104,.2); }
-        .badge-revoked::before { background:var(--muted); }
+        .badge-active   { background:rgba(77,204,143,.12); color:var(--success); border:1px solid rgba(77,204,143,.2); }
+        .badge-active::before   { background:var(--success); }
+        .badge-online   { background:rgba(77,150,255,.12);  color:var(--accent2); border:1px solid rgba(77,150,255,.2); }
+        .badge-online::before   { background:var(--accent2); }
+        .badge-revoked  { background:rgba(85,86,104,.12);   color:var(--muted);   border:1px solid rgba(85,86,104,.2); }
+        .badge-revoked::before  { background:var(--muted); }
 
         .actions-cell { display:flex; gap:6px; flex-wrap:wrap; }
 
         .btn-action {
             border-radius:6px; padding:4px 10px; font-size:.68rem; cursor:pointer;
             font-family:'Inter',sans-serif; transition:background .15s; white-space:nowrap;
+            border:1px solid transparent; background:transparent;
         }
 
-        .btn-copy    { background:transparent; border:1px solid var(--border); color:var(--muted); }
+        .btn-copy    { border-color:var(--border); color:var(--muted); }
         .btn-copy:hover    { background:var(--bg-hover); color:var(--text); }
-        .btn-revoke  { background:transparent; border:1px solid rgba(255,92,92,.25); color:var(--danger); }
+        .btn-revoke  { border-color:rgba(255,92,92,.25); color:var(--danger); }
         .btn-revoke:hover  { background:rgba(255,92,92,.1); }
-        .btn-restore { background:transparent; border:1px solid rgba(77,204,143,.25); color:var(--success); }
+        .btn-restore { border-color:rgba(77,204,143,.25); color:var(--success); }
         .btn-restore:hover { background:rgba(77,204,143,.1); }
-        .btn-delete  { background:transparent; border:1px solid rgba(255,92,92,.15); color:var(--muted); }
-        .btn-delete:hover  { background:rgba(255,92,92,.08); color:var(--danger); }
+        .btn-kick    { border-color:rgba(77,150,255,.25); color:var(--accent2); }
+        .btn-kick:hover    { background:rgba(77,150,255,.1); }
 
         .empty-state { text-align:center; padding:48px 24px; color:var(--muted); font-size:.82rem; }
+
+        /* Setup card */
+        .setup-card {
+            background:rgba(240,192,64,.06); border:1px solid rgba(240,192,64,.2);
+            border-radius:14px; padding:22px 24px; margin-bottom:20px;
+        }
+
+        .setup-card .section-title { color:var(--accent); }
+
+        .setup-step {
+            display:flex; gap:12px; margin-bottom:14px; font-size:.82rem; line-height:1.6;
+        }
+
+        .setup-num {
+            width:22px; height:22px; border-radius:50%; background:var(--accent);
+            color:#1a1200; font-weight:700; font-size:.7rem; display:grid; place-items:center;
+            flex-shrink:0; margin-top:2px;
+        }
+
+        .setup-card code {
+            background:rgba(240,192,64,.15); border-radius:4px;
+            padding:1px 6px; font-family:monospace; font-size:.78rem; color:var(--accent);
+        }
+
+        pre.sql {
+            background:var(--bg-deep); border:1px solid var(--border);
+            border-radius:8px; padding:16px; font-size:.72rem;
+            color:var(--text); overflow-x:auto; line-height:1.7;
+            font-family:monospace; margin-top:10px;
+        }
 
         /* Toast */
         .toast {
@@ -514,7 +533,7 @@
         <input type="text" id="code-input" class="code-input"
             placeholder="XXXXXXXX" maxlength="12"
             autocomplete="off" autocorrect="off" spellcheck="false">
-        <button class="btn-login" onclick="handleLogin()">Accéder au hub</button>
+        <button class="btn-login" id="btn-login" onclick="handleLogin()">Accéder au hub</button>
         <div class="login-error" id="login-error">
             <span>⚠</span>
             <span id="login-error-msg">Code incorrect ou révoqué.</span>
@@ -599,7 +618,7 @@
 
     <main>
         <div class="topbar">
-            <button class="burger" id="burger" onclick="toggleSidebar()">
+            <button class="burger" onclick="toggleSidebar()">
                 <span></span><span></span><span></span>
             </button>
             <div class="topbar-breadcrumb">
@@ -619,9 +638,9 @@
             <h1>Bonne révision !</h1>
             <p>Sélectionne une matière dans le menu pour commencer.</p>
             <div class="welcome-cards">
-                <div class="welcome-card" onclick="loadPage('CG.html', null, 'Contrôle de Gestion')">📊 Contrôle de Gestion</div>
-                <div class="welcome-card" onclick="loadPage('mana.html', null, 'Management')">👔 Management</div>
-                <div class="welcome-card" onclick="loadPage('SO.html', null, 'Droit des Sociétés')">⚖️ Droit des Sociétés</div>
+                <div class="welcome-card" onclick="loadPage('CG.html',null,'Contrôle de Gestion')">📊 Contrôle de Gestion</div>
+                <div class="welcome-card" onclick="loadPage('mana.html',null,'Management')">👔 Management</div>
+                <div class="welcome-card" onclick="loadPage('SO.html',null,'Droit des Sociétés')">⚖️ Droit des Sociétés</div>
             </div>
         </div>
 
@@ -633,33 +652,70 @@
         <div id="admin-panel">
             <div class="admin-content">
 
+                <!-- Setup guide (masqué une fois configuré) -->
+                <div class="setup-card" id="setup-guide" style="display:none">
+                    <div class="section-title">🔧 Configuration Supabase requise</div>
+
+                    <div class="setup-step">
+                        <div class="setup-num">1</div>
+                        <div>Va sur <strong>supabase.com</strong> → crée un projet → attends 2 min</div>
+                    </div>
+                    <div class="setup-step">
+                        <div class="setup-num">2</div>
+                        <div>Va dans <strong>SQL Editor → New Query</strong>, colle et exécute ce script :</div>
+                    </div>
+                    <pre class="sql">CREATE TABLE access_codes (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  code TEXT UNIQUE NOT NULL,
+  name TEXT,
+  note TEXT,
+  is_active BOOLEAN DEFAULT true,
+  session_token TEXT,
+  last_seen_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE access_codes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_read" ON access_codes
+  FOR SELECT TO anon USING (true);
+
+CREATE POLICY "anon_update" ON access_codes
+  FOR UPDATE TO anon USING (true);</pre>
+
+                    <div class="setup-step" style="margin-top:14px">
+                        <div class="setup-num">3</div>
+                        <div>Va dans <strong>Project Settings → API</strong>, copie <code>Project URL</code> et <code>anon public</code>, colle-les dans le code source à la place de <code>https://qridhnhidcrfffzejzgt.supabase.co</code> et <code>sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E</code></div>
+                    </div>
+                    <div class="setup-step">
+                        <div class="setup-num">4</div>
+                        <div>Push sur GitHub → c'est prêt !</div>
+                    </div>
+                </div>
+
                 <div class="admin-header">
                     <div>
                         <div class="admin-title">⚙️ Administration</div>
-                        <div class="admin-subtitle">Codes stockés dans le navigateur — pense à exporter régulièrement</div>
+                        <div class="admin-subtitle">Gestion des codes d'accès</div>
                     </div>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap">
-                        <button class="btn-secondary" onclick="exportCodes()">⬇ Exporter JSON</button>
-                        <button class="btn-secondary" onclick="document.getElementById('import-file').click()">⬆ Importer JSON</button>
-                        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importCodes(this)">
-                    </div>
+                    <button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem">↺ Actualiser</button>
                 </div>
 
                 <div class="stats-row">
                     <div class="stat-card">
-                        <div class="stat-value" id="stat-total">0</div>
+                        <div class="stat-value" id="stat-total">—</div>
                         <div class="stat-label">Codes créés</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="stat-active" style="color:var(--success)">0</div>
-                        <div class="stat-label">Jamais utilisés</div>
+                        <div class="stat-value" id="stat-active" style="color:var(--success)">—</div>
+                        <div class="stat-label">Actifs</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="stat-used" style="color:var(--accent2)">0</div>
-                        <div class="stat-label">Déjà utilisés</div>
+                        <div class="stat-value" id="stat-online" style="color:var(--accent2)">—</div>
+                        <div class="stat-label">Connectés maintenant</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="stat-revoked" style="color:var(--muted)">0</div>
+                        <div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div>
                         <div class="stat-label">Révoqués</div>
                     </div>
                 </div>
@@ -675,7 +731,7 @@
                             <label class="form-label">Note (optionnel)</label>
                             <input type="text" class="form-input" id="gen-note" placeholder="Ex : Promo 2026">
                         </div>
-                        <button class="btn-gen" onclick="generateCode()">+ Générer</button>
+                        <button class="btn-gen" id="btn-gen" onclick="generateCode()">+ Générer</button>
                     </div>
                 </div>
 
@@ -689,12 +745,12 @@
                                     <th>Nom</th>
                                     <th>Note</th>
                                     <th>Statut</th>
-                                    <th>Créé le</th>
+                                    <th>Dernière activité</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="codes-tbody">
-                                <tr><td colspan="6" class="empty-state">Aucun code créé pour l'instant.</td></tr>
+                                <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -708,79 +764,95 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════
-//  ⚠️ TON CODE ADMIN — change-le avant de déployer
-// ════════════════════════════════════════
-const ADMIN_CODE  = 'ADMIN2025';
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  ⚠️  REMPLIS CES 3 VALEURS AVEC TES INFOS SUPABASE
+// ════════════════════════════════════════════════
+const SB_URL  = 'https://qridhnhidcrfffzejzgt.supabase.co';        // ex: https://xxxx.supabase.co
+const SB_KEY  = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';        // clé "anon public"
+const ADMIN_CODE = 'ADMIN2025';     // ← ton code admin fixe, change-le !
+// ════════════════════════════════════════════════
 
-const STORAGE_KEY = 'hub_codes';
-const SESSION_KEY = 'hub_session';
+const CONFIGURED = true;
+const SESSION_KEY = 'hub_sess';
 
 // ── Utilitaires ─────────────────────────
-function makeId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+function makeCode() {
+    const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const D = '23456789';
+    return Array.from({length:4},()=>L[Math.floor(Math.random()*L.length)]).join('') +
+           Array.from({length:4},()=>D[Math.floor(Math.random()*D.length)]).join('');
 }
 
 function makeToken() {
     return Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
-function makeCode() {
-    const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-    const D = '23456789';
-    const letters = Array.from({length:4}, () => L[Math.floor(Math.random()*L.length)]).join('');
-    const digits  = Array.from({length:4}, () => D[Math.floor(Math.random()*D.length)]).join('');
-    return letters + digits;
-}
-
 function fmtDate(iso) {
     if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
+    return new Date(iso).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 function showToast(msg, type='success') {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast visible ' + type;
-    clearTimeout(t._t);
-    t._t = setTimeout(() => { t.className = 'toast'; }, 3200);
+    t.textContent = msg; t.className = 'toast visible ' + type;
+    clearTimeout(t._t); t._t = setTimeout(()=>{ t.className='toast'; }, 3200);
 }
 
-// ── Stockage codes ───────────────────────
-function getCodes() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
+// ── Supabase REST ────────────────────────
+const H = (key=SB_KEY) => ({
+    'apikey': key,
+    'Authorization': `Bearer ${key}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+});
+
+async function sbSelect(query) {
+    const r = await fetch(`${SB_URL}/rest/v1/${query}`, { headers: H() });
+    return r.ok ? await r.json() : null;
 }
 
-function setCodes(codes) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(codes));
+async function sbInsert(table, body) {
+    const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
+        method:'POST', headers: H(), body: JSON.stringify(body)
+    });
+    return r.ok ? await r.json() : null;
+}
+
+async function sbUpdate(table, filter, body) {
+    const params = Object.entries(filter).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+    const r = await fetch(`${SB_URL}/rest/v1/${table}?${params}`, {
+        method:'PATCH', headers: H(), body: JSON.stringify(body)
+    });
+    return r.ok;
+}
+
+async function sbDelete(table, filter) {
+    const params = Object.entries(filter).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+    const r = await fetch(`${SB_URL}/rest/v1/${table}?${params}`, {
+        method:'DELETE', headers: H()
+    });
+    return r.ok;
 }
 
 // ── Session ──────────────────────────────
 let session = null;
 
 function getSession() {
-    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); }
-    catch { return null; }
+    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; }
 }
 
-function saveSession(s) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
-}
-
-function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
-}
+function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+function clearSession()  { sessionStorage.removeItem(SESSION_KEY); }
 
 // ── Login ────────────────────────────────
 document.getElementById('code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
 });
 
-function handleLogin() {
-    const val   = document.getElementById('code-input').value.trim().toUpperCase();
-    const errEl = document.getElementById('login-error');
+async function handleLogin() {
+    const val    = document.getElementById('code-input').value.trim().toUpperCase();
+    const btn    = document.getElementById('btn-login');
+    const errEl  = document.getElementById('login-error');
     const errMsg = document.getElementById('login-error-msg');
     const input  = document.getElementById('code-input');
 
@@ -788,7 +860,7 @@ function handleLogin() {
     input.classList.remove('error');
     errEl.classList.remove('visible');
 
-    // Admin
+    // Admin → accès direct, pas de vérif Supabase
     if (val === ADMIN_CODE) {
         session = { code: val, isAdmin: true };
         saveSession(session);
@@ -797,60 +869,76 @@ function handleLogin() {
     }
 
     // Étudiant
-    const codes = getCodes();
-    const idx   = codes.findIndex(c => c.code === val);
-
-    if (idx === -1) {
-        errMsg.textContent = 'Code introuvable. Vérifie la saisie.';
-        errEl.classList.add('visible');
-        input.classList.add('error');
+    if (!CONFIGURED) {
+        errMsg.textContent = 'Supabase non configuré. Configure SB_URL et SB_KEY dans le code.';
+        errEl.classList.add('visible'); input.classList.add('error');
         return;
     }
 
-    if (!codes[idx].active) {
-        errMsg.textContent = 'Ce code a été révoqué. Contacte l\'administrateur.';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+
+    try {
+        const rows = await sbSelect(`access_codes?code=eq.${val}&select=*`);
+
+        if (!rows || rows.length === 0) throw new Error('Code introuvable. Vérifie la saisie.');
+        const row = rows[0];
+        if (!row.is_active) throw new Error('Ce code a été révoqué. Contacte l\'administrateur.');
+
+        // Nouveau token → invalide toute autre session avec ce code
+        const token = makeToken();
+        await sbUpdate('access_codes', {code: val}, {
+            session_token: token,
+            last_seen_at: new Date().toISOString()
+        });
+
+        session = { code: val, token, isAdmin: false, name: row.name };
+        saveSession(session);
+        enterHub();
+
+    } catch(err) {
+        errMsg.textContent = err.message || 'Erreur de connexion.';
         errEl.classList.add('visible');
         input.classList.add('error');
-        return;
     }
 
-    // Générer un nouveau token → invalide toute session précédente avec ce code
-    const token = makeToken();
-    codes[idx].token     = token;
-    codes[idx].lastLogin = new Date().toISOString();
-    setCodes(codes);
-
-    session = { code: val, token, isAdmin: false, name: codes[idx].name };
-    saveSession(session);
-    enterHub();
+    btn.disabled = false;
+    btn.textContent = 'Accéder au hub';
 }
 
-// ── Anti-partage ─────────────────────────
+// ── Anti-partage heartbeat ───────────────
 let heartbeat = null;
 
 function startHeartbeat() {
-    heartbeat = setInterval(() => {
-        if (!session || session.isAdmin) return;
-        const codes = getCodes();
-        const row   = codes.find(c => c.code === session.code);
+    heartbeat = setInterval(async () => {
+        if (!session || session.isAdmin || !CONFIGURED) return;
+        const rows = await sbSelect(`access_codes?code=eq.${session.code}&select=is_active,session_token`);
+        if (!rows || rows.length === 0) return;
+        const row = rows[0];
 
-        if (!row || !row.active) {
+        if (!row.is_active) {
             clearSession();
             showToast('⚠️ Accès révoqué par l\'administrateur.', 'error');
             setTimeout(() => location.reload(), 2500);
             return;
         }
 
-        // Si le token en base est différent du nôtre, quelqu'un d'autre s'est connecté
-        if (row.token !== session.token) {
+        if (row.session_token !== session.token) {
             clearSession();
             showToast('⚠️ Session expirée : connexion détectée sur un autre appareil.', 'error');
             setTimeout(() => location.reload(), 2800);
+            return;
         }
-    }, 20000); // vérif toutes les 20s
+
+        // Maintenir last_seen_at
+        await sbUpdate('access_codes', {code: session.code}, {
+            last_seen_at: new Date().toISOString()
+        });
+
+    }, 30000); // toutes les 30s
 }
 
-// ── Entrée dans le hub ────────────────────
+// ── Entrée dans le hub ───────────────────
 function enterHub() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('hub-screen').classList.add('visible');
@@ -859,6 +947,7 @@ function enterHub() {
         document.getElementById('admin-menu-item').style.display = 'flex';
         document.getElementById('admin-divider').style.display   = 'block';
         document.getElementById('footer-name').textContent = 'Administrateur';
+        if (!CONFIGURED) document.getElementById('setup-guide').style.display = 'block';
     } else {
         document.getElementById('footer-name').textContent = session.name || 'Étudiant';
         startHeartbeat();
@@ -866,12 +955,10 @@ function enterHub() {
 }
 
 // ── Logout ────────────────────────────────
-function handleLogout() {
+async function handleLogout() {
     if (heartbeat) clearInterval(heartbeat);
-    if (session && !session.isAdmin) {
-        const codes = getCodes();
-        const idx   = codes.findIndex(c => c.code === session.code);
-        if (idx !== -1) { codes[idx].token = null; setCodes(codes); }
+    if (session && !session.isAdmin && CONFIGURED) {
+        await sbUpdate('access_codes', {code: session.code}, { session_token: null });
     }
     clearSession();
     location.reload();
@@ -887,8 +974,7 @@ function loadPage(fileName, el, label) {
         el.classList.add('active');
     } else {
         document.querySelectorAll('.menu-item').forEach(item => {
-            if ((item.getAttribute('onclick') || '').includes(`'${fileName}'`))
-                item.classList.add('active');
+            if ((item.getAttribute('onclick')||'').includes(`'${fileName}'`)) item.classList.add('active');
         });
     }
     document.getElementById('admin-panel').classList.remove('visible');
@@ -899,7 +985,7 @@ function loadPage(fileName, el, label) {
     const loader = document.getElementById('loader');
     loader.className = 'loader loading';
     const frame = document.getElementById('content-frame');
-    frame.onload = () => { loader.className = 'loader done'; setTimeout(() => loader.className = 'loader', 600); };
+    frame.onload = () => { loader.className='loader done'; setTimeout(()=>loader.className='loader',600); };
     frame.src = fileName;
 }
 
@@ -911,7 +997,7 @@ function openAdmin() {
     document.getElementById('admin-panel').classList.add('visible');
     document.getElementById('current-page').textContent = 'Administration';
     if (window.innerWidth <= 768) closeSidebar();
-    renderTable();
+    loadCodes();
 }
 
 function reloadFrame() {
@@ -919,7 +1005,7 @@ function reloadFrame() {
     const loader = document.getElementById('loader');
     loader.className = 'loader loading';
     const frame = document.getElementById('content-frame');
-    frame.onload = () => { loader.className = 'loader done'; setTimeout(() => loader.className = 'loader', 600); };
+    frame.onload = () => { loader.className='loader done'; setTimeout(()=>loader.className='loader',600); };
     frame.src = currentFile;
 }
 
@@ -928,47 +1014,119 @@ function openFullscreen() {
     if (frame.requestFullscreen) frame.requestFullscreen();
 }
 
-// ── Admin ─────────────────────────────────
-function generateCode() {
+// ── Admin : chargement ───────────────────
+async function loadCodes() {
+    const tbody = document.getElementById('codes-tbody');
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Chargement…</td></tr>';
+
+    if (!CONFIGURED) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Configure Supabase pour voir les codes.</td></tr>';
+        ['stat-total','stat-active','stat-online','stat-revoked'].forEach(id => {
+            document.getElementById(id).textContent = '—';
+        });
+        return;
+    }
+
+    const rows = await sbSelect('access_codes?order=created_at.desc&select=*');
+    if (!rows) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Erreur de chargement.</td></tr>';
+        return;
+    }
+
+    const now = Date.now();
+    let active=0, online=0, revoked=0;
+
+    rows.forEach(r => {
+        if (!r.is_active) { revoked++; return; }
+        active++;
+        if (r.last_seen_at && (now - new Date(r.last_seen_at).getTime()) < 90000) online++;
+    });
+
+    document.getElementById('stat-total').textContent   = rows.length;
+    document.getElementById('stat-active').textContent  = active;
+    document.getElementById('stat-online').textContent  = online;
+    document.getElementById('stat-revoked').textContent = revoked;
+
+    if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucun code. Génère le premier !</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+        const isOnline = r.last_seen_at && (now - new Date(r.last_seen_at).getTime()) < 90000;
+        const badge = !r.is_active
+            ? '<span class="badge badge-revoked">Révoqué</span>'
+            : isOnline
+                ? '<span class="badge badge-online">En ligne</span>'
+                : '<span class="badge badge-active">Actif</span>';
+
+        const acts = `<div class="actions-cell">
+            <button class="btn-action btn-copy" onclick="copyCode('${r.code}')">Copier</button>
+            ${r.is_active
+                ? `<button class="btn-action btn-revoke" onclick="revokeCode('${r.id}')">Révoquer</button>
+                   ${r.session_token ? `<button class="btn-action btn-kick" onclick="kickCode('${r.id}')">Déco.</button>` : ''}`
+                : `<button class="btn-action btn-restore" onclick="restoreCode('${r.id}')">Réactiver</button>`
+            }
+        </div>`;
+
+        return `<tr>
+            <td><span class="code-pill">${r.code}</span></td>
+            <td>${r.name || '<span style="color:var(--muted)">—</span>'}</td>
+            <td style="color:var(--muted);font-size:.75rem">${r.note || '—'}</td>
+            <td>${badge}</td>
+            <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.last_seen_at)}</td>
+            <td>${acts}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Admin : actions ──────────────────────
+async function generateCode() {
     const name = document.getElementById('gen-name').value.trim();
     const note = document.getElementById('gen-note').value.trim();
+    const btn  = document.getElementById('btn-gen');
+
+    if (!CONFIGURED) { showToast('Configure Supabase d\'abord.', 'error'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,.3);border-top-color:#1a1200"></span>';
+
     const code = makeCode();
-    const entry = {
-        id: makeId(), code, name: name || null, note: note || null,
-        active: true, token: null, lastLogin: null,
-        createdAt: new Date().toISOString()
-    };
-    const codes = getCodes();
-    codes.unshift(entry);
-    setCodes(codes);
-    document.getElementById('gen-name').value = '';
-    document.getElementById('gen-note').value = '';
-    showToast(`✓ Code créé : ${code}${name ? ' — ' + name : ''}`);
-    renderTable();
+    const res  = await sbInsert('access_codes', {
+        code, name: name||null, note: note||null, is_active: true
+    });
+
+    if (res) {
+        document.getElementById('gen-name').value = '';
+        document.getElementById('gen-note').value = '';
+        showToast(`✓ Code créé : ${code}${name ? ' — '+name : ''}`);
+        await loadCodes();
+    } else {
+        showToast('Erreur lors de la création.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = '+ Générer';
 }
 
-function revokeCode(id) {
-    if (!confirm('Révoquer ce code ? L\'étudiant sera déconnecté au prochain check.')) return;
-    const codes = getCodes();
-    const idx   = codes.findIndex(c => c.id === id);
-    if (idx !== -1) { codes[idx].active = false; codes[idx].token = null; setCodes(codes); }
-    showToast('Code révoqué.', 'success');
-    renderTable();
+async function revokeCode(id) {
+    if (!confirm('Révoquer ce code ? L\'étudiant sera déconnecté.')) return;
+    const ok = await sbUpdate('access_codes', {id}, {is_active: false, session_token: null});
+    ok ? showToast('Code révoqué.') : showToast('Erreur.', 'error');
+    await loadCodes();
 }
 
-function restoreCode(id) {
-    const codes = getCodes();
-    const idx   = codes.findIndex(c => c.id === id);
-    if (idx !== -1) { codes[idx].active = true; setCodes(codes); }
-    showToast('Code réactivé.', 'success');
-    renderTable();
+async function restoreCode(id) {
+    const ok = await sbUpdate('access_codes', {id}, {is_active: true});
+    ok ? showToast('Code réactivé.') : showToast('Erreur.', 'error');
+    await loadCodes();
 }
 
-function deleteCode(id) {
-    if (!confirm('Supprimer définitivement ce code ?')) return;
-    setCodes(getCodes().filter(c => c.id !== id));
-    showToast('Code supprimé.');
-    renderTable();
+async function kickCode(id) {
+    // Déconnecte la session sans révoquer le code
+    const ok = await sbUpdate('access_codes', {id}, {session_token: null});
+    ok ? showToast('Étudiant déconnecté.') : showToast('Erreur.', 'error');
+    await loadCodes();
 }
 
 function copyCode(code) {
@@ -983,88 +1141,16 @@ function copyCode(code) {
         });
 }
 
-function renderTable() {
-    const codes   = getCodes();
-    let active=0, used=0, revoked=0;
-    codes.forEach(c => {
-        if (!c.active) revoked++;
-        else if (c.lastLogin) { used++; }
-        else active++;
-    });
-    document.getElementById('stat-total').textContent   = codes.length;
-    document.getElementById('stat-active').textContent  = active;
-    document.getElementById('stat-used').textContent    = used;
-    document.getElementById('stat-revoked').textContent = revoked;
-
-    const tbody = document.getElementById('codes-tbody');
-    if (!codes.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucun code créé. Génère le premier !</td></tr>';
-        return;
-    }
-    tbody.innerHTML = codes.map(c => {
-        const badge = !c.active
-            ? '<span class="badge badge-revoked">Révoqué</span>'
-            : c.lastLogin
-                ? '<span class="badge badge-used">Utilisé</span>'
-                : '<span class="badge badge-active">Jamais utilisé</span>';
-
-        const acts = `<div class="actions-cell">
-            <button class="btn-action btn-copy" onclick="copyCode('${c.code}')">Copier</button>
-            ${c.active
-                ? `<button class="btn-action btn-revoke" onclick="revokeCode('${c.id}')">Révoquer</button>`
-                : `<button class="btn-action btn-restore" onclick="restoreCode('${c.id}')">Réactiver</button>`
-            }
-            <button class="btn-action btn-delete" onclick="deleteCode('${c.id}')">Suppr.</button>
-        </div>`;
-
-        return `<tr>
-            <td><span class="code-pill">${c.code}</span></td>
-            <td>${c.name || '<span style="color:var(--muted)">—</span>'}</td>
-            <td style="color:var(--muted);font-size:.75rem">${c.note || '—'}</td>
-            <td>${badge}</td>
-            <td style="color:var(--muted);font-size:.75rem">${fmtDate(c.createdAt)}</td>
-            <td>${acts}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── Export / Import ───────────────────────
-function exportCodes() {
-    const blob = new Blob([JSON.stringify(getCodes(), null, 2)], {type:'application/json'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `hub-codes-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('✓ Export téléchargé.');
-}
-
-function importCodes(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (!Array.isArray(data)) throw new Error();
-            setCodes(data);
-            showToast(`✓ ${data.length} codes importés.`, 'success');
-            renderTable();
-        } catch { showToast('Fichier JSON invalide.', 'error'); }
-        input.value = '';
-    };
-    reader.readAsText(file);
-}
-
 // ── Mobile sidebar ────────────────────────
 function toggleSidebar() {
     document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
 }
+
 function openSidebar() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('nav-overlay').classList.add('visible');
 }
+
 function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('nav-overlay').classList.remove('visible');
