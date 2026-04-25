@@ -568,44 +568,64 @@
             <div class="session-badge">Session active</div>
         </div>
 
-        <div class="menu-section">Matières</div>
+        <ul class="menu-list" style="overflow-y:auto">
 
-        <ul class="menu-list">
-            <li class="menu-item" onclick="loadPage('CG.html', this, 'Contrôle de Gestion')">
-                <div class="item-icon">📊</div>
-                <span class="item-label">Contrôle de Gestion</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('FI.html', this, 'Finance')">
-                <div class="item-icon">💰</div>
-                <span class="item-label">Finance</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('mana.html', this, 'Management')">
-                <div class="item-icon">👔</div>
-                <span class="item-label">Management</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('SO.html', this, 'Droit des Sociétés')">
-                <div class="item-icon">⚖️</div>
-                <span class="item-label">Droit des Sociétés</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('DT.html', this, 'Droit du Travail')">
-                <div class="item-icon">👷</div>
-                <span class="item-label">Droit du Travail</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('fisca.html', this, 'Droit Fiscal')">
-                <div class="item-icon">🧾</div>
-                <span class="item-label">Droit Fiscal</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('compta.html', this, 'Comptabilité')">
-                <div class="item-icon">📑</div>
-                <span class="item-label">Comptabilité</span>
-                <span class="item-arrow">›</span>
-            </li>
+            <!-- ── SEMESTRE 1 ── -->
+            <div class="menu-semester" onclick="toggleSem('s1')">
+                <span>Semestre 1</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s1">
+                <li class="menu-item soon">
+                    <div class="item-icon">📘</div>
+                    <span class="item-label">Matière 1</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📗</div>
+                    <span class="item-label">Matière 2</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📙</div>
+                    <span class="item-label">Matière 3</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📕</div>
+                    <span class="item-label">Matière 4</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+            </div>
+
+            <!-- ── SEMESTRE 2 ── -->
+            <div class="menu-semester" onclick="toggleSem('s2')">
+                <span>Semestre 2</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s2">
+                <li class="menu-item soon">
+                    <div class="item-icon">📘</div>
+                    <span class="item-label">Matière 5</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📗</div>
+                    <span class="item-label">Matière 6</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📙</div>
+                    <span class="item-label">Matière 7</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📕</div>
+                    <span class="item-label">Matière 8</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+            </div>
+
             <div class="menu-divider" id="admin-divider" style="display:none"></div>
             <li class="menu-item admin-item" id="admin-menu-item" style="display:none" onclick="openAdmin()">
                 <div class="item-icon">⚙️</div>
@@ -616,7 +636,7 @@
 
         <div class="nav-footer">
             <div class="footer-text">
-                <strong>7 matières</strong><br>
+                <strong>Master CCA</strong><br>
                 <span id="footer-name">Session</span>
             </div>
             <button class="btn-logout" onclick="handleLogout()">Déconnexion</button>
@@ -642,7 +662,7 @@
 
         <div class="welcome" id="welcome">
             <div class="welcome-icon">🎯</div>
-            <h1>Bonne révision !</h1>
+            <h1 id="welcome-title">Bonne révision !</h1>
             <p>Sélectionne une matière dans le menu pour commencer.</p>
             <div class="welcome-cards">
                 <div class="welcome-card" onclick="loadPage('CG.html',null,'Contrôle de Gestion')">📊 Contrôle de Gestion</div>
@@ -758,6 +778,28 @@ CREATE POLICY "anon_update" ON access_codes
                             </thead>
                             <tbody id="codes-tbody">
                                 <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Historique des connexions -->
+                <div class="section-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <div class="section-title" style="margin-bottom:0">🕓 Historique des connexions</div>
+                        <button class="btn-gen" onclick="loadLogs()" style="padding:6px 14px;font-size:.72rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button>
+                    </div>
+                    <div class="codes-table-wrap">
+                        <table class="codes-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Code</th>
+                                    <th>Connecté le</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-tbody">
+                                <tr><td colspan="3" class="empty-state">Chargement…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -901,6 +943,8 @@ async function handleLogin() {
 
         session = { code: val, token, isAdmin: false, name: row.name };
         saveSession(session);
+        // Logger la connexion
+        sbInsert('connection_logs', { code: val, name: row.name || null });
         enterHub();
 
     } catch(err) {
@@ -956,7 +1000,10 @@ function enterHub() {
         document.getElementById('footer-name').textContent = 'Administrateur';
         if (!CONFIGURED) document.getElementById('setup-guide').style.display = 'block';
     } else {
+        const prenom = session.name ? session.name.split(' ')[0] : 'Étudiant';
         document.getElementById('footer-name').textContent = session.name || 'Étudiant';
+        const wt = document.getElementById('welcome-title');
+        if (wt) wt.textContent = 'Bonne révision, ' + prenom + ' !';
         startHeartbeat();
     }
 }
@@ -1005,6 +1052,7 @@ function openAdmin() {
     document.getElementById('current-page').textContent = 'Administration';
     if (window.innerWidth <= 768) closeSidebar();
     loadCodes();
+    loadLogs();
 }
 
 function reloadFrame() {
@@ -1144,6 +1192,22 @@ async function deleteCode(id, code) {
     await loadCodes();
 }
 
+
+async function loadLogs() {
+    const tbody = document.getElementById('logs-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Chargement…</td></tr>';
+    const rows = await sbSelect('connection_logs?order=connected_at.desc&limit=50&select=*');
+    if (!rows || rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Aucune connexion enregistrée.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = rows.map(r => `<tr>
+        <td>${r.name || '<span style="color:var(--muted)">—</span>'}</td>
+        <td><span class="code-pill">${r.code}</span></td>
+        <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.connected_at)}</td>
+    </tr>`).join('');
+}
 async function kickAll() {
     if (!confirm("Déconnecter TOUS les étudiants connectés ? Leurs sessions seront invalidées.")) return;
     const res = await fetch(`${SB_URL}/rest/v1/access_codes?is_active=eq.true`, {
@@ -1168,6 +1232,13 @@ function copyCode(code) {
 }
 
 // ── Mobile sidebar ────────────────────────
+
+function toggleSem(id) {
+    const items = document.getElementById('sem-' + id);
+    const btn   = items.previousElementSibling;
+    items.classList.toggle('open');
+    btn.classList.toggle('open');
+}
 function toggleSidebar() {
     document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
 }
