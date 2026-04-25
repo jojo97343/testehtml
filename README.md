@@ -24,25 +24,24 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            display: flex;
+            height: 100vh;
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text);
+            overflow: hidden;
         }
 
         /* ══ LOGIN ══════════════════════════════ */
         #login-screen {
             display: flex; align-items: center; justify-content: center;
-            height: 100%; padding: 24px;
-            position: relative; overflow: hidden;
+            position: fixed; inset: 0;
+            padding: 24px;
+            z-index: 999;
+            background: var(--bg-deep);
         }
 
         #login-screen::before {
@@ -434,10 +433,11 @@
         .btn-revoke:hover  { background:rgba(255,92,92,.1); }
         .btn-restore { border-color:rgba(77,204,143,.25); color:var(--success); }
         .btn-restore:hover { background:rgba(77,204,143,.1); }
+        .btn-delete  { border-color:rgba(255,92,92,.15); color:var(--muted); }
+        .btn-delete:hover  { background:rgba(255,92,92,.08); color:var(--danger); }
+
         .btn-kick    { border-color:rgba(77,150,255,.25); color:var(--accent2); }
         .btn-kick:hover    { background:rgba(77,150,255,.1); }
-
-        .empty-state { text-align:center; padding:48px 24px; color:var(--muted); font-size:.82rem; }
 
         /* Setup card */
         .setup-card {
@@ -531,11 +531,11 @@
             <div class="login-logo-icon">📚</div>
             <div>
                 <div class="login-logo-text">Hub Révisions</div>
-                <div class="login-logo-sub">Licence CCA — INTEC</div>
+                <div class="login-logo-sub">Master CCA</div>
             </div>
         </div>
         <h1 class="login-title">Accès sécurisé</h1>
-        <p class="login-sub">Saisis ton code d'accès personnel pour entrer dans le hub.</p>
+        <p class="login-sub">Si tu veux un code, paie 5€ et contacte Enzo.</p>
         <label class="input-label" for="code-input">Code d'accès</label>
         <input type="text" id="code-input" class="code-input"
             placeholder="XXXXXXXX" maxlength="12"
@@ -546,8 +546,8 @@
             <span id="login-error-msg">Code incorrect ou révoqué.</span>
         </div>
         <div class="login-footer">
-            Accès réservé aux étudiants INTEC CCA<br>
-            Contacte l'administrateur pour obtenir ton code.
+            <!-- footer vide -->
+            
         </div>
     </div>
 </div>
@@ -705,7 +705,7 @@ CREATE POLICY "anon_update" ON access_codes
                         <div class="admin-title">⚙️ Administration</div>
                         <div class="admin-subtitle">Gestion des codes d'accès</div>
                     </div>
-                    <button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem">↺ Actualiser</button>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button><button class="btn-gen" onclick="kickAll()" style="padding:8px 16px;font-size:.75rem;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3);color:var(--danger)">⚡ Déco. tout le monde</button></div>
                 </div>
 
                 <div class="stats-row">
@@ -1074,6 +1074,7 @@ async function loadCodes() {
                    ${r.session_token ? `<button class="btn-action btn-kick" onclick="kickCode('${r.id}')">Déco.</button>` : ''}`
                 : `<button class="btn-action btn-restore" onclick="restoreCode('${r.id}')">Réactiver</button>`
             }
+            <button class="btn-action btn-delete" onclick="deleteCode('${r.id}', '${r.code}')">Suppr.</button>
         </div>`;
 
         return `<tr>
@@ -1134,6 +1135,24 @@ async function kickCode(id) {
     const ok = await sbUpdate('access_codes', {id}, {session_token: null});
     ok ? showToast('Étudiant déconnecté.') : showToast('Erreur.', 'error');
     await loadCodes();
+}
+
+async function deleteCode(id, code) {
+    if (!confirm(`Supprimer définitivement le code "${code}" ? Cette action est irréversible.`)) return;
+    const ok = await sbDelete('access_codes', {id});
+    ok ? showToast(`✓ Code "${code}" supprimé.`) : showToast('Erreur lors de la suppression.', 'error');
+    await loadCodes();
+}
+
+async function kickAll() {
+    if (!confirm("Déconnecter TOUS les étudiants connectés ? Leurs sessions seront invalidées.")) return;
+    const res = await fetch(`${SB_URL}/rest/v1/access_codes?is_active=eq.true`, {
+        method: "PATCH",
+        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ session_token: null })
+    });
+    if (res.ok) { showToast("✓ Tout le monde a été déconnecté."); await loadCodes(); }
+    else showToast("Erreur.", "error");
 }
 
 function copyCode(code) {
