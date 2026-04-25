@@ -568,44 +568,64 @@
             <div class="session-badge">Session active</div>
         </div>
 
-        <div class="menu-section">Matières</div>
+        <ul class="menu-list" style="overflow-y:auto">
 
-        <ul class="menu-list">
-            <li class="menu-item" onclick="loadPage('CG.html', this, 'Contrôle de Gestion')">
-                <div class="item-icon">📊</div>
-                <span class="item-label">Contrôle de Gestion</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('FI.html', this, 'Finance')">
-                <div class="item-icon">💰</div>
-                <span class="item-label">Finance</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('mana.html', this, 'Management')">
-                <div class="item-icon">👔</div>
-                <span class="item-label">Management</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('SO.html', this, 'Droit des Sociétés')">
-                <div class="item-icon">⚖️</div>
-                <span class="item-label">Droit des Sociétés</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('DT.html', this, 'Droit du Travail')">
-                <div class="item-icon">👷</div>
-                <span class="item-label">Droit du Travail</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('fisca.html', this, 'Droit Fiscal')">
-                <div class="item-icon">🧾</div>
-                <span class="item-label">Droit Fiscal</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('compta.html', this, 'Comptabilité')">
-                <div class="item-icon">📑</div>
-                <span class="item-label">Comptabilité</span>
-                <span class="item-arrow">›</span>
-            </li>
+            <!-- ── SEMESTRE 1 ── -->
+            <div class="menu-semester" onclick="toggleSem('s1')">
+                <span>Semestre 1</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s1">
+                <li class="menu-item soon">
+                    <div class="item-icon">📘</div>
+                    <span class="item-label">Matière 1</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📗</div>
+                    <span class="item-label">Matière 2</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📙</div>
+                    <span class="item-label">Matière 3</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📕</div>
+                    <span class="item-label">Matière 4</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+            </div>
+
+            <!-- ── SEMESTRE 2 ── -->
+            <div class="menu-semester" onclick="toggleSem('s2')">
+                <span>Semestre 2</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s2">
+                <li class="menu-item soon">
+                    <div class="item-icon">📘</div>
+                    <span class="item-label">Matière 5</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📗</div>
+                    <span class="item-label">Matière 6</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📙</div>
+                    <span class="item-label">Matière 7</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+                <li class="menu-item soon">
+                    <div class="item-icon">📕</div>
+                    <span class="item-label">Matière 8</span>
+                    <span class="soon-badge">Bientôt</span>
+                </li>
+            </div>
+
             <div class="menu-divider" id="admin-divider" style="display:none"></div>
             <li class="menu-item admin-item" id="admin-menu-item" style="display:none" onclick="openAdmin()">
                 <div class="item-icon">⚙️</div>
@@ -616,7 +636,7 @@
 
         <div class="nav-footer">
             <div class="footer-text">
-                <strong>7 matières</strong><br>
+                <strong>Master CCA</strong><br>
                 <span id="footer-name">Session</span>
             </div>
             <button class="btn-logout" onclick="handleLogout()">Déconnexion</button>
@@ -1212,6 +1232,13 @@ function copyCode(code) {
 }
 
 // ── Mobile sidebar ────────────────────────
+
+function toggleSem(id) {
+    const items = document.getElementById('sem-' + id);
+    const btn   = items.previousElementSibling;
+    items.classList.toggle('open');
+    btn.classList.toggle('open');
+}
 function toggleSidebar() {
     document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
 }
