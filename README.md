@@ -24,13 +24,18 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html { height: 100%; }
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-deep);
             color: var(--text);
-            height: 100%;
         }
 
         /* ══ LOGIN ══════════════════════════════ */
