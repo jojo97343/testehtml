@@ -278,6 +278,72 @@
         }
 
         .btn-topbar:hover { border-color:var(--accent2); color:var(--accent2); }
+        /* ══ SEARCH ═════════════════════════════ */
+        .search-wrap {
+            flex: 1; max-width: 340px; position: relative; margin: 0 12px;
+        }
+
+        .search-input {
+            width: 100%; background: var(--bg-deep);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 6px 14px 6px 34px;
+            font-size: .78rem; color: var(--white);
+            font-family: "Inter", sans-serif; outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .search-input::placeholder { color: var(--muted); }
+        .search-input:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(77,150,255,.10); }
+
+        .search-icon {
+            position: absolute; left: 10px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px; color: var(--muted); pointer-events: none;
+        }
+
+        .search-results {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; z-index: 200;
+            max-height: 320px; overflow-y: auto; scrollbar-width: none;
+            display: none; box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+
+        .search-results.visible { display: block; }
+        .search-results::-webkit-scrollbar { display: none; }
+
+        .search-result-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; cursor: pointer;
+            border-bottom: 1px solid rgba(34,36,48,.5);
+            transition: background .15s;
+        }
+
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: var(--bg-hover); }
+
+        .sri-icon {
+            width: 28px; height: 28px; border-radius: 6px;
+            background: rgba(77,150,255,.12);
+            display: grid; place-items: center;
+            font-size: 13px; flex-shrink: 0; margin-top: 1px;
+        }
+
+        .sri-notion { font-size: .8rem; font-weight: 500; color: var(--white); }
+        .sri-mat    { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+
+        .sri-mark { color: var(--accent2); }
+
+        .search-empty {
+            padding: 20px 14px; text-align: center;
+            font-size: .78rem; color: var(--muted);
+        }
+
+        @media (max-width: 768px) {
+            .search-wrap { max-width: none; flex: 1; margin: 0 6px; }
+            .topbar-breadcrumb { display: none; }
+        }
+
 
         .loader {
             position:absolute; top:0; left:0; height:3px; width:0%;
@@ -652,7 +718,20 @@
                 Hub Révisions <span class="topbar-sep">›</span>
                 <span id="current-page">Accueil</span>
             </div>
+
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input
+                    type="text" id="search-input" class="search-input"
+                    placeholder="Rechercher une notion…"
+                    autocomplete="off" autocorrect="off" spellcheck="false"
+                    oninput="handleSearch(this.value)"
+                    onfocus="showResults()"
+                >
+                <div class="search-results" id="search-results"></div>
+            </div>
             <div class="topbar-actions">
+                <button class="btn-topbar" id="btn-home" onclick="goHome()" style="display:none">⌂ Accueil</button>
                 <button class="btn-topbar" onclick="reloadFrame()">↺ Recharger</button>
                 <button class="btn-topbar" onclick="openFullscreen()">⛶ Plein écran</button>
             </div>
@@ -1034,6 +1113,7 @@ function loadPage(fileName, el, label) {
     document.getElementById('admin-panel').classList.remove('visible');
     document.getElementById('welcome').classList.add('hidden');
     document.getElementById('iframe-wrapper').classList.add('visible');
+    document.getElementById('btn-home').style.display = 'block';
     if (window.innerWidth <= 768) closeSidebar();
     if (label) document.getElementById('current-page').textContent = label;
     const loader = document.getElementById('loader');
@@ -1050,9 +1130,20 @@ function openAdmin() {
     document.getElementById('iframe-wrapper').classList.remove('visible');
     document.getElementById('admin-panel').classList.add('visible');
     document.getElementById('current-page').textContent = 'Administration';
+    document.getElementById('btn-home').style.display = 'block';
     if (window.innerWidth <= 768) closeSidebar();
     loadCodes();
     loadLogs();
+}
+
+function goHome() {
+    currentFile = null;
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('iframe-wrapper').classList.remove('visible');
+    document.getElementById('admin-panel').classList.remove('visible');
+    document.getElementById('welcome').classList.remove('hidden');
+    document.getElementById('current-page').textContent = 'Accueil';
+    document.getElementById('btn-home').style.display = 'none';
 }
 
 function reloadFrame() {
@@ -1232,6 +1323,87 @@ function copyCode(code) {
 }
 
 // ── Mobile sidebar ────────────────────────
+
+
+// ══ SEARCH INDEX ════════════════════════════════
+const SEARCH_INDEX = [
+    { notion: 'Seuil de rentabilité', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Marge sur coût variable', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Analyse des écarts', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Budget flexible', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Bilan financier', matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: "Capacité d'autofinancement", matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: 'Ratio de liquidité', matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: 'Management participatif', matiere: 'Management', fichier: 'mana.html', ancre: '', icon: '👔' },
+    { notion: 'Capital social', matiere: 'Droit des Sociétés', fichier: 'SO.html', ancre: '', icon: '⚖️' },
+    { notion: 'Contrat de travail', matiere: 'Droit du Travail', fichier: 'DT.html', ancre: '', icon: '👷' },
+    { notion: 'TVA déductible', matiere: 'Droit Fiscal', fichier: 'fisca.html', ancre: '', icon: '🧾' },
+    { notion: 'Amortissement linéaire', matiere: 'Comptabilité', fichier: 'compta.html', ancre: '', icon: '📑' },
+];
+
+function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('(' + escaped + ')', 'gi');
+    return text.replace(re, '<span class="sri-mark">$1</span>');
+}
+
+function handleSearch(val) {
+    const q = val.trim().toLowerCase();
+    const box = document.getElementById('search-results');
+    if (!q) { box.innerHTML = ''; box.classList.remove('visible'); return; }
+
+    const results = SEARCH_INDEX.filter(item =>
+        item.notion.toLowerCase().includes(q) ||
+        item.matiere.toLowerCase().includes(q)
+    ).slice(0, 8);
+
+    if (results.length === 0) {
+        box.innerHTML = '<div class="search-empty">Aucun résultat pour "' + val + '"</div>';
+        box.classList.add('visible');
+        return;
+    }
+
+    box.innerHTML = results.map(r =>
+        '<div class="search-result-item" onclick="goToNotion(\'' + r.fichier + '\',\'' + r.ancre + '\',\'' + r.matiere + '\')">' +
+        '<div class="sri-icon">' + r.icon + '</div>' +
+        '<div><div class="sri-notion">' + highlight(r.notion, val) + '</div>' +
+        '<div class="sri-mat">' + r.matiere + '</div></div></div>'
+    ).join('');
+    box.classList.add('visible');
+}
+
+function showResults() {
+    const val = document.getElementById('search-input').value.trim();
+    if (val) handleSearch(val);
+}
+
+function goToNotion(fichier, ancre, matiere) {
+    closeSearch();
+    loadPage(fichier, null, matiere);
+    if (ancre) {
+        setTimeout(function() {
+            try { document.getElementById('content-frame').contentWindow.location.hash = ancre; } catch(e) {}
+        }, 800);
+    }
+}
+
+function closeSearch() {
+    document.getElementById('search-input').value = '';
+    var box = document.getElementById('search-results');
+    box.innerHTML = '';
+    box.classList.remove('visible');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) {
+        document.getElementById('search-results').classList.remove('visible');
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSearch();
+});
 
 function toggleSem(id) {
     const items = document.getElementById('sem-' + id);
