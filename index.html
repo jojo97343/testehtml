@@ -966,11 +966,11 @@ async function sbDelete(table, filter) {
 let session = null;
 
 function getSession() {
-    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; }
 }
 
-function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
-function clearSession()  { sessionStorage.removeItem(SESSION_KEY); }
+function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+function clearSession()  { localStorage.removeItem(SESSION_KEY); }
 
 // ── Login ────────────────────────────────
 document.getElementById('code-input').addEventListener('keydown', e => {
