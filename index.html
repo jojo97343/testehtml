@@ -24,8 +24,6 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             display: flex;
             height: 100vh;
@@ -278,7 +276,7 @@
         }
 
         .btn-topbar:hover { border-color:var(--accent2); color:var(--accent2); }
-        /* ══ SEARCH ═════════════════════════════ */
+
         .search-wrap {
             flex: 1; max-width: 340px; position: relative; margin: 0 12px;
         }
@@ -331,7 +329,6 @@
 
         .sri-notion { font-size: .8rem; font-weight: 500; color: var(--white); }
         .sri-mat    { font-size: .7rem; color: var(--muted); margin-top: 2px; }
-
         .sri-mark { color: var(--accent2); }
 
         .search-empty {
@@ -343,7 +340,6 @@
             .search-wrap { max-width: none; flex: 1; margin: 0 6px; }
             .topbar-breadcrumb { display: none; }
         }
-
 
         .loader {
             position:absolute; top:0; left:0; height:3px; width:0%;
@@ -501,39 +497,8 @@
         .btn-restore:hover { background:rgba(77,204,143,.1); }
         .btn-delete  { border-color:rgba(255,92,92,.15); color:var(--muted); }
         .btn-delete:hover  { background:rgba(255,92,92,.08); color:var(--danger); }
-
         .btn-kick    { border-color:rgba(77,150,255,.25); color:var(--accent2); }
         .btn-kick:hover    { background:rgba(77,150,255,.1); }
-
-        /* Setup card */
-        .setup-card {
-            background:rgba(240,192,64,.06); border:1px solid rgba(240,192,64,.2);
-            border-radius:14px; padding:22px 24px; margin-bottom:20px;
-        }
-
-        .setup-card .section-title { color:var(--accent); }
-
-        .setup-step {
-            display:flex; gap:12px; margin-bottom:14px; font-size:.82rem; line-height:1.6;
-        }
-
-        .setup-num {
-            width:22px; height:22px; border-radius:50%; background:var(--accent);
-            color:#1a1200; font-weight:700; font-size:.7rem; display:grid; place-items:center;
-            flex-shrink:0; margin-top:2px;
-        }
-
-        .setup-card code {
-            background:rgba(240,192,64,.15); border-radius:4px;
-            padding:1px 6px; font-family:monospace; font-size:.78rem; color:var(--accent);
-        }
-
-        pre.sql {
-            background:var(--bg-deep); border:1px solid var(--border);
-            border-radius:8px; padding:16px; font-size:.72rem;
-            color:var(--text); overflow-x:auto; line-height:1.7;
-            font-family:monospace; margin-top:10px;
-        }
 
         /* Toast */
         .toast {
@@ -611,10 +576,7 @@
             <span>⚠</span>
             <span id="login-error-msg">Code incorrect ou révoqué.</span>
         </div>
-        <div class="login-footer">
-            <!-- footer vide -->
-            
-        </div>
+        <div class="login-footer"></div>
     </div>
 </div>
 
@@ -635,61 +597,26 @@
         </div>
 
         <ul class="menu-list" style="overflow-y:auto">
-
-            <!-- ── SEMESTRE 1 ── -->
             <div class="menu-semester" onclick="toggleSem('s1')">
                 <span>Semestre 1</span>
                 <span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s1">
-                <li class="menu-item soon">
-                    <div class="item-icon">📘</div>
-                    <span class="item-label">Matière 1</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📗</div>
-                    <span class="item-label">Matière 2</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📙</div>
-                    <span class="item-label">Matière 3</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📕</div>
-                    <span class="item-label">Matière 4</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
+                <li class="menu-item soon"><div class="item-icon">📘</div><span class="item-label">Matière 1</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📗</div><span class="item-label">Matière 2</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📙</div><span class="item-label">Matière 3</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📕</div><span class="item-label">Matière 4</span><span class="soon-badge">Bientôt</span></li>
             </div>
 
-            <!-- ── SEMESTRE 2 ── -->
             <div class="menu-semester" onclick="toggleSem('s2')">
                 <span>Semestre 2</span>
                 <span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s2">
-                <li class="menu-item soon">
-                    <div class="item-icon">📘</div>
-                    <span class="item-label">Matière 5</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📗</div>
-                    <span class="item-label">Matière 6</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📙</div>
-                    <span class="item-label">Matière 7</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
-                <li class="menu-item soon">
-                    <div class="item-icon">📕</div>
-                    <span class="item-label">Matière 8</span>
-                    <span class="soon-badge">Bientôt</span>
-                </li>
+                <li class="menu-item soon"><div class="item-icon">📘</div><span class="item-label">Matière 5</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📗</div><span class="item-label">Matière 6</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📙</div><span class="item-label">Matière 7</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span></li>
             </div>
 
             <div class="menu-divider" id="admin-divider" style="display:none"></div>
@@ -721,13 +648,11 @@
 
             <div class="search-wrap">
                 <span class="search-icon">🔍</span>
-                <input
-                    type="text" id="search-input" class="search-input"
+                <input type="text" id="search-input" class="search-input"
                     placeholder="Rechercher une notion…"
                     autocomplete="off" autocorrect="off" spellcheck="false"
                     oninput="handleSearch(this.value)"
-                    onfocus="showResults()"
-                >
+                    onfocus="showResults()">
                 <div class="search-results" id="search-results"></div>
             </div>
             <div class="topbar-actions">
@@ -754,76 +679,24 @@
             <iframe id="content-frame"></iframe>
         </div>
 
-        <!-- Panneau admin -->
         <div id="admin-panel">
             <div class="admin-content">
-
-                <!-- Setup guide (masqué une fois configuré) -->
-                <div class="setup-card" id="setup-guide" style="display:none">
-                    <div class="section-title">🔧 Configuration Supabase requise</div>
-
-                    <div class="setup-step">
-                        <div class="setup-num">1</div>
-                        <div>Va sur <strong>supabase.com</strong> → crée un projet → attends 2 min</div>
-                    </div>
-                    <div class="setup-step">
-                        <div class="setup-num">2</div>
-                        <div>Va dans <strong>SQL Editor → New Query</strong>, colle et exécute ce script :</div>
-                    </div>
-                    <pre class="sql">CREATE TABLE access_codes (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT,
-  note TEXT,
-  is_active BOOLEAN DEFAULT true,
-  session_token TEXT,
-  last_seen_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-ALTER TABLE access_codes ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "anon_read" ON access_codes
-  FOR SELECT TO anon USING (true);
-
-CREATE POLICY "anon_update" ON access_codes
-  FOR UPDATE TO anon USING (true);</pre>
-
-                    <div class="setup-step" style="margin-top:14px">
-                        <div class="setup-num">3</div>
-                        <div>Va dans <strong>Project Settings → API</strong>, copie <code>Project URL</code> et <code>anon public</code>, colle-les dans le code source à la place de <code>https://qridhnhidcrfffzejzgt.supabase.co</code> et <code>sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E</code></div>
-                    </div>
-                    <div class="setup-step">
-                        <div class="setup-num">4</div>
-                        <div>Push sur GitHub → c'est prêt !</div>
-                    </div>
-                </div>
-
                 <div class="admin-header">
                     <div>
                         <div class="admin-title">⚙️ Administration</div>
                         <div class="admin-subtitle">Gestion des codes d'accès</div>
                     </div>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button><button class="btn-gen" onclick="kickAll()" style="padding:8px 16px;font-size:.75rem;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3);color:var(--danger)">⚡ Déco. tout le monde</button></div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button>
+                        <button class="btn-gen" onclick="kickAll()" style="padding:8px 16px;font-size:.75rem;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3);color:var(--danger)">⚡ Déco. tout le monde</button>
+                    </div>
                 </div>
 
                 <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-total">—</div>
-                        <div class="stat-label">Codes créés</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-active" style="color:var(--success)">—</div>
-                        <div class="stat-label">Actifs</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-online" style="color:var(--accent2)">—</div>
-                        <div class="stat-label">Connectés maintenant</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div>
-                        <div class="stat-label">Révoqués</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Codes créés</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-active" style="color:var(--success)">—</div><div class="stat-label">Actifs</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-online" style="color:var(--accent2)">—</div><div class="stat-label">Connectés maintenant</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div><div class="stat-label">Révoqués</div></div>
                 </div>
 
                 <div class="section-card">
@@ -847,12 +720,8 @@ CREATE POLICY "anon_update" ON access_codes
                         <table class="codes-table">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Nom</th>
-                                    <th>Note</th>
-                                    <th>Statut</th>
-                                    <th>Dernière activité</th>
-                                    <th>Actions</th>
+                                    <th>Code</th><th>Nom</th><th>Note</th>
+                                    <th>Statut</th><th>Dernière activité</th><th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="codes-tbody">
@@ -862,7 +731,6 @@ CREATE POLICY "anon_update" ON access_codes
                     </div>
                 </div>
 
-                <!-- Historique des connexions -->
                 <div class="section-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                         <div class="section-title" style="margin-bottom:0">🕓 Historique des connexions</div>
@@ -871,11 +739,7 @@ CREATE POLICY "anon_update" ON access_codes
                     <div class="codes-table-wrap">
                         <table class="codes-table">
                             <thead>
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Code</th>
-                                    <th>Connecté le</th>
-                                </tr>
+                                <tr><th>Nom</th><th>Code</th><th>Connecté le</th></tr>
                             </thead>
                             <tbody id="logs-tbody">
                                 <tr><td colspan="3" class="empty-state">Chargement…</td></tr>
@@ -883,7 +747,6 @@ CREATE POLICY "anon_update" ON access_codes
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
@@ -893,17 +756,16 @@ CREATE POLICY "anon_update" ON access_codes
 
 <script>
 // ════════════════════════════════════════════════
-//  ⚠️  REMPLIS CES 3 VALEURS AVEC TES INFOS SUPABASE
+//  CONFIG SUPABASE — modifie uniquement ces 2 valeurs
 // ════════════════════════════════════════════════
-const SB_URL  = 'https://qridhnhidcrfffzejzgt.supabase.co';        // ex: https://xxxx.supabase.co
-const SB_KEY  = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';        // clé "anon public"
-const ADMIN_CODE = 'ADMIN2025';     // ← ton code admin fixe, change-le !
+const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
+const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
+// ⚠️ Le code admin n'est plus ici — il est sécurisé dans Supabase Secrets
 // ════════════════════════════════════════════════
 
 const CONFIGURED = true;
 const SESSION_KEY = 'hub_sess';
 
-// ── Utilitaires ─────────────────────────
 function makeCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
     const D = '23456789';
@@ -926,7 +788,6 @@ function showToast(msg, type='success') {
     clearTimeout(t._t); t._t = setTimeout(()=>{ t.className='toast'; }, 3200);
 }
 
-// ── Supabase REST ────────────────────────
 const H = (key=SB_KEY) => ({
     'apikey': key,
     'Authorization': `Bearer ${key}`,
@@ -962,17 +823,14 @@ async function sbDelete(table, filter) {
     return r.ok;
 }
 
-// ── Session ──────────────────────────────
 let session = null;
 
 function getSession() {
     try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; }
 }
-
 function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
 function clearSession()  { localStorage.removeItem(SESSION_KEY); }
 
-// ── Login ────────────────────────────────
 document.getElementById('code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
 });
@@ -988,24 +846,31 @@ async function handleLogin() {
     input.classList.remove('error');
     errEl.classList.remove('visible');
 
-    // Admin → accès direct, pas de vérif Supabase
-    if (val === ADMIN_CODE) {
-        session = { code: val, isAdmin: true };
-        saveSession(session);
-        enterHub();
-        return;
-    }
-
-    // Étudiant
-    if (!CONFIGURED) {
-        errMsg.textContent = 'Supabase non configuré. Configure SB_URL et SB_KEY dans le code.';
-        errEl.classList.add('visible'); input.classList.add('error');
-        return;
-    }
-
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>';
 
+    // ── Vérification admin via Edge Function (sécurisé) ──
+    try {
+        const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${SB_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: val })
+        });
+
+        if (adminRes.ok) {
+            session = { code: val, isAdmin: true };
+            saveSession(session);
+            enterHub();
+            return;
+        }
+    } catch(e) {
+        // Si la fonction échoue, on continue avec la vérif étudiant
+    }
+
+    // ── Vérification étudiant via Supabase ──
     try {
         const rows = await sbSelect(`access_codes?code=eq.${val}&select=*`);
 
@@ -1013,7 +878,6 @@ async function handleLogin() {
         const row = rows[0];
         if (!row.is_active) throw new Error('Ce code a été révoqué. Contacte l\'administrateur.');
 
-        // Nouveau token → invalide toute autre session avec ce code
         const token = makeToken();
         await sbUpdate('access_codes', {code: val}, {
             session_token: token,
@@ -1022,7 +886,6 @@ async function handleLogin() {
 
         session = { code: val, token, isAdmin: false, name: row.name };
         saveSession(session);
-        // Logger la connexion
         sbInsert('connection_logs', { code: val, name: row.name || null });
         enterHub();
 
@@ -1030,13 +893,11 @@ async function handleLogin() {
         errMsg.textContent = err.message || 'Erreur de connexion.';
         errEl.classList.add('visible');
         input.classList.add('error');
+        btn.disabled = false;
+        btn.textContent = 'Accéder au hub';
     }
-
-    btn.disabled = false;
-    btn.textContent = 'Accéder au hub';
 }
 
-// ── Anti-partage heartbeat ───────────────
 let heartbeat = null;
 
 function startHeartbeat() {
@@ -1060,15 +921,13 @@ function startHeartbeat() {
             return;
         }
 
-        // Maintenir last_seen_at
         await sbUpdate('access_codes', {code: session.code}, {
             last_seen_at: new Date().toISOString()
         });
 
-    }, 30000); // toutes les 30s
+    }, 30000);
 }
 
-// ── Entrée dans le hub ───────────────────
 function enterHub() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('hub-screen').classList.add('visible');
@@ -1077,7 +936,6 @@ function enterHub() {
         document.getElementById('admin-menu-item').style.display = 'flex';
         document.getElementById('admin-divider').style.display   = 'block';
         document.getElementById('footer-name').textContent = 'Administrateur';
-        if (!CONFIGURED) document.getElementById('setup-guide').style.display = 'block';
     } else {
         const prenom = session.name ? session.name.split(' ')[0] : 'Étudiant';
         document.getElementById('footer-name').textContent = session.name || 'Étudiant';
@@ -1087,7 +945,6 @@ function enterHub() {
     }
 }
 
-// ── Logout ────────────────────────────────
 async function handleLogout() {
     if (heartbeat) clearInterval(heartbeat);
     if (session && !session.isAdmin && CONFIGURED) {
@@ -1097,7 +954,6 @@ async function handleLogout() {
     location.reload();
 }
 
-// ── Navigation ────────────────────────────
 let currentFile = null;
 
 function loadPage(fileName, el, label) {
@@ -1160,18 +1016,9 @@ function openFullscreen() {
     if (frame.requestFullscreen) frame.requestFullscreen();
 }
 
-// ── Admin : chargement ───────────────────
 async function loadCodes() {
     const tbody = document.getElementById('codes-tbody');
     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Chargement…</td></tr>';
-
-    if (!CONFIGURED) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Configure Supabase pour voir les codes.</td></tr>';
-        ['stat-total','stat-active','stat-online','stat-revoked'].forEach(id => {
-            document.getElementById(id).textContent = '—';
-        });
-        return;
-    }
 
     const rows = await sbSelect('access_codes?order=created_at.desc&select=*');
     if (!rows) {
@@ -1227,13 +1074,10 @@ async function loadCodes() {
     }).join('');
 }
 
-// ── Admin : actions ──────────────────────
 async function generateCode() {
     const name = document.getElementById('gen-name').value.trim();
     const note = document.getElementById('gen-note').value.trim();
     const btn  = document.getElementById('btn-gen');
-
-    if (!CONFIGURED) { showToast('Configure Supabase d\'abord.', 'error'); return; }
 
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,.3);border-top-color:#1a1200"></span>';
@@ -1270,7 +1114,6 @@ async function restoreCode(id) {
 }
 
 async function kickCode(id) {
-    // Déconnecte la session sans révoquer le code
     const ok = await sbUpdate('access_codes', {id}, {session_token: null});
     ok ? showToast('Étudiant déconnecté.') : showToast('Erreur.', 'error');
     await loadCodes();
@@ -1282,7 +1125,6 @@ async function deleteCode(id, code) {
     ok ? showToast(`✓ Code "${code}" supprimé.`) : showToast('Erreur lors de la suppression.', 'error');
     await loadCodes();
 }
-
 
 async function loadLogs() {
     const tbody = document.getElementById('logs-tbody');
@@ -1299,8 +1141,9 @@ async function loadLogs() {
         <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.connected_at)}</td>
     </tr>`).join('');
 }
+
 async function kickAll() {
-    if (!confirm("Déconnecter TOUS les étudiants connectés ? Leurs sessions seront invalidées.")) return;
+    if (!confirm("Déconnecter TOUS les étudiants connectés ?")) return;
     const res = await fetch(`${SB_URL}/rest/v1/access_codes?is_active=eq.true`, {
         method: "PATCH",
         headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}`, "Content-Type": "application/json" },
@@ -1322,10 +1165,6 @@ function copyCode(code) {
         });
 }
 
-// ── Mobile sidebar ────────────────────────
-
-
-// ══ SEARCH INDEX ════════════════════════════════
 const SEARCH_INDEX = [
     { notion: 'Seuil de rentabilité', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
     { notion: 'Marge sur coût variable', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
@@ -1407,10 +1246,10 @@ document.addEventListener('keydown', function(e) {
 
 function toggleSem(id) {
     const items = document.getElementById('sem-' + id);
-    const btn   = items.previousElementSibling;
     items.classList.toggle('open');
-    btn.classList.toggle('open');
+    items.previousElementSibling.classList.toggle('open');
 }
+
 function toggleSidebar() {
     document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
 }
@@ -1425,7 +1264,6 @@ function closeSidebar() {
     document.getElementById('nav-overlay').classList.remove('visible');
 }
 
-// ── Init ──────────────────────────────────
 (function() {
     const s = getSession();
     if (s) { session = s; enterHub(); }
