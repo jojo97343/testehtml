@@ -760,7 +760,7 @@
 // ════════════════════════════════════════════════
 const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
 const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
-const ADMIN_CODE = 'ADMIN2025';
+// Code admin géré via Supabase Edge Function
 // ════════════════════════════════════════════════
 
 const CONFIGURED = true;
@@ -846,16 +846,26 @@ async function handleLogin() {
     input.classList.remove('error');
     errEl.classList.remove('visible');
 
-    // ── Vérification admin ──
-    if (val === ADMIN_CODE) {
-        session = { code: val, isAdmin: true };
-        saveSession(session);
-        enterHub();
-        return;
-    }
-
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>';
+
+    // ── Vérification admin via Edge Function (sécurisé) ──
+    try {
+        const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: val })
+        });
+        if (adminRes.ok) {
+            const data = await adminRes.json();
+            if (data.isAdmin) {
+                session = { code: val, isAdmin: true };
+                saveSession(session);
+                enterHub();
+                return;
+            }
+        }
+    } catch(e) {}
 
     // ── Vérification étudiant via Supabase ──
     try {
