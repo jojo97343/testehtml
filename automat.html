@@ -24,8 +24,6 @@
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             display: flex;
             height: 100vh;
@@ -279,6 +277,70 @@
 
         .btn-topbar:hover { border-color:var(--accent2); color:var(--accent2); }
 
+        .search-wrap {
+            flex: 1; max-width: 340px; position: relative; margin: 0 12px;
+        }
+
+        .search-input {
+            width: 100%; background: var(--bg-deep);
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 6px 14px 6px 34px;
+            font-size: .78rem; color: var(--white);
+            font-family: "Inter", sans-serif; outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .search-input::placeholder { color: var(--muted); }
+        .search-input:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(77,150,255,.10); }
+
+        .search-icon {
+            position: absolute; left: 10px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px; color: var(--muted); pointer-events: none;
+        }
+
+        .search-results {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; z-index: 200;
+            max-height: 320px; overflow-y: auto; scrollbar-width: none;
+            display: none; box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+
+        .search-results.visible { display: block; }
+        .search-results::-webkit-scrollbar { display: none; }
+
+        .search-result-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px; cursor: pointer;
+            border-bottom: 1px solid rgba(34,36,48,.5);
+            transition: background .15s;
+        }
+
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: var(--bg-hover); }
+
+        .sri-icon {
+            width: 28px; height: 28px; border-radius: 6px;
+            background: rgba(77,150,255,.12);
+            display: grid; place-items: center;
+            font-size: 13px; flex-shrink: 0; margin-top: 1px;
+        }
+
+        .sri-notion { font-size: .8rem; font-weight: 500; color: var(--white); }
+        .sri-mat    { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+        .sri-mark { color: var(--accent2); }
+
+        .search-empty {
+            padding: 20px 14px; text-align: center;
+            font-size: .78rem; color: var(--muted);
+        }
+
+        @media (max-width: 768px) {
+            .search-wrap { max-width: none; flex: 1; margin: 0 6px; }
+            .topbar-breadcrumb { display: none; }
+        }
+
         .loader {
             position:absolute; top:0; left:0; height:3px; width:0%;
             background:linear-gradient(90deg,var(--accent2),var(--accent));
@@ -435,39 +497,8 @@
         .btn-restore:hover { background:rgba(77,204,143,.1); }
         .btn-delete  { border-color:rgba(255,92,92,.15); color:var(--muted); }
         .btn-delete:hover  { background:rgba(255,92,92,.08); color:var(--danger); }
-
         .btn-kick    { border-color:rgba(77,150,255,.25); color:var(--accent2); }
         .btn-kick:hover    { background:rgba(77,150,255,.1); }
-
-        /* Setup card */
-        .setup-card {
-            background:rgba(240,192,64,.06); border:1px solid rgba(240,192,64,.2);
-            border-radius:14px; padding:22px 24px; margin-bottom:20px;
-        }
-
-        .setup-card .section-title { color:var(--accent); }
-
-        .setup-step {
-            display:flex; gap:12px; margin-bottom:14px; font-size:.82rem; line-height:1.6;
-        }
-
-        .setup-num {
-            width:22px; height:22px; border-radius:50%; background:var(--accent);
-            color:#1a1200; font-weight:700; font-size:.7rem; display:grid; place-items:center;
-            flex-shrink:0; margin-top:2px;
-        }
-
-        .setup-card code {
-            background:rgba(240,192,64,.15); border-radius:4px;
-            padding:1px 6px; font-family:monospace; font-size:.78rem; color:var(--accent);
-        }
-
-        pre.sql {
-            background:var(--bg-deep); border:1px solid var(--border);
-            border-radius:8px; padding:16px; font-size:.72rem;
-            color:var(--text); overflow-x:auto; line-height:1.7;
-            font-family:monospace; margin-top:10px;
-        }
 
         /* Toast */
         .toast {
@@ -545,10 +576,7 @@
             <span>⚠</span>
             <span id="login-error-msg">Code incorrect ou révoqué.</span>
         </div>
-        <div class="login-footer">
-            <!-- footer vide -->
-            
-        </div>
+        <div class="login-footer"></div>
     </div>
 </div>
 
@@ -568,44 +596,29 @@
             <div class="session-badge">Session active</div>
         </div>
 
-        <div class="menu-section">Matières</div>
+        <ul class="menu-list" style="overflow-y:auto">
+            <div class="menu-semester" onclick="toggleSem('s1')">
+                <span>Semestre 1</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s1">
+                <li class="menu-item soon"><div class="item-icon">📘</div><span class="item-label">Matière 1</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📗</div><span class="item-label">Matière 2</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📙</div><span class="item-label">Matière 3</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📕</div><span class="item-label">Matière 4</span><span class="soon-badge">Bientôt</span></li>
+            </div>
 
-        <ul class="menu-list">
-            <li class="menu-item" onclick="loadPage('CG.html', this, 'Contrôle de Gestion')">
-                <div class="item-icon">📊</div>
-                <span class="item-label">Contrôle de Gestion</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('FI.html', this, 'Finance')">
-                <div class="item-icon">💰</div>
-                <span class="item-label">Finance</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('mana.html', this, 'Management')">
-                <div class="item-icon">👔</div>
-                <span class="item-label">Management</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('SO.html', this, 'Droit des Sociétés')">
-                <div class="item-icon">⚖️</div>
-                <span class="item-label">Droit des Sociétés</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('DT.html', this, 'Droit du Travail')">
-                <div class="item-icon">👷</div>
-                <span class="item-label">Droit du Travail</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('fisca.html', this, 'Droit Fiscal')">
-                <div class="item-icon">🧾</div>
-                <span class="item-label">Droit Fiscal</span>
-                <span class="item-arrow">›</span>
-            </li>
-            <li class="menu-item" onclick="loadPage('compta.html', this, 'Comptabilité')">
-                <div class="item-icon">📑</div>
-                <span class="item-label">Comptabilité</span>
-                <span class="item-arrow">›</span>
-            </li>
+            <div class="menu-semester" onclick="toggleSem('s2')">
+                <span>Semestre 2</span>
+                <span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-s2">
+                <li class="menu-item soon"><div class="item-icon">📘</div><span class="item-label">Matière 5</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📗</div><span class="item-label">Matière 6</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📙</div><span class="item-label">Matière 7</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item soon"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span></li>
+            </div>
+
             <div class="menu-divider" id="admin-divider" style="display:none"></div>
             <li class="menu-item admin-item" id="admin-menu-item" style="display:none" onclick="openAdmin()">
                 <div class="item-icon">⚙️</div>
@@ -616,7 +629,7 @@
 
         <div class="nav-footer">
             <div class="footer-text">
-                <strong>7 matières</strong><br>
+                <strong>Master CCA</strong><br>
                 <span id="footer-name">Session</span>
             </div>
             <button class="btn-logout" onclick="handleLogout()">Déconnexion</button>
@@ -632,7 +645,18 @@
                 Hub Révisions <span class="topbar-sep">›</span>
                 <span id="current-page">Accueil</span>
             </div>
+
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" class="search-input"
+                    placeholder="Rechercher une notion…"
+                    autocomplete="off" autocorrect="off" spellcheck="false"
+                    oninput="handleSearch(this.value)"
+                    onfocus="showResults()">
+                <div class="search-results" id="search-results"></div>
+            </div>
             <div class="topbar-actions">
+                <button class="btn-topbar" id="btn-home" onclick="goHome()" style="display:none">⌂ Accueil</button>
                 <button class="btn-topbar" onclick="reloadFrame()">↺ Recharger</button>
                 <button class="btn-topbar" onclick="openFullscreen()">⛶ Plein écran</button>
             </div>
@@ -642,7 +666,7 @@
 
         <div class="welcome" id="welcome">
             <div class="welcome-icon">🎯</div>
-            <h1>Bonne révision !</h1>
+            <h1 id="welcome-title">Bonne révision !</h1>
             <p>Sélectionne une matière dans le menu pour commencer.</p>
             <div class="welcome-cards">
                 <div class="welcome-card" onclick="loadPage('CG.html',null,'Contrôle de Gestion')">📊 Contrôle de Gestion</div>
@@ -655,76 +679,24 @@
             <iframe id="content-frame"></iframe>
         </div>
 
-        <!-- Panneau admin -->
         <div id="admin-panel">
             <div class="admin-content">
-
-                <!-- Setup guide (masqué une fois configuré) -->
-                <div class="setup-card" id="setup-guide" style="display:none">
-                    <div class="section-title">🔧 Configuration Supabase requise</div>
-
-                    <div class="setup-step">
-                        <div class="setup-num">1</div>
-                        <div>Va sur <strong>supabase.com</strong> → crée un projet → attends 2 min</div>
-                    </div>
-                    <div class="setup-step">
-                        <div class="setup-num">2</div>
-                        <div>Va dans <strong>SQL Editor → New Query</strong>, colle et exécute ce script :</div>
-                    </div>
-                    <pre class="sql">CREATE TABLE access_codes (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  name TEXT,
-  note TEXT,
-  is_active BOOLEAN DEFAULT true,
-  session_token TEXT,
-  last_seen_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-ALTER TABLE access_codes ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "anon_read" ON access_codes
-  FOR SELECT TO anon USING (true);
-
-CREATE POLICY "anon_update" ON access_codes
-  FOR UPDATE TO anon USING (true);</pre>
-
-                    <div class="setup-step" style="margin-top:14px">
-                        <div class="setup-num">3</div>
-                        <div>Va dans <strong>Project Settings → API</strong>, copie <code>Project URL</code> et <code>anon public</code>, colle-les dans le code source à la place de <code>https://qridhnhidcrfffzejzgt.supabase.co</code> et <code>sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E</code></div>
-                    </div>
-                    <div class="setup-step">
-                        <div class="setup-num">4</div>
-                        <div>Push sur GitHub → c'est prêt !</div>
-                    </div>
-                </div>
-
                 <div class="admin-header">
                     <div>
                         <div class="admin-title">⚙️ Administration</div>
                         <div class="admin-subtitle">Gestion des codes d'accès</div>
                     </div>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button><button class="btn-gen" onclick="kickAll()" style="padding:8px 16px;font-size:.75rem;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3);color:var(--danger)">⚡ Déco. tout le monde</button></div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn-gen" onclick="loadCodes()" style="padding:8px 16px;font-size:.75rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button>
+                        <button class="btn-gen" onclick="kickAll()" style="padding:8px 16px;font-size:.75rem;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.3);color:var(--danger)">⚡ Déco. tout le monde</button>
+                    </div>
                 </div>
 
                 <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-total">—</div>
-                        <div class="stat-label">Codes créés</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-active" style="color:var(--success)">—</div>
-                        <div class="stat-label">Actifs</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-online" style="color:var(--accent2)">—</div>
-                        <div class="stat-label">Connectés maintenant</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div>
-                        <div class="stat-label">Révoqués</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Codes créés</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-active" style="color:var(--success)">—</div><div class="stat-label">Actifs</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-online" style="color:var(--accent2)">—</div><div class="stat-label">Connectés maintenant</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div><div class="stat-label">Révoqués</div></div>
                 </div>
 
                 <div class="section-card">
@@ -748,12 +720,8 @@ CREATE POLICY "anon_update" ON access_codes
                         <table class="codes-table">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Nom</th>
-                                    <th>Note</th>
-                                    <th>Statut</th>
-                                    <th>Dernière activité</th>
-                                    <th>Actions</th>
+                                    <th>Code</th><th>Nom</th><th>Note</th>
+                                    <th>Statut</th><th>Dernière activité</th><th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="codes-tbody">
@@ -763,6 +731,22 @@ CREATE POLICY "anon_update" ON access_codes
                     </div>
                 </div>
 
+                <div class="section-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <div class="section-title" style="margin-bottom:0">🕓 Historique des connexions</div>
+                        <button class="btn-gen" onclick="loadLogs()" style="padding:6px 14px;font-size:.72rem;background:var(--bg-hover);border:1px solid var(--border);color:var(--text)">↺ Actualiser</button>
+                    </div>
+                    <div class="codes-table-wrap">
+                        <table class="codes-table">
+                            <thead>
+                                <tr><th>Nom</th><th>Code</th><th>Connecté le</th></tr>
+                            </thead>
+                            <tbody id="logs-tbody">
+                                <tr><td colspan="3" class="empty-state">Chargement…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -772,17 +756,16 @@ CREATE POLICY "anon_update" ON access_codes
 
 <script>
 // ════════════════════════════════════════════════
-//  ⚠️  REMPLIS CES 3 VALEURS AVEC TES INFOS SUPABASE
+//  CONFIG SUPABASE — modifie uniquement ces 2 valeurs
 // ════════════════════════════════════════════════
-const SB_URL  = 'https://qridhnhidcrfffzejzgt.supabase.co';        // ex: https://xxxx.supabase.co
-const SB_KEY  = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';        // clé "anon public"
-const ADMIN_CODE = 'ADMIN2025';     // ← ton code admin fixe, change-le !
+const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
+const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
+// ⚠️ Le code admin n'est plus ici — il est sécurisé dans Supabase Secrets
 // ════════════════════════════════════════════════
 
 const CONFIGURED = true;
 const SESSION_KEY = 'hub_sess';
 
-// ── Utilitaires ─────────────────────────
 function makeCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
     const D = '23456789';
@@ -805,7 +788,6 @@ function showToast(msg, type='success') {
     clearTimeout(t._t); t._t = setTimeout(()=>{ t.className='toast'; }, 3200);
 }
 
-// ── Supabase REST ────────────────────────
 const H = (key=SB_KEY) => ({
     'apikey': key,
     'Authorization': `Bearer ${key}`,
@@ -841,17 +823,14 @@ async function sbDelete(table, filter) {
     return r.ok;
 }
 
-// ── Session ──────────────────────────────
 let session = null;
 
 function getSession() {
-    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; }
 }
+function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+function clearSession()  { localStorage.removeItem(SESSION_KEY); }
 
-function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
-function clearSession()  { sessionStorage.removeItem(SESSION_KEY); }
-
-// ── Login ────────────────────────────────
 document.getElementById('code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
 });
@@ -867,24 +846,31 @@ async function handleLogin() {
     input.classList.remove('error');
     errEl.classList.remove('visible');
 
-    // Admin → accès direct, pas de vérif Supabase
-    if (val === ADMIN_CODE) {
-        session = { code: val, isAdmin: true };
-        saveSession(session);
-        enterHub();
-        return;
-    }
-
-    // Étudiant
-    if (!CONFIGURED) {
-        errMsg.textContent = 'Supabase non configuré. Configure SB_URL et SB_KEY dans le code.';
-        errEl.classList.add('visible'); input.classList.add('error');
-        return;
-    }
-
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>';
 
+    // ── Vérification admin via Edge Function (sécurisé) ──
+    try {
+        const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${SB_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: val })
+        });
+
+        if (adminRes.ok) {
+            session = { code: val, isAdmin: true };
+            saveSession(session);
+            enterHub();
+            return;
+        }
+    } catch(e) {
+        // Si la fonction échoue, on continue avec la vérif étudiant
+    }
+
+    // ── Vérification étudiant via Supabase ──
     try {
         const rows = await sbSelect(`access_codes?code=eq.${val}&select=*`);
 
@@ -892,7 +878,6 @@ async function handleLogin() {
         const row = rows[0];
         if (!row.is_active) throw new Error('Ce code a été révoqué. Contacte l\'administrateur.');
 
-        // Nouveau token → invalide toute autre session avec ce code
         const token = makeToken();
         await sbUpdate('access_codes', {code: val}, {
             session_token: token,
@@ -901,19 +886,18 @@ async function handleLogin() {
 
         session = { code: val, token, isAdmin: false, name: row.name };
         saveSession(session);
+        sbInsert('connection_logs', { code: val, name: row.name || null });
         enterHub();
 
     } catch(err) {
         errMsg.textContent = err.message || 'Erreur de connexion.';
         errEl.classList.add('visible');
         input.classList.add('error');
+        btn.disabled = false;
+        btn.textContent = 'Accéder au hub';
     }
-
-    btn.disabled = false;
-    btn.textContent = 'Accéder au hub';
 }
 
-// ── Anti-partage heartbeat ───────────────
 let heartbeat = null;
 
 function startHeartbeat() {
@@ -937,15 +921,13 @@ function startHeartbeat() {
             return;
         }
 
-        // Maintenir last_seen_at
         await sbUpdate('access_codes', {code: session.code}, {
             last_seen_at: new Date().toISOString()
         });
 
-    }, 30000); // toutes les 30s
+    }, 30000);
 }
 
-// ── Entrée dans le hub ───────────────────
 function enterHub() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('hub-screen').classList.add('visible');
@@ -954,14 +936,15 @@ function enterHub() {
         document.getElementById('admin-menu-item').style.display = 'flex';
         document.getElementById('admin-divider').style.display   = 'block';
         document.getElementById('footer-name').textContent = 'Administrateur';
-        if (!CONFIGURED) document.getElementById('setup-guide').style.display = 'block';
     } else {
+        const prenom = session.name ? session.name.split(' ')[0] : 'Étudiant';
         document.getElementById('footer-name').textContent = session.name || 'Étudiant';
+        const wt = document.getElementById('welcome-title');
+        if (wt) wt.textContent = 'Bonne révision, ' + prenom + ' !';
         startHeartbeat();
     }
 }
 
-// ── Logout ────────────────────────────────
 async function handleLogout() {
     if (heartbeat) clearInterval(heartbeat);
     if (session && !session.isAdmin && CONFIGURED) {
@@ -971,7 +954,6 @@ async function handleLogout() {
     location.reload();
 }
 
-// ── Navigation ────────────────────────────
 let currentFile = null;
 
 function loadPage(fileName, el, label) {
@@ -987,6 +969,7 @@ function loadPage(fileName, el, label) {
     document.getElementById('admin-panel').classList.remove('visible');
     document.getElementById('welcome').classList.add('hidden');
     document.getElementById('iframe-wrapper').classList.add('visible');
+    document.getElementById('btn-home').style.display = 'block';
     if (window.innerWidth <= 768) closeSidebar();
     if (label) document.getElementById('current-page').textContent = label;
     const loader = document.getElementById('loader');
@@ -1003,8 +986,20 @@ function openAdmin() {
     document.getElementById('iframe-wrapper').classList.remove('visible');
     document.getElementById('admin-panel').classList.add('visible');
     document.getElementById('current-page').textContent = 'Administration';
+    document.getElementById('btn-home').style.display = 'block';
     if (window.innerWidth <= 768) closeSidebar();
     loadCodes();
+    loadLogs();
+}
+
+function goHome() {
+    currentFile = null;
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('iframe-wrapper').classList.remove('visible');
+    document.getElementById('admin-panel').classList.remove('visible');
+    document.getElementById('welcome').classList.remove('hidden');
+    document.getElementById('current-page').textContent = 'Accueil';
+    document.getElementById('btn-home').style.display = 'none';
 }
 
 function reloadFrame() {
@@ -1021,18 +1016,9 @@ function openFullscreen() {
     if (frame.requestFullscreen) frame.requestFullscreen();
 }
 
-// ── Admin : chargement ───────────────────
 async function loadCodes() {
     const tbody = document.getElementById('codes-tbody');
     tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Chargement…</td></tr>';
-
-    if (!CONFIGURED) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Configure Supabase pour voir les codes.</td></tr>';
-        ['stat-total','stat-active','stat-online','stat-revoked'].forEach(id => {
-            document.getElementById(id).textContent = '—';
-        });
-        return;
-    }
 
     const rows = await sbSelect('access_codes?order=created_at.desc&select=*');
     if (!rows) {
@@ -1088,13 +1074,10 @@ async function loadCodes() {
     }).join('');
 }
 
-// ── Admin : actions ──────────────────────
 async function generateCode() {
     const name = document.getElementById('gen-name').value.trim();
     const note = document.getElementById('gen-note').value.trim();
     const btn  = document.getElementById('btn-gen');
-
-    if (!CONFIGURED) { showToast('Configure Supabase d\'abord.', 'error'); return; }
 
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,.3);border-top-color:#1a1200"></span>';
@@ -1131,7 +1114,6 @@ async function restoreCode(id) {
 }
 
 async function kickCode(id) {
-    // Déconnecte la session sans révoquer le code
     const ok = await sbUpdate('access_codes', {id}, {session_token: null});
     ok ? showToast('Étudiant déconnecté.') : showToast('Erreur.', 'error');
     await loadCodes();
@@ -1144,8 +1126,24 @@ async function deleteCode(id, code) {
     await loadCodes();
 }
 
+async function loadLogs() {
+    const tbody = document.getElementById('logs-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Chargement…</td></tr>';
+    const rows = await sbSelect('connection_logs?order=connected_at.desc&limit=50&select=*');
+    if (!rows || rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Aucune connexion enregistrée.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = rows.map(r => `<tr>
+        <td>${r.name || '<span style="color:var(--muted)">—</span>'}</td>
+        <td><span class="code-pill">${r.code}</span></td>
+        <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.connected_at)}</td>
+    </tr>`).join('');
+}
+
 async function kickAll() {
-    if (!confirm("Déconnecter TOUS les étudiants connectés ? Leurs sessions seront invalidées.")) return;
+    if (!confirm("Déconnecter TOUS les étudiants connectés ?")) return;
     const res = await fetch(`${SB_URL}/rest/v1/access_codes?is_active=eq.true`, {
         method: "PATCH",
         headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}`, "Content-Type": "application/json" },
@@ -1167,7 +1165,91 @@ function copyCode(code) {
         });
 }
 
-// ── Mobile sidebar ────────────────────────
+const SEARCH_INDEX = [
+    { notion: 'Seuil de rentabilité', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Marge sur coût variable', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Analyse des écarts', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Budget flexible', matiere: 'Contrôle de Gestion', fichier: 'CG.html', ancre: '', icon: '📊' },
+    { notion: 'Bilan financier', matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: "Capacité d'autofinancement", matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: 'Ratio de liquidité', matiere: 'Finance', fichier: 'FI.html', ancre: '', icon: '💰' },
+    { notion: 'Management participatif', matiere: 'Management', fichier: 'mana.html', ancre: '', icon: '👔' },
+    { notion: 'Capital social', matiere: 'Droit des Sociétés', fichier: 'SO.html', ancre: '', icon: '⚖️' },
+    { notion: 'Contrat de travail', matiere: 'Droit du Travail', fichier: 'DT.html', ancre: '', icon: '👷' },
+    { notion: 'TVA déductible', matiere: 'Droit Fiscal', fichier: 'fisca.html', ancre: '', icon: '🧾' },
+    { notion: 'Amortissement linéaire', matiere: 'Comptabilité', fichier: 'compta.html', ancre: '', icon: '📑' },
+];
+
+function highlight(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('(' + escaped + ')', 'gi');
+    return text.replace(re, '<span class="sri-mark">$1</span>');
+}
+
+function handleSearch(val) {
+    const q = val.trim().toLowerCase();
+    const box = document.getElementById('search-results');
+    if (!q) { box.innerHTML = ''; box.classList.remove('visible'); return; }
+
+    const results = SEARCH_INDEX.filter(item =>
+        item.notion.toLowerCase().includes(q) ||
+        item.matiere.toLowerCase().includes(q)
+    ).slice(0, 8);
+
+    if (results.length === 0) {
+        box.innerHTML = '<div class="search-empty">Aucun résultat pour "' + val + '"</div>';
+        box.classList.add('visible');
+        return;
+    }
+
+    box.innerHTML = results.map(r =>
+        '<div class="search-result-item" onclick="goToNotion(\'' + r.fichier + '\',\'' + r.ancre + '\',\'' + r.matiere + '\')">' +
+        '<div class="sri-icon">' + r.icon + '</div>' +
+        '<div><div class="sri-notion">' + highlight(r.notion, val) + '</div>' +
+        '<div class="sri-mat">' + r.matiere + '</div></div></div>'
+    ).join('');
+    box.classList.add('visible');
+}
+
+function showResults() {
+    const val = document.getElementById('search-input').value.trim();
+    if (val) handleSearch(val);
+}
+
+function goToNotion(fichier, ancre, matiere) {
+    closeSearch();
+    loadPage(fichier, null, matiere);
+    if (ancre) {
+        setTimeout(function() {
+            try { document.getElementById('content-frame').contentWindow.location.hash = ancre; } catch(e) {}
+        }, 800);
+    }
+}
+
+function closeSearch() {
+    document.getElementById('search-input').value = '';
+    var box = document.getElementById('search-results');
+    box.innerHTML = '';
+    box.classList.remove('visible');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) {
+        document.getElementById('search-results').classList.remove('visible');
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSearch();
+});
+
+function toggleSem(id) {
+    const items = document.getElementById('sem-' + id);
+    items.classList.toggle('open');
+    items.previousElementSibling.classList.toggle('open');
+}
+
 function toggleSidebar() {
     document.getElementById('sidebar').classList.contains('open') ? closeSidebar() : openSidebar();
 }
@@ -1182,7 +1264,6 @@ function closeSidebar() {
     document.getElementById('nav-overlay').classList.remove('visible');
 }
 
-// ── Init ──────────────────────────────────
 (function() {
     const s = getSession();
     if (s) { session = s; enterHub(); }
