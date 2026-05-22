@@ -308,6 +308,13 @@
         .menu-item.admin-item.active { background: rgba(255,209,102,.08); color: var(--yellow); }
         .menu-item.admin-item.active::before { background: var(--grad3); }
 
+        /* Ressources sidebar style */
+        .menu-item.res-item .item-icon { background: linear-gradient(135deg, rgba(6,214,214,.15), rgba(6,214,160,.1)); }
+        .menu-item.res-item:hover { color: var(--cyan); }
+
+        .menu-semester.res-header { color: var(--cyan); }
+        .menu-semester.res-header .sem-arrow { color: var(--cyan); opacity: .6; }
+
         .nav-footer {
             padding: 14px 16px; border-top: 1px solid var(--border);
             display: flex; align-items: center; gap: 10px;
@@ -717,6 +724,17 @@
                 <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span></li>
             </div>
 
+            <!-- ── INFORMATIONS COMPLÉMENTAIRES ── -->
+            <div class="menu-divider"></div>
+            <div class="menu-semester res-header" onclick="toggleSem('ressources')">
+                <span>📎 Infos complémentaires</span><span class="sem-arrow">›</span>
+            </div>
+            <div class="sem-items" id="sem-ressources">
+                <div id="ressources-list-sidebar">
+                    <li class="menu-item"><span style="font-size:.72rem;color:var(--muted);padding:0 4px">Chargement…</span></li>
+                </div>
+            </div>
+
             <div class="menu-divider" id="admin-divider" style="display:none"></div>
             <li class="menu-item admin-item" id="admin-menu-item" style="display:none" onclick="openAdmin()">
                 <div class="item-icon">⚙️</div>
@@ -793,7 +811,7 @@
                 <div class="admin-header">
                     <div>
                         <div class="admin-title">⚙️ Administration</div>
-                        <div class="admin-subtitle">Gestion des codes d'accès</div>
+                        <div class="admin-subtitle">Gestion des codes d'accès et ressources</div>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
                         <button class="btn-gen" onclick="loadCodes()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺ Actualiser</button>
@@ -829,6 +847,35 @@
                         <table class="codes-table">
                             <thead><tr><th>Code</th><th>Nom</th><th>Note</th><th>Statut</th><th>Dernière activité</th><th>Actions</th></tr></thead>
                             <tbody id="codes-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ── SECTION RESSOURCES PDF ── -->
+                <div class="section-card" style="border-color:rgba(6,214,214,.15)">
+                    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <span>📎 Infos complémentaires — Ressources PDF / Liens</span>
+                        <button class="btn-gen" onclick="loadResources()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
+                    </div>
+                    <div class="gen-form" style="margin-bottom:20px">
+                        <div class="form-field" style="flex:0 0 70px;min-width:60px">
+                            <label class="form-label">Icône</label>
+                            <input type="text" class="form-input" id="res-icon" placeholder="📄" maxlength="4" style="text-align:center;font-size:1.1rem">
+                        </div>
+                        <div class="form-field" style="flex:2">
+                            <label class="form-label">Nom du lien</label>
+                            <input type="text" class="form-input" id="res-label" placeholder="Ex : Corrigé UE441 DS2">
+                        </div>
+                        <div class="form-field" style="flex:3">
+                            <label class="form-label">URL (PDF, Drive, site…)</label>
+                            <input type="text" class="form-input" id="res-url" placeholder="https://…">
+                        </div>
+                        <button class="btn-gen" id="btn-res-add" onclick="addResource()" style="background:linear-gradient(135deg,#06d6d6,#a855f7)">+ Ajouter</button>
+                    </div>
+                    <div class="codes-table-wrap">
+                        <table class="codes-table">
+                            <thead><tr><th style="width:44px">Icône</th><th>Nom</th><th>URL</th><th>Actions</th></tr></thead>
+                            <tbody id="res-tbody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -871,6 +918,8 @@ async function sbSelect(q){const r=await fetch(`${SB_URL}/rest/v1/${q}`,{headers
 async function sbInsert(t,b){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:H(),body:JSON.stringify(b)});return r.ok?await r.json():null;}
 async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'PATCH',headers:H(),body:JSON.stringify(b)});return r.ok;}
 async function sbDelete(t,f){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'DELETE',headers:H()});return r.ok;}
+
+function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 let session=null;
 function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY));}catch{return null;}}
@@ -947,6 +996,7 @@ function enterHub(){
         if(wt)wt.innerHTML=`Bonne <span>révision</span>, ${prenom} !`;
         startHeartbeat();
     }
+    loadResources();
 }
 
 async function handleLogout(){
@@ -982,7 +1032,7 @@ function openAdmin(){
     document.getElementById('current-page').textContent='Administration';
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
-    loadCodes();loadLogs();
+    loadCodes();loadLogs();loadResources();
 }
 
 function goHome(){
@@ -1049,6 +1099,104 @@ async function kickAll(){
 }
 
 function copyCode(code){navigator.clipboard.writeText(code).then(()=>showToast(`✓ "${code}" copié !`)).catch(()=>{const el=document.createElement('textarea');el.value=code;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);showToast(`✓ "${code}" copié !`);});}
+
+// ── RESSOURCES PDF / LIENS ─────────────────────────────────────────────────
+
+async function loadResources(){
+    const rows=await sbSelect('resources?order=created_at.asc&select=*');
+    renderResourcesSidebar(rows||[]);
+    renderResourcesAdmin(rows||[]);
+}
+
+function renderResourcesSidebar(rows){
+    const el=document.getElementById('ressources-list-sidebar');
+    if(!el)return;
+    if(!rows.length){
+        el.innerHTML='<li class="menu-item" style="pointer-events:none"><span style="font-size:.72rem;color:var(--muted)">Aucune ressource.</span></li>';
+        return;
+    }
+    el.innerHTML=rows.map(r=>`
+        <li class="menu-item res-item" onclick="window.open('${escHtml(r.url)}','_blank')">
+            <div class="item-icon" style="font-size:16px">${escHtml(r.icon||'📄')}</div>
+            <span class="item-label" style="font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(r.label)}</span>
+            <span class="item-arrow">↗</span>
+        </li>`).join('');
+}
+
+function renderResourcesAdmin(rows){
+    const tbody=document.getElementById('res-tbody');
+    if(!tbody)return;
+    if(!rows.length){
+        tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Aucune ressource. Utilisez le formulaire ci-dessus pour en ajouter.</td></tr>';
+        return;
+    }
+    tbody.innerHTML=rows.map((r,i)=>`
+        <tr>
+            <td style="font-size:1.3rem;text-align:center">${escHtml(r.icon||'📄')}</td>
+            <td style="font-weight:600;color:var(--white);max-width:180px;word-break:break-word">${escHtml(r.label)}</td>
+            <td style="max-width:260px">
+                <a href="${escHtml(r.url)}" target="_blank"
+                   style="color:var(--cyan);font-size:.73rem;word-break:break-all;text-decoration:none;opacity:.85"
+                   onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.85">
+                    ${escHtml(r.url.length>55?r.url.slice(0,55)+'…':r.url)}
+                </a>
+            </td>
+            <td>
+                <div class="actions-cell">
+                    <button class="btn-action btn-copy" onclick="copyCode('${escHtml(r.url)}')">Copier URL</button>
+                    ${i>0?`<button class="btn-action" style="border-color:var(--border);color:var(--muted)" onclick="moveResource('${r.id}','up')">↑</button>`:''}
+                    ${i<rows.length-1?`<button class="btn-action" style="border-color:var(--border);color:var(--muted)" onclick="moveResource('${r.id}','down')">↓</button>`:''}
+                    <button class="btn-action btn-delete" onclick="deleteResource('${r.id}','${escHtml(r.label)}')">Suppr.</button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
+async function addResource(){
+    const icon=document.getElementById('res-icon').value.trim()||'📄';
+    const label=document.getElementById('res-label').value.trim();
+    const url=document.getElementById('res-url').value.trim();
+    if(!label||!url){showToast('Remplis le nom et l\'URL.','error');return;}
+    const btn=document.getElementById('btn-res-add');
+    btn.disabled=true;btn.innerHTML='<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:#fff"></span>';
+    const res=await sbInsert('resources',{icon,label,url});
+    if(res){
+        document.getElementById('res-icon').value='';
+        document.getElementById('res-label').value='';
+        document.getElementById('res-url').value='';
+        showToast(`✓ "${label}" ajouté.`);
+        await loadResources();
+    }else{
+        showToast('Erreur lors de l\'ajout.','error');
+    }
+    btn.disabled=false;btn.textContent='+ Ajouter';
+}
+
+async function deleteResource(id,label){
+    if(!confirm(`Supprimer "${label}" ?`))return;
+    const ok=await sbDelete('resources',{id});
+    ok?showToast(`✓ "${label}" supprimé.`):showToast('Erreur.','error');
+    await loadResources();
+}
+
+async function moveResource(id,dir){
+    // Reload current list, swap order via created_at trick (swap labels/urls)
+    const rows=await sbSelect('resources?order=created_at.asc&select=*');
+    if(!rows)return;
+    const idx=rows.findIndex(r=>r.id===id);
+    if(idx===-1)return;
+    const swapIdx=dir==='up'?idx-1:idx+1;
+    if(swapIdx<0||swapIdx>=rows.length)return;
+    const a=rows[idx],b=rows[swapIdx];
+    // Swap content (icon, label, url) between the two rows
+    await Promise.all([
+        sbUpdate('resources',{id:a.id},{icon:b.icon,label:b.label,url:b.url}),
+        sbUpdate('resources',{id:b.id},{icon:a.icon,label:a.label,url:a.url})
+    ]);
+    await loadResources();
+}
+
+// ── SEARCH ─────────────────────────────────────────────────────────────────
 
 const SEARCH_INDEX=[
     {notion:'Seuil de rentabilité',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
