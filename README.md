@@ -974,6 +974,7 @@ function startHeartbeat(){
         if(!row.is_active){clearSession();showToast('⚠️ Accès révoqué.','error');setTimeout(()=>location.reload(),2500);return;}
         if(row.session_token!==session.token){clearSession();showToast('⚠️ Session expirée : autre appareil.','error');setTimeout(()=>location.reload(),2800);return;}
         await sbUpdate('access_codes',{code:session.code},{last_seen_at:new Date().toISOString()});
+        loadResources();
     },30000);
 }
 
