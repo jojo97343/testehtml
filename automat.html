@@ -1229,7 +1229,14 @@ function closeSearch(){document.getElementById('search-input').value='';const bo
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('search-results').classList.remove('visible');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();});
 
-function toggleSem(id){const items=document.getElementById('sem-'+id);items.classList.toggle('open');items.previousElementSibling.classList.toggle('open');}
+function toggleSem(id){
+    const items=document.getElementById('sem-'+id);
+    if(!items)return;
+    items.classList.toggle('open');
+    // Trouve le header qui appelle toggleSem(id) via onclick
+    const headers=document.querySelectorAll('.menu-semester');
+    headers.forEach(h=>{if((h.getAttribute('onclick')||'').includes(`'${id}'`))h.classList.toggle('open');});
+}
 function toggleSidebar(){document.getElementById('sidebar').classList.contains('open')?closeSidebar():openSidebar();}
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('nav-overlay').classList.add('visible');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('nav-overlay').classList.remove('visible');}
