@@ -1156,9 +1156,9 @@ async function sendBroadcast() {
     const btn = document.getElementById('btn-bc-send');
     btn.disabled = true; btn.textContent = '…';
     // Désactiver les anciens messages
-    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true`, {
+    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true&id=neq.00000000-0000-0000-0000-000000000000`, {
         method: 'PATCH',
-        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json'},
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
         body: JSON.stringify({active: false})
     });
     const res = await sbInsert('broadcast', {message: text, icon, active: true});
@@ -1175,9 +1175,9 @@ async function sendBroadcast() {
 
 async function clearBroadcast() {
     if (!confirm('Effacer le message actuel ?')) return;
-    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true`, {
+    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true&id=neq.00000000-0000-0000-0000-000000000000`, {
         method: 'PATCH',
-        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json'},
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
         body: JSON.stringify({active: false})
     });
     showToast('Message effacé.');
