@@ -674,6 +674,42 @@
         .btn-kick   { border-color: rgba(6,214,214,.25); color: var(--cyan); }
         .btn-kick:hover   { background: rgba(6,214,214,.1); }
 
+        /* ── BROADCAST BANNER ── */
+        .broadcast-banner {
+            display: none; align-items: center; gap: 14px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(255,209,102,.08), rgba(255,159,28,.06));
+            border-bottom: 1px solid rgba(255,209,102,.2);
+            font-size: .82rem; color: var(--text);
+            animation: slideDown .4s cubic-bezier(.34,1.56,.64,1);
+            position: relative; z-index: 5; flex-shrink: 0;
+        }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-100%); } to { opacity:1; transform:translateY(0); } }
+        .broadcast-banner.visible { display: flex; }
+        .broadcast-icon {
+            width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+            background: rgba(255,209,102,.15); border: 1px solid rgba(255,209,102,.3);
+            display: grid; place-items: center; font-size: 15px;
+        }
+        .broadcast-text { flex: 1; min-width: 0; line-height: 1.5; }
+        .broadcast-text strong { color: var(--yellow); font-weight: 600; }
+        .broadcast-close {
+            width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+            background: rgba(255,255,255,.05); border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; font-size: 13px;
+            display: grid; place-items: center; transition: all .15s;
+        }
+        .broadcast-close:hover { color: var(--white); background: rgba(255,255,255,.1); }
+
+        /* ── BROADCAST ADMIN urgency ── */
+        .urgency-select {
+            background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px;
+            padding: 10px 14px; font-size: .82rem; color: var(--white);
+            font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+            transition: border-color .2s;
+        }
+        .urgency-select:focus { border-color: var(--violet); }
+
         .toast {
             position: fixed; bottom: 24px; right: 24px;
             background: var(--bg2); border: 1px solid var(--border);
@@ -899,6 +935,13 @@
             </div>
         </div>
 
+        <!-- BROADCAST BANNER -->
+        <div class="broadcast-banner" id="broadcast-banner">
+            <div class="broadcast-icon" id="broadcast-icon">📢</div>
+            <div class="broadcast-text" id="broadcast-text"></div>
+            <button class="broadcast-close" onclick="closeBroadcast()">✕</button>
+        </div>
+
         <div class="loader" id="loader"></div>
 
         <div class="welcome" id="welcome">
@@ -1002,6 +1045,26 @@
                     </div>
                 </div>
 
+                <div class="section-card" style="border-color:rgba(255,209,102,.15)">
+                    <div class="section-title">📢 Message broadcast</div>
+                    <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Envoie un message visible par tous les étudiants connectés. Il apparaît en bandeau en haut de leur hub.</p>
+                    <div class="gen-form" style="margin-bottom:14px">
+                        <div class="form-field" style="flex:3">
+                            <label class="form-label">Message</label>
+                            <input type="text" class="form-input" id="bc-text" placeholder="Ex : 🆕 Fiche Finance disponible !" maxlength="120">
+                        </div>
+                        <div class="form-field" style="flex:0 0 130px;min-width:110px">
+                            <label class="form-label">Icône</label>
+                            <input type="text" class="form-input" id="bc-icon" placeholder="📢" maxlength="4" style="text-align:center;font-size:1.1rem">
+                        </div>
+                        <button class="btn-gen" id="btn-bc-send" onclick="sendBroadcast()" style="background:linear-gradient(135deg,#ffd166,#ff9f1c);color:#000">Envoyer →</button>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn-action btn-copy" onclick="clearBroadcast()" style="padding:6px 14px;font-size:.75rem">🗑 Effacer le message actuel</button>
+                        <div id="bc-current" style="font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:6px"></div>
+                    </div>
+                </div>
+
                 <div class="section-card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                         <div class="section-title" style="margin-bottom:0">🕓 Historique</div>
@@ -1044,6 +1107,84 @@ async function sbInsert(t,b){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{metho
 async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'PATCH',headers:H(),body:JSON.stringify(b)});return r.ok;}
 async function sbDelete(t,f){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'DELETE',headers:H()});return r.ok;}
 
+// ── BROADCAST ─────────────────────────────────────────────────────────────
+
+let lastBroadcastId = null;
+
+async function loadBroadcast() {
+    const rows = await sbSelect('broadcast?order=created_at.desc&limit=1&select=*');
+    if (!rows || !rows.length) { hideBroadcastBanner(); updateBcCurrent(null); return; }
+    const msg = rows[0];
+    updateBcCurrent(msg);
+    if (!msg.active) { hideBroadcastBanner(); return; }
+    // Ne pas ré-afficher si l'étudiant a déjà fermé ce message
+    const dismissed = localStorage.getItem('bc_dismissed');
+    if (dismissed === String(msg.id)) return;
+    if (lastBroadcastId !== msg.id) {
+        lastBroadcastId = msg.id;
+        showBroadcastBanner(msg.icon || '📢', msg.message);
+    }
+}
+
+function showBroadcastBanner(icon, text) {
+    const banner = document.getElementById('broadcast-banner');
+    document.getElementById('broadcast-icon').textContent = icon;
+    document.getElementById('broadcast-text').innerHTML = text;
+    banner.classList.add('visible');
+}
+
+function hideBroadcastBanner() {
+    document.getElementById('broadcast-banner').classList.remove('visible');
+}
+
+function closeBroadcast() {
+    hideBroadcastBanner();
+    if (lastBroadcastId) localStorage.setItem('bc_dismissed', String(lastBroadcastId));
+}
+
+function updateBcCurrent(msg) {
+    const el = document.getElementById('bc-current');
+    if (!el) return;
+    if (!msg || !msg.active) { el.innerHTML = '<span style="color:var(--muted)">Aucun message actif</span>'; return; }
+    el.innerHTML = `<span style="color:var(--yellow)">${escHtml(msg.icon||'📢')} ${escHtml(msg.message)}</span>`;
+}
+
+async function sendBroadcast() {
+    const text = document.getElementById('bc-text').value.trim();
+    const icon = document.getElementById('bc-icon').value.trim() || '📢';
+    if (!text) { showToast('Remplis le message avant d\'envoyer.', 'error'); return; }
+    const btn = document.getElementById('btn-bc-send');
+    btn.disabled = true; btn.textContent = '…';
+    // Désactiver les anciens messages
+    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true`, {
+        method: 'PATCH',
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify({active: false})
+    });
+    const res = await sbInsert('broadcast', {message: text, icon, active: true});
+    if (res) {
+        document.getElementById('bc-text').value = '';
+        document.getElementById('bc-icon').value = '';
+        showToast('✓ Message envoyé à tous les étudiants !');
+        await loadBroadcast();
+    } else {
+        showToast('Erreur lors de l\'envoi.', 'error');
+    }
+    btn.disabled = false; btn.textContent = 'Envoyer →';
+}
+
+async function clearBroadcast() {
+    if (!confirm('Effacer le message actuel ?')) return;
+    await fetch(`${SB_URL}/rest/v1/broadcast?active=eq.true`, {
+        method: 'PATCH',
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify({active: false})
+    });
+    showToast('Message effacé.');
+    hideBroadcastBanner();
+    updateBcCurrent(null);
+}
+
 function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 let session=null;
@@ -1068,7 +1209,7 @@ async function handleLogin(){
             method:'POST',headers:{'Content-Type':'application/json'},
             body:JSON.stringify({code:val})
         });
-        if(adminRes.ok){const data=await adminRes.json();if(data.isAdmin){session={code:val,isAdmin:true};saveSession(session);enterHub();return;}}
+        if(adminRes.ok){const data=await adminRes.json();if(data.isAdmin){session={code:val,isAdmin:true};saveSession(session);saveLastCode(val,'Administrateur');enterHub();return;}}
     }catch(e){}
 
     try{
@@ -1100,6 +1241,7 @@ function startHeartbeat(){
         if(row.session_token!==session.token){clearSession();showToast('⚠️ Session expirée : autre appareil.','error');setTimeout(()=>location.reload(),2800);return;}
         await sbUpdate('access_codes',{code:session.code},{last_seen_at:new Date().toISOString()});
         loadResources();
+        loadBroadcast();
     },30000);
 }
 
@@ -1123,6 +1265,7 @@ function enterHub(){
         startHeartbeat();
     }
     loadResources();
+    loadBroadcast();
 }
 
 async function handleLogout(){
@@ -1158,7 +1301,7 @@ function openAdmin(){
     document.getElementById('current-page').textContent='Administration';
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
-    loadCodes();loadLogs();loadResources();
+    loadCodes();loadLogs();loadResources();loadBroadcast();
 }
 
 function goHome(){
@@ -1391,6 +1534,7 @@ function loginWithSaved(){
         const nm=document.getElementById("ls-name");
         if(el&&av&&nm){
             av.textContent=saved.name.charAt(0).toUpperCase();
+            if(saved.name==='Administrateur'){av.style.background='linear-gradient(135deg,#ffd166,#ff9f1c)';}
             nm.textContent="Continuer en tant que "+saved.name.split(" ")[0];
             el.classList.add("visible");
         }
