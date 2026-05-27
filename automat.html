@@ -175,6 +175,26 @@
             margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
             font-size: .68rem; color: var(--muted); text-align: center; line-height: 1.6;
         }
+        }
+
+        .last-session {
+            display: none; align-items: center; gap: 10px;
+            background: rgba(168,85,247,.08); border: 1px solid rgba(168,85,247,.18);
+            border-radius: 14px; padding: 12px 16px; margin-top: 14px;
+            cursor: pointer; transition: background .2s, border-color .2s;
+            animation: cardIn .4s cubic-bezier(.34,1.56,.64,1);
+        }
+        .last-session:hover { background: rgba(168,85,247,.15); border-color: rgba(168,85,247,.35); }
+        .last-session.visible { display: flex; }
+        .last-session-avatar {
+            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+            background: var(--grad1); display: grid; place-items: center;
+            font-size: 15px; font-weight: 700; color: #fff;
+        }
+        .last-session-info { flex: 1; text-align: left; }
+        .last-session-name { font-size: .82rem; font-weight: 600; color: var(--white); }
+        .last-session-hint { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+        .last-session-arrow { color: var(--violet); font-size: 1rem; }
 
         .spinner {
             display: inline-block; width: 16px; height: 16px;
@@ -345,42 +365,93 @@
         }
 
         .topbar {
-            height: 56px; flex-shrink: 0;
-            background: var(--bg2); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 24px; gap: 14px;
+            height: 62px; flex-shrink: 0;
+            background: rgba(15,14,23,.96);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 20px; gap: 12px;
+            position: relative;
+        }
+        .topbar::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(168,85,247,.3), rgba(255,107,157,.2), transparent);
+            pointer-events: none;
         }
 
-        .topbar-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
-        .topbar-breadcrumb span { color: var(--white); font-weight: 600; }
-        .topbar-sep { color: var(--border); }
-        .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-
-        .btn-topbar {
-            background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
-            padding: 7px 14px; font-size: .72rem; color: var(--text); cursor: pointer;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: border-color .15s, color .15s, transform .1s;
+        /* BREADCRUMB */
+        .topbar-breadcrumb {
+            display: flex; align-items: center; gap: 6px;
+            font-size: .72rem; color: var(--muted);
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: 8px; padding: 5px 12px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .topbar-breadcrumb .bc-home {
+            color: var(--muted); font-size: .78rem;
+        }
+        .topbar-sep {
+            color: var(--muted); opacity: .4; font-size: .8rem;
+        }
+        .topbar-breadcrumb span#current-page {
+            color: var(--white); font-weight: 600; font-size: .72rem;
         }
 
-        .btn-topbar:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-1px); }
+        /* SEARCH */
+        .topbar-actions { display: flex; align-items: center; gap: 7px; margin-left: auto; }
 
-        .search-wrap { flex: 1; max-width: 360px; position: relative; margin: 0 10px; }
+        .search-wrap {
+            flex: 1; max-width: 400px; position: relative; margin: 0 6px;
+        }
 
         .search-input {
-            width: 100%; background: var(--bg3); border: 1.5px solid var(--border);
-            border-radius: 10px; padding: 8px 14px 8px 36px;
+            width: 100%;
+            background: var(--bg3);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 9px 16px 9px 38px;
             font-size: .78rem; color: var(--white);
             font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
-            transition: border-color .2s, box-shadow .2s;
+            transition: border-color .25s, box-shadow .25s, background .25s;
         }
-
-        .search-input::placeholder { color: var(--muted); }
-        .search-input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(168,85,247,.12); }
+        .search-input::placeholder { color: var(--muted); font-size: .75rem; }
+        .search-input:focus {
+            border-color: rgba(168,85,247,.6);
+            box-shadow: 0 0 0 3px rgba(168,85,247,.1), 0 0 20px rgba(168,85,247,.06);
+            background: rgba(168,85,247,.04);
+        }
 
         .search-icon {
-            position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-            font-size: 14px; color: var(--muted); pointer-events: none;
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            pointer-events: none; display: flex; align-items: center;
         }
+        .search-icon svg { width: 15px; height: 15px; stroke: var(--muted); }
+
+        .search-kbd {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            font-size: .6rem; color: var(--muted); background: var(--bg2);
+            border: 1px solid var(--border); border-radius: 5px;
+            padding: 2px 6px; pointer-events: none; letter-spacing: .5px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* BOUTONS */
+        .btn-topbar {
+            width: 36px; height: 36px;
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: 9px; color: var(--muted); cursor: pointer;
+            display: grid; place-items: center;
+            transition: all .15s;
+            flex-shrink: 0;
+        }
+        .btn-topbar svg { width: 16px; height: 16px; stroke: currentColor; }
+        .btn-topbar:hover {
+            border-color: rgba(168,85,247,.4);
+            color: var(--violet);
+            background: rgba(168,85,247,.06);
+            transform: translateY(-1px);
+        }
+        .btn-topbar:active { transform: scale(.95); }
 
         .search-results {
             position: absolute; top: calc(100% + 8px); left: 0; right: 0;
@@ -634,25 +705,51 @@
 
         .nav-overlay.visible { opacity: 1; pointer-events: all; }
 
+        /* ── PC : plein écran ── */
+        html, body { width: 100%; height: 100%; overflow: hidden; }
+        #hub-screen { width: 100vw; height: 100vh; }
+
+        /* ── MOBILE ── */
         @media (max-width: 768px) {
             .burger { display: flex; }
             nav {
                 position: fixed; top: 0; left: 0; height: 100%;
-                width: min(280px, 85vw); z-index: 100;
+                width: min(300px, 88vw); z-index: 100;
                 transform: translateX(-100%);
                 transition: transform .3s cubic-bezier(.4,0,.2,1); overflow-y: auto;
             }
             nav.open { transform: translateX(0); }
             .nav-overlay { display: block; }
-            main { width: 100%; }
-            .topbar { gap: 8px; padding: 0 14px; }
+            main { width: 100%; min-width: 0; }
+            .topbar { gap: 6px; padding: 0 12px; height: 54px; }
             .topbar-breadcrumb { display: none; }
-            .welcome h1 { font-size: 1.6rem; }
-            .welcome-cards { grid-template-columns: 1fr; max-width: 360px; }
-            .login-card { padding: 32px 24px; }
-            .admin-content { padding: 16px; }
+            .welcome { padding: 24px 16px; gap: 14px; }
+            .welcome h1 { font-size: 1.5rem; }
+            .welcome p { font-size: .82rem; }
+            .welcome-cards { grid-template-columns: 1fr; max-width: 100%; gap: 10px; }
+            .welcome-card { padding: 16px 14px; flex-direction: row; text-align: left; gap: 14px; }
+            .welcome-card-icon { font-size: 1.6rem; }
+            .login-card { padding: 28px 20px; border-radius: 20px; }
+            .login-title { font-size: 1.5rem; }
+            .admin-content { padding: 14px; }
+            .admin-header { flex-direction: column; }
             .gen-form { flex-direction: column; }
-            .search-wrap { max-width: none; flex: 1; margin: 0 6px; }
+            .search-wrap { max-width: none; flex: 1; margin: 0 4px; }
+            .search-kbd { display: none; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .section-card { padding: 16px; }
+            .codes-table { font-size: .72rem; }
+            .codes-table th, .codes-table td { padding: 8px 10px; }
+            .nav-footer { padding: 10px 12px; }
+            iframe { width: 100%; height: 100%; }
+        }
+
+        @media (max-width: 400px) {
+            .topbar { padding: 0 10px; gap: 4px; }
+            .btn-topbar { width: 32px; height: 32px; }
+            .welcome h1 { font-size: 1.3rem; }
+            .login-card { padding: 24px 16px; }
+            .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
         }
     </style>
 </head>
@@ -677,10 +774,18 @@
         <label class="input-label" for="code-input">Code d'accès</label>
         <input type="text" id="code-input" class="code-input"
             placeholder="XXXXXXXX" maxlength="12"
-            autocomplete="off" autocorrect="off" spellcheck="false">
+            autocomplete="username" autocorrect="off" spellcheck="false">
         <button class="btn-login" id="btn-login" onclick="handleLogin()">Accéder au hub →</button>
         <div class="login-error" id="login-error">
             <span>⚠</span><span id="login-error-msg">Code incorrect ou révoqué.</span>
+        </div>
+        <div class="last-session" id="last-session" onclick="loginWithSaved()">
+            <div class="last-session-avatar" id="ls-avatar">?</div>
+            <div class="last-session-info">
+                <div class="last-session-name" id="ls-name">Continuer</div>
+                <div class="last-session-hint">Cliquer pour se reconnecter</div>
+            </div>
+            <div class="last-session-arrow">›</div>
         </div>
         <div class="login-footer">Accès réservé aux étudiants inscrits</div>
     </div>
@@ -695,7 +800,7 @@
                 <div class="logo-icon">📚</div>
                 <div>
                     <div class="nav-title">Hub Révisions</div>
-                    <div class="nav-sub">Licence CCA</div>
+                    <div class="nav-sub">Master CCA</div>
                 </div>
             </div>
             <div class="session-badge">Session active</div>
@@ -758,22 +863,39 @@
             <button class="burger" onclick="toggleSidebar()">
                 <span></span><span></span><span></span>
             </button>
+
             <div class="topbar-breadcrumb">
-                Hub Révisions <span class="topbar-sep">›</span>
+                <span class="bc-home">📚</span>
+                <span class="topbar-sep">›</span>
                 <span id="current-page">Accueil</span>
             </div>
+
             <div class="search-wrap">
-                <span class="search-icon">🔍</span>
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </span>
                 <input type="text" id="search-input" class="search-input"
-                    placeholder="Rechercher une notion…"
+                    placeholder="Rechercher une notion, une formule…"
                     autocomplete="off" autocorrect="off" spellcheck="false"
                     oninput="handleSearch(this.value)" onfocus="showResults()">
+                <span class="search-kbd">⌘K</span>
                 <div class="search-results" id="search-results"></div>
             </div>
+
             <div class="topbar-actions">
-                <button class="btn-topbar" id="btn-home" onclick="goHome()" style="display:none">⌂</button>
-                <button class="btn-topbar" onclick="reloadFrame()">↺</button>
-                <button class="btn-topbar" onclick="openFullscreen()">⛶</button>
+                <button class="btn-topbar" id="btn-home" onclick="goHome()" style="display:none" title="Accueil">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </button>
+                <button class="btn-topbar" onclick="reloadFrame()" title="Recharger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                </button>
+
             </div>
         </div>
 
@@ -903,6 +1025,9 @@
 const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
 const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
 const SESSION_KEY = 'hub_sess';
+const SAVED_CODE_KEY = 'hub_last_code';
+function getSavedCode(){try{return JSON.parse(localStorage.getItem(SAVED_CODE_KEY));}catch{return null;}}
+function saveLastCode(code,name){localStorage.setItem(SAVED_CODE_KEY,JSON.stringify({code,name}));}
 
 function makeCode() {
     const L='ABCDEFGHJKLMNPQRSTUVWXYZ',D='23456789';
@@ -955,7 +1080,7 @@ async function handleLogin(){
         await sbUpdate('access_codes',{code:val},{session_token:token,last_seen_at:new Date().toISOString()});
         session={code:val,token,isAdmin:false,name:row.name};
         saveSession(session);
-        sbInsert('connection_logs',{code:val,name:row.name||null});
+        sbInsert('connection_logs',{code:val,name:row.name||null}); saveLastCode(val, row.name||'Étudiant');
         enterHub();
     }catch(err){
         errMsg.textContent=err.message||'Erreur de connexion.';
@@ -1228,7 +1353,14 @@ function goToNotion(fichier,ancre,matiere){closeSearch();loadPage(fichier,null,m
 function closeSearch(){document.getElementById('search-input').value='';const box=document.getElementById('search-results');box.innerHTML='';box.classList.remove('visible');}
 
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('search-results').classList.remove('visible');});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();});
+document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){closeSearch();return;}
+    if((e.metaKey||e.ctrlKey)&&e.key==='k'){
+        e.preventDefault();
+        const inp=document.getElementById('search-input');
+        inp.focus(); inp.select();
+    }
+});
 
 function toggleSem(id){
     const items=document.getElementById('sem-'+id);
@@ -1242,7 +1374,28 @@ function toggleSidebar(){document.getElementById('sidebar').classList.contains('
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('nav-overlay').classList.add('visible');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('nav-overlay').classList.remove('visible');}
 
-(function(){const s=getSession();if(s){session=s;enterHub();}})();
+function loginWithSaved(){
+    const saved=getSavedCode();
+    if(!saved)return;
+    document.getElementById("code-input").value=saved.code;
+    handleLogin();
+}
+
+(function(){
+    const s=getSession();
+    if(s){session=s;enterHub();return;}
+    const saved=getSavedCode();
+    if(saved){
+        const el=document.getElementById("last-session");
+        const av=document.getElementById("ls-avatar");
+        const nm=document.getElementById("ls-name");
+        if(el&&av&&nm){
+            av.textContent=saved.name.charAt(0).toUpperCase();
+            nm.textContent="Continuer en tant que "+saved.name.split(" ")[0];
+            el.classList.add("visible");
+        }
+    }
+})();
 </script>
 </body>
 </html>
