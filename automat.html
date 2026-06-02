@@ -918,6 +918,147 @@
             .notes-panel.open { display: flex; transform: translateX(0); }
         }
 
+        
+        /* ── ONBOARDING ── */
+        .ob-overlay {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .ob-overlay.visible { display: flex; }
+
+        .ob-modal {
+            background: var(--bg2);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 24px;
+            width: 100%; max-width: 520px;
+            overflow: hidden;
+            animation: cardIn .5s cubic-bezier(.34,1.56,.64,1);
+            box-shadow: 0 40px 80px rgba(0,0,0,.6);
+            position: relative;
+        }
+
+        .ob-slide { display: none; }
+        .ob-slide.active { display: block; }
+
+        .ob-hero {
+            padding: 36px 36px 28px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        .ob-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 400px 200px at 50% 0%, rgba(168,85,247,.08), transparent 70%);
+            pointer-events: none;
+        }
+
+        .ob-icon-wrap {
+            width: 68px; height: 68px; border-radius: 20px;
+            display: grid; place-items: center;
+            margin: 0 auto 20px; font-size: 32px;
+            position: relative;
+        }
+        .ob-icon-wrap.purple { background: rgba(168,85,247,.12); box-shadow: 0 6px 24px rgba(168,85,247,.2); }
+        .ob-icon-wrap.teal   { background: rgba(6,214,214,.12);  box-shadow: 0 6px 24px rgba(6,214,214,.2); }
+        .ob-icon-wrap.amber  { background: rgba(255,209,102,.12); box-shadow: 0 6px 24px rgba(255,209,102,.2); }
+        .ob-icon-wrap.blue   { background: rgba(78,157,245,.12);  box-shadow: 0 6px 24px rgba(78,157,245,.2); }
+        .ob-icon-wrap.green  { background: rgba(62,207,142,.12);  box-shadow: 0 6px 24px rgba(62,207,142,.2); }
+
+        .ob-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+            color: var(--white); margin-bottom: 10px; line-height: 1.2;
+        }
+        .ob-desc {
+            font-size: .83rem; color: var(--muted);
+            line-height: 1.75; max-width: 380px; margin: 0 auto;
+        }
+
+        .ob-features {
+            padding: 20px 28px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .ob-feat {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 12px 14px;
+            background: var(--bg3);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: border-color .2s;
+        }
+        .ob-feat:hover { border-color: rgba(168,85,247,.25); }
+
+        .ob-feat-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: grid; place-items: center; font-size: 17px; flex-shrink: 0;
+        }
+        .ob-feat-icon.purple { background: rgba(168,85,247,.1); }
+        .ob-feat-icon.teal   { background: rgba(6,214,214,.1); }
+        .ob-feat-icon.amber  { background: rgba(255,209,102,.1); }
+        .ob-feat-icon.blue   { background: rgba(78,157,245,.1); }
+        .ob-feat-icon.green  { background: rgba(62,207,142,.1); }
+
+        .ob-feat-title { font-size: .82rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+        .ob-feat-sub { font-size: .73rem; color: var(--muted); line-height: 1.5; }
+
+        .ob-footer {
+            padding: 16px 28px;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+
+        .ob-dots { display: flex; gap: 6px; align-items: center; }
+        .ob-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--muted); transition: all .25s;
+        }
+        .ob-dot.active { width: 22px; border-radius: 4px; background: var(--violet); }
+
+        .ob-btns { display: flex; gap: 8px; align-items: center; }
+        .ob-counter { font-size: .7rem; color: var(--muted); margin-right: 4px; }
+
+        .ob-btn {
+            height: 36px; padding: 0 18px; border-radius: 10px;
+            font-size: .78rem; font-weight: 600; cursor: pointer;
+            font-family: 'Clash Display', sans-serif;
+            border: 1px solid var(--border);
+            background: var(--bg3); color: var(--text);
+            transition: all .15s;
+        }
+        .ob-btn:hover { border-color: rgba(255,255,255,.15); color: var(--white); }
+        .ob-btn.primary {
+            background: var(--grad1); border-color: transparent; color: #fff;
+            box-shadow: 0 4px 16px rgba(168,85,247,.3);
+        }
+        .ob-btn.primary:hover { box-shadow: 0 6px 20px rgba(168,85,247,.45); transform: translateY(-1px); }
+
+        .ob-checklist {
+            padding: 4px 28px 24px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .ob-check-item {
+            display: flex; align-items: center; gap: 12px;
+            font-size: .8rem; color: var(--text);
+        }
+        .ob-check-icon {
+            width: 22px; height: 22px; border-radius: 6px;
+            background: rgba(6,214,160,.1); border: 1px solid rgba(6,214,160,.25);
+            display: grid; place-items: center; font-size: 11px;
+            color: var(--green); flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .ob-modal { border-radius: 18px; }
+            .ob-hero { padding: 28px 20px 22px; }
+            .ob-features { padding: 16px 20px; }
+            .ob-footer { padding: 14px 20px; }
+            .ob-checklist { padding: 4px 20px 20px; }
+            .ob-title { font-size: 1.2rem; }
+        }
+
         </style>
 </head>
 <body>
@@ -1282,6 +1423,40 @@ async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.$
 async function sbDelete(t,f){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'DELETE',headers:H()});return r.ok;}
 
 
+
+// ── ONBOARDING ────────────────────────────────────────────────────────────
+
+const OB_KEY = 'hub_onboarding_done';
+let obCur = 0;
+const obTotal = 5;
+
+function showOnboarding() {
+    // Ne pas montrer à l'admin
+    if (session && session.isAdmin) return;
+    // Ne pas montrer si déjà vu
+    if (localStorage.getItem(OB_KEY)) return;
+    document.getElementById('ob-overlay').classList.add('visible');
+}
+
+function obNext() {
+    if (obCur >= obTotal - 1) { obSkip(); return; }
+    document.getElementById('ob-slide-' + obCur).classList.remove('active');
+    document.getElementById('ob-d' + obCur).classList.remove('active');
+    obCur++;
+    document.getElementById('ob-slide-' + obCur).classList.add('active');
+    document.getElementById('ob-d' + obCur).classList.add('active');
+    document.getElementById('ob-counter').textContent = (obCur + 1) + ' / ' + obTotal;
+    if (obCur === obTotal - 1) {
+        document.getElementById('ob-btn-next').textContent = 'Commencer →';
+        document.getElementById('ob-btn-skip').style.display = 'none';
+    }
+}
+
+function obSkip() {
+    document.getElementById('ob-overlay').classList.remove('visible');
+    localStorage.setItem(OB_KEY, '1');
+}
+
 // ── NOTES PERSONNELLES ────────────────────────────────────────────────────
 
 let currentMatiere = null;
@@ -1555,6 +1730,7 @@ function enterHub(){
     }
     loadResources();
     loadBroadcast();
+    setTimeout(showOnboarding, 800);
 }
 
 async function handleLogout(){
@@ -1830,5 +2006,140 @@ function loginWithSaved(){
     }
 })();
 </script>
+
+<!-- ── ONBOARDING ── -->
+<div class="ob-overlay" id="ob-overlay">
+    <div class="ob-modal">
+
+        <!-- Slide 1 — Bienvenue -->
+        <div class="ob-slide active" id="ob-slide-0">
+            <div class="ob-hero">
+                <div class="ob-icon-wrap purple">📚</div>
+                <div class="ob-title">Bienvenue sur Hub Révisions</div>
+                <div class="ob-desc">Ton espace de révision Master CCA. Voici un rapide tour des fonctionnalités disponibles.</div>
+            </div>
+            <div class="ob-features">
+                <div class="ob-feat">
+                    <div class="ob-feat-icon purple">📄</div>
+                    <div><div class="ob-feat-title">Fiches de révision</div><div class="ob-feat-sub">Notions clés, formules et annales analysées par matière</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon teal">🧠</div>
+                    <div><div class="ob-feat-title">Quiz interactifs</div><div class="ob-feat-sub">Teste tes connaissances après chaque chapitre</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon amber">📝</div>
+                    <div><div class="ob-feat-title">Notes personnelles</div><div class="ob-feat-sub">Un bloc-notes par matière, sauvegardé automatiquement</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon blue">📎</div>
+                    <div><div class="ob-feat-title">Infos complémentaires</div><div class="ob-feat-sub">PDF et liens utiles ajoutés par ton formateur</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 — Fiches -->
+        <div class="ob-slide" id="ob-slide-1">
+            <div class="ob-hero">
+                <div class="ob-icon-wrap purple">📄</div>
+                <div class="ob-title">Les fiches de révision</div>
+                <div class="ob-desc">Chaque fiche est construite à partir des annales des 3 dernières années pour cibler exactement ce qui tombe au partiel.</div>
+            </div>
+            <div class="ob-features">
+                <div class="ob-feat">
+                    <div class="ob-feat-icon purple">🔥</div>
+                    <div><div class="ob-feat-title">Tag fréquence</div><div class="ob-feat-sub">Les notions les plus fréquentes sont marquées pour savoir quoi prioriser</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon teal">🔢</div>
+                    <div><div class="ob-feat-title">Formules détaillées</div><div class="ob-feat-sub">Chaque formule avec ses variables expliquées et un exemple chiffré</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon amber">📊</div>
+                    <div><div class="ob-feat-title">Tableau récapitulatif</div><div class="ob-feat-sub">Vois exactement quelles notions sont tombées en 2022, 2023, 2024</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3 — Quiz -->
+        <div class="ob-slide" id="ob-slide-2">
+            <div class="ob-hero">
+                <div class="ob-icon-wrap teal">🧠</div>
+                <div class="ob-title">Les quiz interactifs</div>
+                <div class="ob-desc">Un quiz à la fin de chaque chapitre, puis un quiz final mode partiel pour tester l'ensemble de tes connaissances.</div>
+            </div>
+            <div class="ob-features">
+                <div class="ob-feat">
+                    <div class="ob-feat-icon teal">✅</div>
+                    <div><div class="ob-feat-title">Feedback immédiat</div><div class="ob-feat-sub">Chaque réponse expliquée en détail pour comprendre l'erreur</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon purple">🏆</div>
+                    <div><div class="ob-feat-title">Score et progression</div><div class="ob-feat-sub">Vois ta progression sur chaque section et par matière</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon amber">⏱️</div>
+                    <div><div class="ob-feat-title">Mode partiel chronométré</div><div class="ob-feat-sub">Simule les conditions réelles avec un timer comme en examen</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4 — Notes -->
+        <div class="ob-slide" id="ob-slide-3">
+            <div class="ob-hero">
+                <div class="ob-icon-wrap amber">📝</div>
+                <div class="ob-title">Tes notes personnelles</div>
+                <div class="ob-desc">Un bloc-notes intégré pour chaque matière. Clique sur le bouton 📝 dans le menu à côté de n'importe quelle matière.</div>
+            </div>
+            <div class="ob-features">
+                <div class="ob-feat">
+                    <div class="ob-feat-icon teal">💾</div>
+                    <div><div class="ob-feat-title">Sauvegarde automatique</div><div class="ob-feat-sub">Tes notes sont sauvegardées instantanément et accessibles partout</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon purple">✏️</div>
+                    <div><div class="ob-feat-title">Éditeur riche</div><div class="ob-feat-sub">Gras, italique, titres, listes — formate tes notes comme tu veux</div></div>
+                </div>
+                <div class="ob-feat">
+                    <div class="ob-feat-icon blue">📱</div>
+                    <div><div class="ob-feat-title">Multi-appareil</div><div class="ob-feat-sub">Consulte tes notes depuis ton téléphone ou ton ordinateur</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5 — C'est parti -->
+        <div class="ob-slide" id="ob-slide-4">
+            <div class="ob-hero">
+                <div class="ob-icon-wrap green">🚀</div>
+                <div class="ob-title">Tout est prêt !</div>
+                <div class="ob-desc">Commence par sélectionner une matière dans le menu, ou lance-toi directement sur une fiche en page d'accueil.</div>
+            </div>
+            <div class="ob-checklist">
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Tes notes sont sauvegardées automatiquement</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Utilise <kbd style="font-size:.7rem;padding:1px 6px;border-radius:4px;border:1px solid var(--border);background:var(--bg3)">⌘K</kbd> pour rechercher une notion rapidement</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Clique sur 📝 dans le menu pour prendre des notes par matière</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Le menu 📎 contient les PDF et ressources utiles</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Les notions 🔥 sont les plus fréquentes aux partiels</span></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="ob-footer">
+            <div class="ob-dots">
+                <div class="ob-dot active" id="ob-d0"></div>
+                <div class="ob-dot" id="ob-d1"></div>
+                <div class="ob-dot" id="ob-d2"></div>
+                <div class="ob-dot" id="ob-d3"></div>
+                <div class="ob-dot" id="ob-d4"></div>
+            </div>
+            <div class="ob-btns">
+                <span class="ob-counter" id="ob-counter">1 / 5</span>
+                <button class="ob-btn" id="ob-btn-skip" onclick="obSkip()">Passer</button>
+                <button class="ob-btn primary" id="ob-btn-next" onclick="obNext()">Suivant →</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
