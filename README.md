@@ -851,12 +851,37 @@
             flex: 1; padding: 20px;
             font-size: .85rem; color: var(--white);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            line-height: 1.8; resize: none; outline: none;
+            line-height: 1.8; outline: none;
             background: transparent; border: none;
             overflow-y: auto; scrollbar-width: thin;
             scrollbar-color: rgba(255,255,255,.06) transparent;
+            min-height: 0;
         }
-        .notes-editor::placeholder { color: var(--muted); font-size: .8rem; line-height: 1.8; }
+        .notes-editor:empty::before {
+            content: attr(data-placeholder);
+            color: var(--muted); font-size: .8rem;
+            pointer-events: none; white-space: pre-line;
+        }
+        .notes-editor b, .notes-editor strong { color: var(--white); font-weight: 700; }
+        .notes-editor i, .notes-editor em { color: var(--cyan); font-style: italic; }
+        .notes-editor u { text-decoration: underline; text-decoration-color: rgba(255,255,255,.4); }
+        .notes-editor s { color: var(--muted); }
+        .notes-editor h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1rem; font-weight: 700; color: var(--violet);
+            margin: 14px 0 6px; line-height: 1.2;
+        }
+        .notes-editor ul, .notes-editor ol {
+            padding-left: 20px; margin: 6px 0;
+        }
+        .notes-editor li { margin: 3px 0; }
+        .notes-editor blockquote {
+            border-left: 3px solid var(--violet);
+            padding: 6px 14px; margin: 8px 0;
+            background: rgba(168,85,247,.06);
+            border-radius: 0 6px 6px 0;
+            color: var(--muted); font-style: italic;
+        }
         .notes-footer {
             padding: 12px 18px; border-top: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
@@ -1201,17 +1226,23 @@
                 <button class="notes-close" onclick="closeNotes()">✕</button>
             </div>
             <div class="notes-toolbar">
-                <button class="notes-btn" onclick="insertMd('**','**')"><b>G</b></button>
-                <button class="notes-btn" onclick="insertMd('*','*')"><i>I</i></button>
-                <button class="notes-btn" onclick="insertMd('\n## ','')">T</button>
-                <button class="notes-btn" onclick="insertMd('\n- ','')">• Liste</button>
-                <button class="notes-btn" onclick="insertMd('\n> ','')">❝</button>
-                <button class="notes-btn" onclick="insertMd('\n---\n','')">—</button>
-                <button class="notes-btn" onclick="clearNotes()" style="margin-left:auto;color:var(--danger)">🗑</button>
+                <button class="notes-btn" onclick="fmt('bold')" title="Gras"><b>G</b></button>
+                <button class="notes-btn" onclick="fmt('italic')" title="Italique"><i>I</i></button>
+                <button class="notes-btn" onclick="fmt('underline')" title="Souligné"><u>S</u></button>
+                <button class="notes-btn" onclick="fmt('strikeThrough')" title="Barré"><s>B</s></button>
+                <div style="width:1px;background:var(--border);margin:0 2px"></div>
+                <button class="notes-btn" onclick="fmtBlock('h3')" title="Titre">T</button>
+                <button class="notes-btn" onclick="fmtBlock('insertUnorderedList')" title="Liste">• Liste</button>
+                <button class="notes-btn" onclick="fmtBlock('insertOrderedList')" title="Liste numérotée">1. Liste</button>
+                <div style="width:1px;background:var(--border);margin:0 2px"></div>
+                <button class="notes-btn" onclick="fmtBlock('formatBlock','blockquote')" title="Citation">❝</button>
+                <button class="notes-btn" onclick="clearNotes()" style="margin-left:auto;color:var(--danger)" title="Effacer">🗑</button>
             </div>
-            <textarea class="notes-editor" id="notes-editor"
-                placeholder="Tes notes personnelles pour cette matière...&#10;&#10;Sauvegarde automatique activée ✓"
-                oninput="onNotesInput()"></textarea>
+            <div class="notes-editor" id="notes-editor"
+                contenteditable="true"
+                spellcheck="false"
+                data-placeholder="Tes notes personnelles pour cette matière...&#10;&#10;Sauvegarde automatique activée ✓"
+                oninput="onNotesInput()"></div>
             <div class="notes-footer">
                 <div class="notes-save-status">
                     <div class="notes-save-dot" id="notes-dot"></div>
@@ -1276,10 +1307,10 @@ async function openNotes(e, matiere) {
     const rows = await sbSelect('notes?code=eq.' + encodeURIComponent(session.code) + '&matiere=eq.' + encodeURIComponent(matiere) + '&select=*');
     const editor = document.getElementById('notes-editor');
     if (rows && rows.length > 0) {
-        editor.value = rows[0].content || '';
+        editor.innerHTML = rows[0].content || '';
         notesLoaded[matiere] = rows[0].id;
     } else {
-        editor.value = '';
+        editor.innerHTML = '';
         notesLoaded[matiere] = null;
     }
     updateNotesChar();
@@ -1291,6 +1322,18 @@ function closeNotes() {
     currentMatiere = null;
 }
 
+function fmt(cmd) {
+    document.getElementById('notes-editor').focus();
+    document.execCommand(cmd, false, null);
+    onNotesInput();
+}
+
+function fmtBlock(cmd, val) {
+    document.getElementById('notes-editor').focus();
+    document.execCommand(cmd, false, val || null);
+    onNotesInput();
+}
+
 function onNotesInput() {
     updateNotesChar();
     setNoteStatus('saving');
@@ -1300,21 +1343,19 @@ function onNotesInput() {
 
 async function saveNotes() {
     if (!currentMatiere || !session) return;
-    const content = document.getElementById('notes-editor').value;
+    const ed = document.getElementById('notes-editor');
+    const htmlContent = ed.innerHTML;
     const matiere = currentMatiere;
     const code = session.code;
 
     if (notesLoaded[matiere]) {
-        // Update
-        await sbUpdate('notes', {id: notesLoaded[matiere]}, {content, updated_at: new Date().toISOString()});
+        await sbUpdate('notes', {id: notesLoaded[matiere]}, {content: htmlContent, updated_at: new Date().toISOString()});
     } else {
-        // Insert
-        const res = await sbInsert('notes', {code, matiere, content});
+        const res = await sbInsert('notes', {code, matiere, content: htmlContent});
         if (res && res.length > 0) notesLoaded[matiere] = res[0].id;
     }
     setNoteStatus('saved');
-    // Marquer le bouton si notes non vides
-    updateNotesBtns(matiere, content.trim().length > 0);
+    updateNotesBtns(matiere, ed.innerText.trim().length > 0);
 }
 
 function setNoteStatus(state) {
@@ -1336,7 +1377,7 @@ function setNoteStatus(state) {
 function updateNotesChar() {
     const el = document.getElementById('notes-char');
     const ed = document.getElementById('notes-editor');
-    if (el && ed) el.textContent = ed.value.length;
+    if (el && ed) el.textContent = ed.innerText.length;
 }
 
 function updateNotesBtns(matiere, hasContent) {
@@ -1347,23 +1388,10 @@ function updateNotesBtns(matiere, hasContent) {
     });
 }
 
-function insertMd(before, after) {
-    const ed = document.getElementById('notes-editor');
-    if (!ed) return;
-    const start = ed.selectionStart;
-    const end = ed.selectionEnd;
-    const selected = ed.value.substring(start, end);
-    const newText = before + selected + after;
-    ed.value = ed.value.substring(0, start) + newText + ed.value.substring(end);
-    ed.selectionStart = start + before.length;
-    ed.selectionEnd = start + before.length + selected.length;
-    ed.focus();
-    onNotesInput();
-}
-
 function clearNotes() {
     if (!confirm('Effacer toutes les notes de cette matière ?')) return;
-    document.getElementById('notes-editor').value = '';
+    const ed = document.getElementById('notes-editor');
+    ed.innerHTML = '';
     updateNotesChar();
     saveNotes();
 }
