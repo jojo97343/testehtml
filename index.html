@@ -361,7 +361,13 @@
 
         main {
             flex: 1; position: relative; background: var(--bg);
-            display: flex; flex-direction: column; min-width: 0;
+            display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+        }
+        .main-body {
+            flex: 1; display: flex; flex-direction: row; min-height: 0; overflow: hidden;
+        }
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; position: relative;
         }
 
         .topbar {
@@ -787,7 +793,107 @@
             .login-card { padding: 24px 16px; }
             .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
         }
-    </style>
+    
+        /* ── NOTES PANEL ── */
+        .notes-panel {
+            display: none; flex-direction: column;
+            width: 360px; flex-shrink: 0;
+            background: var(--bg2);
+            border-left: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .notes-panel.open { display: flex; }
+        .notes-panel::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--violet), var(--cyan));
+            z-index: 1;
+        }
+        .notes-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px;
+            flex-shrink: 0;
+        }
+        .notes-header-icon {
+            width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--violet), var(--cyan));
+            display: grid; place-items: center; font-size: 18px;
+            box-shadow: 0 4px 14px rgba(168,85,247,.3);
+        }
+        .notes-header-info { flex: 1; min-width: 0; }
+        .notes-header-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: .88rem; font-weight: 700; color: var(--white);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .notes-header-sub { font-size: .66rem; color: var(--muted); margin-top: 2px; }
+        .notes-close {
+            width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+            background: var(--bg3); border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; font-size: 14px;
+            display: grid; place-items: center; transition: all .15s;
+        }
+        .notes-close:hover { color: var(--white); background: rgba(255,92,122,.1); border-color: rgba(255,92,122,.3); }
+        .notes-toolbar {
+            padding: 10px 16px; border-bottom: 1px solid var(--border);
+            display: flex; gap: 6px; flex-shrink: 0; background: var(--bg2);
+        }
+        .notes-btn {
+            height: 30px; padding: 0 12px;
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: 7px; color: var(--muted); cursor: pointer;
+            font-size: .75rem; font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all .15s; display: flex; align-items: center; gap: 4px;
+        }
+        .notes-btn:hover { color: var(--white); border-color: rgba(168,85,247,.35); background: rgba(168,85,247,.06); }
+        .notes-editor {
+            flex: 1; padding: 20px;
+            font-size: .85rem; color: var(--white);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.8; resize: none; outline: none;
+            background: transparent; border: none;
+            overflow-y: auto; scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.06) transparent;
+        }
+        .notes-editor::placeholder { color: var(--muted); font-size: .8rem; line-height: 1.8; }
+        .notes-footer {
+            padding: 12px 18px; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .notes-save-status {
+            font-size: .7rem; color: var(--muted);
+            display: flex; align-items: center; gap: 7px;
+        }
+        .notes-save-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--muted); transition: background .3s; flex-shrink: 0;
+        }
+        .notes-save-dot.saved  { background: var(--green); box-shadow: 0 0 6px rgba(6,214,160,.4); }
+        .notes-save-dot.saving { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
+        .notes-char-count { font-size: .66rem; color: var(--muted); }
+        .notes-toggle-btn {
+            width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+            background: rgba(168,85,247,.06); border: 1px solid rgba(168,85,247,.12);
+            color: var(--violet); cursor: pointer; font-size: 12px;
+            display: grid; place-items: center; transition: all .15s;
+            margin-left: auto;
+        }
+        .notes-toggle-btn:hover { background: rgba(168,85,247,.16); border-color: rgba(168,85,247,.3); }
+        .notes-toggle-btn.has-notes { background: rgba(168,85,247,.14); border-color: rgba(168,85,247,.35); box-shadow: 0 0 8px rgba(168,85,247,.2); }
+        @media (max-width: 768px) {
+            .notes-panel {
+                position: fixed; right: 0; top: 0; bottom: 0; z-index: 150;
+                width: min(360px, 95vw);
+                transform: translateX(110%);
+                transition: transform .35s cubic-bezier(.4,0,.2,1);
+                box-shadow: -20px 0 60px rgba(0,0,0,.5);
+            }
+            .notes-panel.open { display: flex; transform: translateX(0); }
+        }
+
+        </style>
 </head>
 <body>
 
@@ -849,20 +955,20 @@
                 <span>Semestre 1</span><span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s1">
-                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 1</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 2</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 3</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 4</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 1</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Matière 1')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 2</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Matière 2')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 3</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Matière 3')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 4</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Matière 4')" title="Mes notes">📝</button></li>
             </div>
 
             <div class="menu-semester" onclick="toggleSem('s2')">
                 <span>Semestre 2</span><span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s2">
-                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 5</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 6</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 7</span><span class="soon-badge">Bientôt</span></li>
-                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span></li>
+                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 5</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m5" onclick="openNotes(event,'Matière 5')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 6</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m6" onclick="openNotes(event,'Matière 6')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 7</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m7" onclick="openNotes(event,'Matière 7')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m8" onclick="openNotes(event,'Matière 8')" title="Mes notes">📝</button></li>
             </div>
 
             <!-- ── INFORMATIONS COMPLÉMENTAIRES ── -->
@@ -934,6 +1040,9 @@
 
             </div>
         </div>
+
+        <div class="main-body" id="main-body">
+        <div class="main-content" id="main-content">
 
         <!-- BROADCAST BANNER -->
         <div class="broadcast-banner" id="broadcast-banner">
@@ -1078,7 +1187,41 @@
                     </div>
                 </div>
             </div>
+        </div><!-- /admin-panel -->
+        </div><!-- /main-content -->
+
+        <!-- NOTES PANEL -->
+        <div class="notes-panel" id="notes-panel">
+            <div class="notes-header">
+                <div class="notes-header-icon">📝</div>
+                <div class="notes-header-info">
+                    <div class="notes-header-title" id="notes-matiere-title">Mes notes</div>
+                    <div class="notes-header-sub">Sauvegarde automatique</div>
+                </div>
+                <button class="notes-close" onclick="closeNotes()">✕</button>
+            </div>
+            <div class="notes-toolbar">
+                <button class="notes-btn" onclick="insertMd('**','**')"><b>G</b></button>
+                <button class="notes-btn" onclick="insertMd('*','*')"><i>I</i></button>
+                <button class="notes-btn" onclick="insertMd('\n## ','')">T</button>
+                <button class="notes-btn" onclick="insertMd('\n- ','')">• Liste</button>
+                <button class="notes-btn" onclick="insertMd('\n> ','')">❝</button>
+                <button class="notes-btn" onclick="insertMd('\n---\n','')">—</button>
+                <button class="notes-btn" onclick="clearNotes()" style="margin-left:auto;color:var(--danger)">🗑</button>
+            </div>
+            <textarea class="notes-editor" id="notes-editor"
+                placeholder="Tes notes personnelles pour cette matière...&#10;&#10;Sauvegarde automatique activée ✓"
+                oninput="onNotesInput()"></textarea>
+            <div class="notes-footer">
+                <div class="notes-save-status">
+                    <div class="notes-save-dot" id="notes-dot"></div>
+                    <span id="notes-status-text">Prêt</span>
+                </div>
+                <div class="notes-char-count"><span id="notes-char">0</span> car.</div>
+            </div>
         </div>
+
+        </div><!-- /main-body -->
     </main>
 </div>
 
@@ -1106,6 +1249,124 @@ async function sbSelect(q){const r=await fetch(`${SB_URL}/rest/v1/${q}`,{headers
 async function sbInsert(t,b){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:H(),body:JSON.stringify(b)});return r.ok?await r.json():null;}
 async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'PATCH',headers:H(),body:JSON.stringify(b)});return r.ok;}
 async function sbDelete(t,f){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'DELETE',headers:H()});return r.ok;}
+
+
+// ── NOTES PERSONNELLES ────────────────────────────────────────────────────
+
+let currentMatiere = null;
+let notesSaveTimer = null;
+let notesLoaded = {};
+
+async function openNotes(e, matiere) {
+    e.stopPropagation();
+    if(window.innerWidth <= 768) closeSidebar();
+
+    // Si même matière déjà ouverte, toggle
+    const panel = document.getElementById('notes-panel');
+    if (currentMatiere === matiere && panel.classList.contains('open')) {
+        closeNotes(); return;
+    }
+
+    currentMatiere = matiere;
+    document.getElementById('notes-matiere-title').textContent = 'Notes — ' + matiere;
+    panel.classList.add('open');
+
+    // Charger les notes depuis Supabase
+    setNoteStatus('loading');
+    const rows = await sbSelect('notes?code=eq.' + encodeURIComponent(session.code) + '&matiere=eq.' + encodeURIComponent(matiere) + '&select=*');
+    const editor = document.getElementById('notes-editor');
+    if (rows && rows.length > 0) {
+        editor.value = rows[0].content || '';
+        notesLoaded[matiere] = rows[0].id;
+    } else {
+        editor.value = '';
+        notesLoaded[matiere] = null;
+    }
+    updateNotesChar();
+    setNoteStatus('saved');
+}
+
+function closeNotes() {
+    document.getElementById('notes-panel').classList.remove('open');
+    currentMatiere = null;
+}
+
+function onNotesInput() {
+    updateNotesChar();
+    setNoteStatus('saving');
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(saveNotes, 1200);
+}
+
+async function saveNotes() {
+    if (!currentMatiere || !session) return;
+    const content = document.getElementById('notes-editor').value;
+    const matiere = currentMatiere;
+    const code = session.code;
+
+    if (notesLoaded[matiere]) {
+        // Update
+        await sbUpdate('notes', {id: notesLoaded[matiere]}, {content, updated_at: new Date().toISOString()});
+    } else {
+        // Insert
+        const res = await sbInsert('notes', {code, matiere, content});
+        if (res && res.length > 0) notesLoaded[matiere] = res[0].id;
+    }
+    setNoteStatus('saved');
+    // Marquer le bouton si notes non vides
+    updateNotesBtns(matiere, content.trim().length > 0);
+}
+
+function setNoteStatus(state) {
+    const dot = document.getElementById('notes-dot');
+    const txt = document.getElementById('notes-status-text');
+    if (!dot || !txt) return;
+    if (state === 'saving') {
+        dot.className = 'notes-save-dot saving';
+        txt.textContent = 'Sauvegarde...';
+    } else if (state === 'saved') {
+        dot.className = 'notes-save-dot saved';
+        txt.textContent = 'Sauvegardé ✓';
+    } else {
+        dot.className = 'notes-save-dot';
+        txt.textContent = 'Chargement...';
+    }
+}
+
+function updateNotesChar() {
+    const el = document.getElementById('notes-char');
+    const ed = document.getElementById('notes-editor');
+    if (el && ed) el.textContent = ed.value.length;
+}
+
+function updateNotesBtns(matiere, hasContent) {
+    document.querySelectorAll('.notes-toggle-btn').forEach(btn => {
+        if ((btn.getAttribute('onclick') || '').includes("'" + matiere + "'")) {
+            btn.classList.toggle('has-notes', hasContent);
+        }
+    });
+}
+
+function insertMd(before, after) {
+    const ed = document.getElementById('notes-editor');
+    if (!ed) return;
+    const start = ed.selectionStart;
+    const end = ed.selectionEnd;
+    const selected = ed.value.substring(start, end);
+    const newText = before + selected + after;
+    ed.value = ed.value.substring(0, start) + newText + ed.value.substring(end);
+    ed.selectionStart = start + before.length;
+    ed.selectionEnd = start + before.length + selected.length;
+    ed.focus();
+    onNotesInput();
+}
+
+function clearNotes() {
+    if (!confirm('Effacer toutes les notes de cette matière ?')) return;
+    document.getElementById('notes-editor').value = '';
+    updateNotesChar();
+    saveNotes();
+}
 
 // ── BROADCAST ─────────────────────────────────────────────────────────────
 
