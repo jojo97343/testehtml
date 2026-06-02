@@ -2077,10 +2077,7 @@ function loginWithSaved(){
                     <div class="ob-feat-icon purple">🏆</div>
                     <div><div class="ob-feat-title">Score et progression</div><div class="ob-feat-sub">Vois ta progression sur chaque section et par matière</div></div>
                 </div>
-                <div class="ob-feat">
-                    <div class="ob-feat-icon amber">⏱️</div>
-                    <div><div class="ob-feat-title">Mode partiel chronométré</div><div class="ob-feat-sub">Simule les conditions réelles avec un timer comme en examen</div></div>
-                </div>
+
             </div>
         </div>
 
