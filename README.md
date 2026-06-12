@@ -1084,6 +1084,40 @@
             .ob-title { font-size: 1.2rem; }
         }
 
+        
+        /* ── COUNTDOWN PARTIELS ── */
+        .countdown-card {
+            display: none;
+            background: linear-gradient(135deg, rgba(168,85,247,.1), rgba(255,107,157,.06));
+            border: 1px solid rgba(168,85,247,.2);
+            border-radius: 16px; padding: 18px 24px;
+            margin-bottom: 28px; width: 100%; max-width: 480px;
+            align-items: center; gap: 16px;
+            position: relative; overflow: hidden;
+            animation: cardIn .5s cubic-bezier(.34,1.56,.64,1);
+        }
+        .countdown-card.visible { display: flex; }
+        .countdown-icon {
+            width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+            background: var(--grad1); display: grid; place-items: center;
+            font-size: 22px; box-shadow: 0 6px 20px rgba(168,85,247,.3);
+        }
+        .countdown-info { flex: 1; min-width: 0; }
+        .countdown-label { font-size: .78rem; color: var(--muted); margin-bottom: 2px; }
+        .countdown-value {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.3rem; font-weight: 700; color: var(--white);
+        }
+        .countdown-value span { color: var(--violet); }
+
+        /* Admin countdown form */
+        .countdown-current {
+            display: flex; align-items: center; gap: 10px;
+            font-size: .8rem; color: var(--muted);
+            margin-top: 10px; padding: 10px 14px;
+            background: var(--bg3); border-radius: 10px; border: 1px solid var(--border);
+        }
+
         </style>
 </head>
 <body>
@@ -1257,6 +1291,13 @@
         <div class="loader" id="loader"></div>
 
         <div class="welcome" id="welcome">
+            <div class="countdown-card" id="countdown-card">
+                <div class="countdown-icon">📅</div>
+                <div class="countdown-info">
+                    <div class="countdown-label" id="countdown-label">Partiels</div>
+                    <div class="countdown-value" id="countdown-value">—</div>
+                </div>
+            </div>
             <div class="welcome-icon">🎯</div>
             <h1 id="welcome-title">Bonne <span>révision</span> !</h1>
             <p>Sélectionne une matière dans le menu pour commencer à réviser.</p>
@@ -1354,6 +1395,26 @@
                             <thead><tr><th style="width:44px">Icône</th><th>Nom</th><th>URL</th><th>Actions</th></tr></thead>
                             <tbody id="res-tbody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <div class="section-card" style="border-color:rgba(168,85,247,.15)">
+                    <div class="section-title">📅 Compte à rebours partiels</div>
+                    <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Affiche un compteur de jours restants sur la page d'accueil de tous les étudiants.</p>
+                    <div class="gen-form" style="margin-bottom:14px">
+                        <div class="form-field" style="flex:2">
+                            <label class="form-label">Libellé</label>
+                            <input type="text" class="form-input" id="cd-label" placeholder="Ex : Partiels Master CCA" maxlength="60">
+                        </div>
+                        <div class="form-field" style="flex:0 0 160px;min-width:140px">
+                            <label class="form-label">Date du partiel</label>
+                            <input type="date" class="form-input" id="cd-date">
+                        </div>
+                        <button class="btn-gen" id="btn-cd-send" onclick="setCountdown()">Activer →</button>
+                    </div>
+                    <div class="countdown-current" id="cd-current">Aucun compte à rebours actif</div>
+                    <div style="margin-top:10px">
+                        <button class="btn-action btn-delete" onclick="clearCountdown()" style="padding:6px 14px;font-size:.75rem">🗑 Retirer le compteur</button>
                     </div>
                 </div>
 
@@ -1639,6 +1700,85 @@ function clearNotes() {
     saveNotes();
 }
 
+
+// ── COUNTDOWN PARTIELS ───────────────────────────────────────────────────
+
+async function loadCountdown() {
+    const rows = await sbSelect('countdown?order=created_at.desc&limit=1&select=*');
+    const card = document.getElementById('countdown-card');
+    const labelEl = document.getElementById('countdown-label');
+    const valEl = document.getElementById('countdown-value');
+    const currentEl = document.getElementById('cd-current');
+
+    if (!rows || !rows.length || !rows[0].active) {
+        if (card) card.classList.remove('visible');
+        if (currentEl) currentEl.innerHTML = 'Aucun compte à rebours actif';
+        return;
+    }
+
+    const cd = rows[0];
+    const today = new Date(); today.setHours(0,0,0,0);
+    const target = new Date(cd.target_date); target.setHours(0,0,0,0);
+    const diffDays = Math.ceil((target - today) / (1000*60*60*24));
+
+    if (currentEl) {
+        currentEl.innerHTML = `📅 <strong style="color:var(--white)">${escHtml(cd.label)}</strong> — ${new Date(cd.target_date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})} <span style="color:var(--violet);font-weight:700">(${diffDays >= 0 ? diffDays + ' j restants' : 'passé'})</span>`;
+    }
+
+    if (diffDays < 0) {
+        if (card) card.classList.remove('visible');
+        return;
+    }
+
+    if (card) {
+        labelEl.textContent = cd.label;
+        if (diffDays === 0) {
+            valEl.innerHTML = "<span>Aujourd'hui !</span> 🔥";
+        } else if (diffDays === 1) {
+            valEl.innerHTML = "<span>Demain</span> — derniers réglages !";
+        } else {
+            valEl.innerHTML = `dans <span>${diffDays}</span> jours`;
+        }
+        card.classList.add('visible');
+    }
+}
+
+async function setCountdown() {
+    const label = document.getElementById('cd-label').value.trim();
+    const date = document.getElementById('cd-date').value;
+    if (!label || !date) { showToast('Remplis le libellé et la date.', 'error'); return; }
+
+    const btn = document.getElementById('btn-cd-send');
+    btn.disabled = true; btn.textContent = '…';
+
+    // Désactiver les anciens
+    await fetch(`${SB_URL}/rest/v1/countdown?active=eq.true&id=neq.00000000-0000-0000-0000-000000000000`, {
+        method: 'PATCH',
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+        body: JSON.stringify({active: false})
+    });
+
+    const res = await sbInsert('countdown', {label, target_date: date, active: true});
+    if (res) {
+        showToast('✓ Compte à rebours activé !');
+        await loadCountdown();
+    } else {
+        showToast('Erreur.', 'error');
+    }
+    btn.disabled = false; btn.textContent = 'Activer →';
+}
+
+async function clearCountdown() {
+    if (!confirm('Retirer le compte à rebours ?')) return;
+    await fetch(`${SB_URL}/rest/v1/countdown?active=eq.true&id=neq.00000000-0000-0000-0000-000000000000`, {
+        method: 'PATCH',
+        headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+        body: JSON.stringify({active: false})
+    });
+    showToast('Compteur retiré.');
+    await loadCountdown();
+}
+
 // ── BROADCAST ─────────────────────────────────────────────────────────────
 
 let lastBroadcastId = null;
@@ -1774,6 +1914,7 @@ function startHeartbeat(){
         await sbUpdate('access_codes',{code:session.code},{last_seen_at:new Date().toISOString()});
         loadResources();
         loadBroadcast();
+        loadCountdown();
     },30000);
 }
 
@@ -1798,6 +1939,7 @@ function enterHub(){
     }
     loadResources();
     loadBroadcast();
+    loadCountdown();
     setTimeout(showOnboarding, 800);
 }
 
@@ -1834,7 +1976,7 @@ function openAdmin(){
     document.getElementById('current-page').textContent='Administration';
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
-    loadCodes();loadLogs();loadResources();loadBroadcast();
+    loadCodes();loadLogs();loadResources();loadBroadcast();loadCountdown();
 }
 
 function goHome(){
