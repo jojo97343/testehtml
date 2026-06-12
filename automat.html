@@ -28,6 +28,31 @@
             --grad3: linear-gradient(135deg, #ffd166, #ff6b9d);
         }
 
+        /* ── THÈME CLAIR ── */
+        body.light-theme {
+            --bg:        #f5f4fa;
+            --bg2:       #ffffff;
+            --bg3:       #f0eef8;
+            --border:    rgba(15,14,23,.08);
+            --text:      #4a4760;
+            --white:     #1a1825;
+            --muted:     #9b97b5;
+        }
+        body.light-theme .toast { background: var(--bg2); }
+        body.light-theme .login-card { background: rgba(255,255,255,.9); border-color: rgba(15,14,23,.08); }
+        body.light-theme .login-blob { opacity: .12; }
+        body.light-theme .code-input { background: rgba(15,14,23,.03); border-color: rgba(15,14,23,.1); color: var(--white); }
+        body.light-theme .code-input:focus { background: rgba(168,85,247,.04); }
+        body.light-theme nav::before { opacity: .5; }
+        body.light-theme .topbar { background: rgba(255,255,255,.92); }
+        body.light-theme .welcome::before { opacity: .5; }
+        body.light-theme .search-input { color: var(--white); }
+        body.light-theme .notes-editor i, body.light-theme .notes-editor em { color: #0891a8; }
+        body.light-theme ::-webkit-scrollbar-thumb { background: rgba(15,14,23,.15); }
+        #btn-theme:hover { background: rgba(255,209,102,.2) !important; border-color: rgba(255,209,102,.4) !important; transform: translateY(-1px); }
+        body.light-theme #btn-theme { background: rgba(255,159,28,.12) !important; border-color: rgba(255,159,28,.3) !important; color: #b5650a !important; }
+        body.light-theme #btn-theme:hover { background: rgba(255,159,28,.22) !important; }
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -1203,6 +1228,18 @@
                         <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                     </svg>
                 </button>
+                <button class="btn-topbar" id="btn-theme" onclick="toggleTheme()" title="Changer de thème" style="background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.25);color:var(--yellow)">
+                    <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
 
             </div>
         </div>
@@ -1423,6 +1460,37 @@ async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.$
 async function sbDelete(t,f){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'DELETE',headers:H()});return r.ok;}
 
 
+
+
+// ── THÈME CLAIR/SOMBRE ───────────────────────────────────────────────────
+
+const THEME_KEY = 'hub_theme';
+
+function applyTheme(theme) {
+    const moon = document.getElementById('theme-icon-moon');
+    const sun = document.getElementById('theme-icon-sun');
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        if (moon) moon.style.display = 'none';
+        if (sun) sun.style.display = '';
+    } else {
+        document.body.classList.remove('light-theme');
+        if (moon) moon.style.display = '';
+        if (sun) sun.style.display = 'none';
+    }
+}
+
+function toggleTheme() {
+    const isLight = document.body.classList.contains('light-theme');
+    const next = isLight ? 'dark' : 'light';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+}
+
+function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY) || 'dark';
+    applyTheme(saved);
+}
 
 // ── ONBOARDING ────────────────────────────────────────────────────────────
 
@@ -1990,6 +2058,7 @@ function loginWithSaved(){
 }
 
 (function(){
+    initTheme();
     const s=getSession();
     if(s){session=s;enterHub();return;}
     const saved=getSavedCode();
@@ -2117,6 +2186,7 @@ function loginWithSaved(){
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Clique sur 📝 dans le menu pour prendre des notes par matière</span></div>
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Le menu 📎 contient les PDF et ressources utiles</span></div>
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Les notions 🔥 sont les plus fréquentes aux partiels</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Bascule entre mode sombre 🌙 et clair ☀️ via le bouton en haut à droite</span></div>
             </div>
         </div>
 
