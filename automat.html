@@ -659,6 +659,7 @@
             text-align: left; padding: 10px 14px; font-size: .62rem;
             letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
             border-bottom: 1px solid var(--border); font-weight: 600;
+            position: sticky; top: 0; background: var(--bg2); z-index: 2;
         }
 
         .codes-table td {
@@ -1360,8 +1361,14 @@
                 </div>
 
                 <div class="section-card">
-                    <div class="section-title">📋 Codes existants</div>
-                    <div class="codes-table-wrap">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+                        <div class="section-title" style="margin-bottom:0">📋 Codes existants</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <input type="text" id="codes-search" class="form-input" placeholder="🔍 Rechercher un nom, code, note…" style="width:220px;padding:7px 12px;font-size:.76rem" oninput="filterCodes()">
+                            <button class="btn-action" id="btn-codes-sort" onclick="toggleCodesSort()" style="border-color:var(--border);color:var(--text);padding:7px 12px;font-size:.74rem">Trier A→Z</button>
+                        </div>
+                    </div>
+                    <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
                         <table class="codes-table">
                             <thead><tr><th>Code</th><th>Nom</th><th>Note</th><th>Statut</th><th>Dernière activité</th><th>Actions</th></tr></thead>
                             <tbody id="codes-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
@@ -1390,7 +1397,7 @@
                         </div>
                         <button class="btn-gen" id="btn-res-add" onclick="addResource()" style="background:linear-gradient(135deg,#06d6d6,#a855f7)">+ Ajouter</button>
                     </div>
-                    <div class="codes-table-wrap">
+                    <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
                         <table class="codes-table">
                             <thead><tr><th style="width:44px">Icône</th><th>Nom</th><th>URL</th><th>Actions</th></tr></thead>
                             <tbody id="res-tbody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
@@ -1439,11 +1446,14 @@
                 </div>
 
                 <div class="section-card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
                         <div class="section-title" style="margin-bottom:0">🕓 Historique</div>
-                        <button class="btn-gen" onclick="loadLogs()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <input type="text" id="logs-search" class="form-input" placeholder="🔍 Rechercher un nom, code…" style="width:220px;padding:7px 12px;font-size:.76rem" oninput="filterLogs()">
+                            <button class="btn-gen" onclick="loadLogs()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
+                        </div>
                     </div>
-                    <div class="codes-table-wrap">
+                    <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
                         <table class="codes-table">
                             <thead><tr><th>Nom</th><th>Code</th><th>Connecté le</th></tr></thead>
                             <tbody id="logs-tbody"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
@@ -1992,24 +2002,55 @@ function goHome(){
 function reloadFrame(){if(!currentFile)return;const loader=document.getElementById('loader');loader.className='loader loading';const frame=document.getElementById('content-frame');frame.onload=()=>{loader.className='loader done';setTimeout(()=>loader.className='loader',600);};frame.src=currentFile;}
 function openFullscreen(){const frame=document.getElementById('content-frame');if(frame.requestFullscreen)frame.requestFullscreen();}
 
+let allCodes = [];
+let codesSortDir = 'desc';
+
 async function loadCodes(){
     const tbody=document.getElementById('codes-tbody');
     tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr>';
     const rows=await sbSelect('access_codes?order=created_at.desc&select=*');
     if(!rows){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>';return;}
+    allCodes = rows;
     const now=Date.now();let active=0,online=0,revoked=0;
     rows.forEach(r=>{if(!r.is_active){revoked++;return;}active++;if(r.last_seen_at&&(now-new Date(r.last_seen_at).getTime())<90000)online++;});
     document.getElementById('stat-total').textContent=rows.length;
     document.getElementById('stat-active').textContent=active;
     document.getElementById('stat-online').textContent=online;
     document.getElementById('stat-revoked').textContent=revoked;
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Aucun code.</td></tr>';return;}
+    renderCodes();
+}
+
+function renderCodes(){
+    const tbody=document.getElementById('codes-tbody');
+    const query=(document.getElementById('codes-search')?.value||'').trim().toLowerCase();
+    let rows=allCodes;
+    if(query){
+        rows=rows.filter(r=>(r.name||'').toLowerCase().includes(query)||(r.code||'').toLowerCase().includes(query)||(r.note||'').toLowerCase().includes(query));
+    }
+    if(codesSortDir!=='none'){
+        rows=[...rows].sort((a,b)=>{
+            const an=(a.name||'').toLowerCase(), bn=(b.name||'').toLowerCase();
+            if(!an&&!bn)return 0; if(!an)return 1; if(!bn)return -1;
+            return codesSortDir==='asc'?an.localeCompare(bn):bn.localeCompare(an);
+        });
+    }
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">'+(query?'Aucun résultat.':'Aucun code.')+'</td></tr>';return;}
+    const now=Date.now();
     tbody.innerHTML=rows.map(r=>{
         const isOnline=r.last_seen_at&&(now-new Date(r.last_seen_at).getTime())<90000;
         const badge=!r.is_active?'<span class="badge badge-revoked">Révoqué</span>':isOnline?'<span class="badge badge-online">En ligne</span>':'<span class="badge badge-active">Actif</span>';
         const acts=`<div class="actions-cell"><button class="btn-action btn-copy" onclick="copyCode('${r.code}')">Copier</button>${r.is_active?`<button class="btn-action btn-revoke" onclick="revokeCode('${r.id}')">Révoquer</button>${r.session_token?`<button class="btn-action btn-kick" onclick="kickCode('${r.id}')">Déco.</button>`:''}`:`<button class="btn-action btn-restore" onclick="restoreCode('${r.id}')">Réactiver</button>`}<button class="btn-action btn-delete" onclick="deleteCode('${r.id}','${r.code}')">Suppr.</button></div>`;
         return`<tr><td><span class="code-pill">${r.code}</span></td><td>${r.name||'<span style="color:var(--muted)">—</span>'}</td><td style="color:var(--muted);font-size:.75rem">${r.note||'—'}</td><td>${badge}</td><td style="color:var(--muted);font-size:.75rem">${fmtDate(r.last_seen_at)}</td><td>${acts}</td></tr>`;
     }).join('');
+}
+
+function filterCodes(){ renderCodes(); }
+
+function toggleCodesSort(){
+    codesSortDir = codesSortDir==='asc' ? 'desc' : 'asc';
+    const btn=document.getElementById('btn-codes-sort');
+    if(btn) btn.innerHTML = codesSortDir==='asc' ? 'Nom A→Z ↑' : 'Nom Z→A ↓';
+    renderCodes();
 }
 
 async function generateCode(){
@@ -2029,12 +2070,27 @@ async function restoreCode(id){const ok=await sbUpdate('access_codes',{id},{is_a
 async function kickCode(id){const ok=await sbUpdate('access_codes',{id},{session_token:null});ok?showToast('Déconnecté.'):showToast('Erreur.','error');await loadCodes();}
 async function deleteCode(id,code){if(!confirm(`Supprimer "${code}" ?`))return;const ok=await sbDelete('access_codes',{id});ok?showToast(`✓ "${code}" supprimé.`):showToast('Erreur.','error');await loadCodes();}
 
+let allLogs = [];
+
 async function loadLogs(){
     const tbody=document.getElementById('logs-tbody');if(!tbody)return;
     const rows=await sbSelect('connection_logs?order=connected_at.desc&limit=50&select=*');
-    if(!rows||rows.length===0){tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Aucune connexion.</td></tr>';return;}
+    allLogs = rows || [];
+    renderLogs();
+}
+
+function renderLogs(){
+    const tbody=document.getElementById('logs-tbody');if(!tbody)return;
+    const query=(document.getElementById('logs-search')?.value||'').trim().toLowerCase();
+    let rows=allLogs;
+    if(query){
+        rows=rows.filter(r=>(r.name||'').toLowerCase().includes(query)||(r.code||'').toLowerCase().includes(query));
+    }
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">'+(query?'Aucun résultat.':'Aucune connexion.')+'</td></tr>';return;}
     tbody.innerHTML=rows.map(r=>`<tr><td>${r.name||'<span style="color:var(--muted)">—</span>'}</td><td><span class="code-pill">${r.code}</span></td><td style="color:var(--muted);font-size:.75rem">${fmtDate(r.connected_at)}</td></tr>`).join('');
 }
+
+function filterLogs(){ renderLogs(); }
 
 async function kickAll(){
     if(!confirm("Déconnecter TOUS les étudiants ?"))return;
