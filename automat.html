@@ -52,6 +52,12 @@
         #btn-theme:hover { background: rgba(255,209,102,.2) !important; border-color: rgba(255,209,102,.4) !important; transform: translateY(-1px); }
         body.light-theme #btn-theme { background: rgba(255,159,28,.12) !important; border-color: rgba(255,159,28,.3) !important; color: #b5650a !important; }
         body.light-theme #btn-theme:hover { background: rgba(255,159,28,.22) !important; }
+        body.light-theme .notes-toolbar { background: var(--bg2); border-color: var(--border); }
+        body.light-theme .notes-btn { background: rgba(15,14,23,.05); border-color: rgba(15,14,23,.12); color: var(--text); }
+        body.light-theme .notes-btn:hover { color: #534AB7; background: rgba(168,85,247,.1); border-color: rgba(168,85,247,.4); }
+        body.light-theme .color-swatch[style*="f5f3ff"] { border-color: rgba(15,14,23,.25) !important; }
+        body.light-theme .color-swatch[title="Aucun"] { border-color: rgba(15,14,23,.25) !important; }
+        body.light-theme .color-swatches { background: var(--bg2); border-color: var(--border); box-shadow: 0 10px 30px rgba(15,14,23,.15); }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -826,7 +832,7 @@
             width: 360px; flex-shrink: 0;
             background: var(--bg2);
             border-left: 1px solid var(--border);
-            position: relative; overflow: hidden;
+            position: relative;
         }
         .notes-panel.open { display: flex; }
         .notes-panel::before {
@@ -864,15 +870,37 @@
         .notes-toolbar {
             padding: 10px 16px; border-bottom: 1px solid var(--border);
             display: flex; gap: 6px; flex-shrink: 0; background: var(--bg2);
+            overflow-x: auto; overflow-y: hidden; scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.1) transparent;
+            white-space: nowrap;
         }
+        .notes-toolbar::-webkit-scrollbar { height: 4px; }
+        .notes-toolbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
         .notes-btn {
-            height: 30px; padding: 0 12px;
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 7px; color: var(--muted); cursor: pointer;
-            font-size: .75rem; font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 30px; padding: 0 12px; flex-shrink: 0;
+            background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+            border-radius: 7px; color: var(--text); cursor: pointer;
+            font-size: .78rem; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;
             transition: all .15s; display: flex; align-items: center; gap: 4px;
+            position: relative;
         }
-        .notes-btn:hover { color: var(--white); border-color: rgba(168,85,247,.35); background: rgba(168,85,247,.06); }
+        .notes-btn:hover { color: var(--white); border-color: rgba(168,85,247,.5); background: rgba(168,85,247,.14); }
+
+        /* Color picker dropdown — fixed pour échapper aux conteneurs scrollables */
+        .color-picker-wrap { position: relative; flex-shrink: 0; }
+        .color-swatches {
+            display: none; position: fixed;
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 10px; padding: 8px; gap: 5px;
+            grid-template-columns: repeat(6, 1fr);
+            box-shadow: 0 10px 30px rgba(0,0,0,.5); z-index: 999;
+        }
+        .color-swatches.open { display: grid; }
+        .color-swatch {
+            width: 22px; height: 22px; border-radius: 6px; cursor: pointer;
+            border: 1px solid rgba(255,255,255,.15); transition: transform .15s;
+        }
+        .color-swatch:hover { transform: scale(1.15); }
         .notes-editor {
             flex: 1; padding: 20px;
             font-size: .85rem; color: var(--white);
@@ -907,6 +935,20 @@
             background: rgba(168,85,247,.06);
             border-radius: 0 6px 6px 0;
             color: var(--muted); font-style: italic;
+        }
+        .notes-editor a {
+            color: var(--cyan); text-decoration: underline;
+            text-decoration-color: rgba(6,214,214,.4);
+        }
+        .notes-editor pre {
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: 8px; padding: 12px 14px; margin: 8px 0;
+            overflow-x: auto;
+        }
+        .notes-editor pre code {
+            font-family: 'DM Mono', 'Courier New', monospace;
+            font-size: .78rem; color: var(--green);
+            white-space: pre-wrap; word-break: break-word;
         }
         .notes-footer {
             padding: 12px 18px; border-top: 1px solid var(--border);
@@ -1479,19 +1521,52 @@
                 <button class="notes-btn" onclick="fmt('italic')" title="Italique"><i>I</i></button>
                 <button class="notes-btn" onclick="fmt('underline')" title="Souligné"><u>S</u></button>
                 <button class="notes-btn" onclick="fmt('strikeThrough')" title="Barré"><s>B</s></button>
-                <div style="width:1px;background:var(--border);margin:0 2px"></div>
-                <button class="notes-btn" onclick="fmtBlock('h3')" title="Titre">T</button>
-                <button class="notes-btn" onclick="fmtBlock('insertUnorderedList')" title="Liste">• Liste</button>
+                <div style="width:1px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
+                <div class="color-picker-wrap">
+                    <button class="notes-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker('text-colors')" title="Couleur du texte">
+                        <span style="font-weight:700">A</span><span style="width:12px;height:3px;background:#ff6b9d;border-radius:2px;display:inline-block"></span>
+                    </button>
+                    <div class="color-swatches" id="text-colors">
+                        <div class="color-swatch" style="background:#f5f3ff" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#f5f3ff')" title="Blanc"></div>
+                        <div class="color-swatch" style="background:#ff6b9d" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#ff6b9d')" title="Rose"></div>
+                        <div class="color-swatch" style="background:#a855f7" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#a855f7')" title="Violet"></div>
+                        <div class="color-swatch" style="background:#06d6d6" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#06d6d6')" title="Cyan"></div>
+                        <div class="color-swatch" style="background:#06d6a0" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#06d6a0')" title="Vert"></div>
+                        <div class="color-swatch" style="background:#ffd166" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#ffd166')" title="Jaune"></div>
+                        <div class="color-swatch" style="background:#ff9f1c" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#ff9f1c')" title="Orange"></div>
+                        <div class="color-swatch" style="background:#ff5c7a" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#ff5c7a')" title="Rouge"></div>
+                        <div class="color-swatch" style="background:#5a5670" onmousedown="event.preventDefault()" onclick="applyColor('foreColor','#5a5670')" title="Gris"></div>
+                    </div>
+                </div>
+                <div class="color-picker-wrap">
+                    <button class="notes-btn" onmousedown="event.preventDefault()" onclick="toggleColorPicker('hl-colors')" title="Surligner">
+                        🖍️
+                    </button>
+                    <div class="color-swatches" id="hl-colors">
+                        <div class="color-swatch" style="background:#ffd166" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#ffd166')" title="Jaune"></div>
+                        <div class="color-swatch" style="background:#ff6b9d" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#ff6b9d')" title="Rose"></div>
+                        <div class="color-swatch" style="background:#a855f7" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#a855f7')" title="Violet"></div>
+                        <div class="color-swatch" style="background:#06d6d6" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#06d6d6')" title="Cyan"></div>
+                        <div class="color-swatch" style="background:#06d6a0" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#06d6a0')" title="Vert"></div>
+                        <div class="color-swatch" style="background:#ff9f1c" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','#ff9f1c')" title="Orange"></div>
+                        <div class="color-swatch" style="background:transparent;border-color:rgba(255,255,255,.3)" onmousedown="event.preventDefault()" onclick="applyColor('hiliteColor','transparent')" title="Aucun"></div>
+                    </div>
+                </div>
+                <div style="width:1px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
+                <button class="notes-btn" onclick="insertLink()" title="Lien">🔗</button>
                 <button class="notes-btn" onclick="fmtBlock('insertOrderedList')" title="Liste numérotée">1. Liste</button>
-                <div style="width:1px;background:var(--border);margin:0 2px"></div>
+                <button class="notes-btn" onclick="fmtBlock('insertUnorderedList')" title="Liste">• Liste</button>
+                <div style="width:1px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
+                <button class="notes-btn" onclick="fmt('indent')" title="Indenter">→|</button>
+                <button class="notes-btn" onclick="insertCodeBlock()" title="Bloc de code">&lt;/&gt;</button>
                 <button class="notes-btn" onclick="fmtBlock('formatBlock','blockquote')" title="Citation">❝</button>
-                <button class="notes-btn" onclick="clearNotes()" style="margin-left:auto;color:var(--danger)" title="Effacer">🗑</button>
+                <button class="notes-btn" onclick="clearNotes()" style="color:var(--danger)" title="Effacer">🗑</button>
             </div>
             <div class="notes-editor" id="notes-editor"
                 contenteditable="true"
                 spellcheck="false"
                 data-placeholder="Tes notes personnelles pour cette matière...&#10;&#10;Sauvegarde automatique activée ✓"
-                oninput="onNotesInput()"></div>
+                oninput="onNotesInput()" onmouseup="saveSelection()" onkeyup="saveSelection()"></div>
             <div class="notes-footer">
                 <div class="notes-save-status">
                     <div class="notes-save-dot" id="notes-dot"></div>
@@ -1647,6 +1722,92 @@ function fmtBlock(cmd, val) {
     document.execCommand(cmd, false, val || null);
     onNotesInput();
 }
+
+function insertLink() {
+    const ed = document.getElementById('notes-editor');
+    ed.focus();
+    const sel = window.getSelection();
+    const hasSelection = sel && sel.toString().length > 0;
+    const url = prompt('Adresse du lien (https://...)');
+    if (!url) return;
+    if (hasSelection) {
+        document.execCommand('createLink', false, url);
+    } else {
+        const text = prompt('Texte à afficher', url) || url;
+        document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+    }
+    onNotesInput();
+}
+
+function insertCodeBlock() {
+    const ed = document.getElementById('notes-editor');
+    ed.focus();
+    const sel = window.getSelection();
+    const selectedText = sel && sel.toString() ? sel.toString() : 'code';
+    document.execCommand('insertHTML', false, `<pre><code>${selectedText.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre><br>`);
+    onNotesInput();
+}
+
+let savedSelection = null;
+
+function saveSelection() {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0 && document.getElementById('notes-editor').contains(sel.anchorNode)) {
+        savedSelection = sel.getRangeAt(0).cloneRange();
+    }
+}
+
+function toggleColorPicker(id) {
+    const target = document.getElementById(id);
+    const wasOpen = target.classList.contains('open');
+    document.querySelectorAll('.color-swatches').forEach(el => el.classList.remove('open'));
+    if (wasOpen) return;
+
+    // Calculer la position par rapport au bouton qui a déclenché l'ouverture
+    const btn = event.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    target.style.top = (rect.bottom + 6) + 'px';
+    target.style.left = rect.left + 'px';
+    target.classList.add('open');
+
+    // Si ça dépasse à droite, recoller à gauche de l'écran visible
+    requestAnimationFrame(() => {
+        const tRect = target.getBoundingClientRect();
+        if (tRect.right > window.innerWidth - 10) {
+            target.style.left = (window.innerWidth - tRect.width - 10) + 'px';
+        }
+    });
+}
+
+function restoreSelection() {
+    if (!savedSelection) return false;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedSelection);
+    return true;
+}
+
+function applyColor(cmd, color) {
+    const ed = document.getElementById('notes-editor');
+    ed.focus();
+    restoreSelection();
+    try {
+        document.execCommand('styleWithCSS', false, true);
+    } catch(e) {}
+    if (color === 'transparent') {
+        document.execCommand('hiliteColor', false, 'transparent');
+    } else {
+        document.execCommand(cmd, false, color);
+    }
+    document.querySelectorAll('.color-swatches').forEach(el => el.classList.remove('open'));
+    onNotesInput();
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.color-picker-wrap')) {
+        document.querySelectorAll('.color-swatches').forEach(el => el.classList.remove('open'));
+    }
+});
 
 function onNotesInput() {
     updateNotesChar();
