@@ -1223,20 +1223,20 @@
                 <span>Semestre 1</span><span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s1">
-                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 1</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Matière 1')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 2</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Matière 2')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 3</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Matière 3')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 4</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Matière 4')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
             </div>
 
             <div class="menu-semester" onclick="toggleSem('s2')">
                 <span>Semestre 2</span><span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s2">
-                <li class="menu-item"><div class="item-icon">📘</div><span class="item-label">Matière 5</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m5" onclick="openNotes(event,'Matière 5')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📗</div><span class="item-label">Matière 6</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m6" onclick="openNotes(event,'Matière 6')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📙</div><span class="item-label">Matière 7</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m7" onclick="openNotes(event,'Matière 7')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📕</div><span class="item-label">Matière 8</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m8" onclick="openNotes(event,'Matière 8')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m5" onclick="openNotes(event,'Finance S2')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m6" onclick="openNotes(event,'Management des SI S2')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m7" onclick="openNotes(event,'Contrôle de gestion S2')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m8" onclick="openNotes(event,'Anglais des affaires S2')" title="Mes notes">📝</button></li>
             </div>
 
             <!-- ── INFORMATIONS COMPLÉMENTAIRES ── -->
