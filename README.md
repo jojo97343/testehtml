@@ -714,30 +714,38 @@
 
         /* ── BROADCAST BANNER ── */
         .broadcast-banner {
-            display: none; align-items: center; gap: 14px;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, rgba(255,209,102,.08), rgba(255,159,28,.06));
-            border-bottom: 1px solid rgba(255,209,102,.2);
-            font-size: .82rem; color: var(--text);
+            display: none; align-items: center; justify-content: center; gap: 16px;
+            padding: 24px 60px;
+            background: linear-gradient(135deg, rgba(255,209,102,.14), rgba(255,159,28,.1));
+            border-bottom: 2px solid rgba(255,209,102,.35);
+            border-top: 2px solid rgba(255,209,102,.35);
+            font-size: 1.35rem; font-weight: 700; color: var(--white);
             animation: slideDown .4s cubic-bezier(.34,1.56,.64,1);
             position: relative; z-index: 5; flex-shrink: 0;
+            box-shadow: 0 4px 24px rgba(255,209,102,.12);
+            text-align: center;
         }
         @keyframes slideDown { from { opacity:0; transform:translateY(-100%); } to { opacity:1; transform:translateY(0); } }
         .broadcast-banner.visible { display: flex; }
         .broadcast-icon {
-            width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
-            background: rgba(255,209,102,.15); border: 1px solid rgba(255,209,102,.3);
-            display: grid; place-items: center; font-size: 15px;
+            width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+            background: rgba(255,209,102,.2); border: 1px solid rgba(255,209,102,.4);
+            display: grid; place-items: center; font-size: 24px;
+            box-shadow: 0 4px 14px rgba(255,209,102,.2);
         }
-        .broadcast-text { flex: 1; min-width: 0; line-height: 1.5; }
-        .broadcast-text strong { color: var(--yellow); font-weight: 600; }
+        .broadcast-text {
+            flex: unset; min-width: 0; line-height: 1.5;
+            font-size: 1.35rem; font-weight: 700; color: var(--white);
+        }
+        .broadcast-text strong { color: var(--yellow); font-weight: 800; }
         .broadcast-close {
-            width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
-            background: rgba(255,255,255,.05); border: 1px solid var(--border);
-            color: var(--muted); cursor: pointer; font-size: 13px;
+            width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+            color: var(--white); cursor: pointer; font-size: 14px;
             display: grid; place-items: center; transition: all .15s;
         }
-        .broadcast-close:hover { color: var(--white); background: rgba(255,255,255,.1); }
+        .broadcast-close:hover { background: rgba(255,92,122,.15); border-color: rgba(255,92,122,.3); color: var(--danger); }
 
         /* ── BROADCAST ADMIN urgency ── */
         .urgency-select {
