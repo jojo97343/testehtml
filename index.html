@@ -1974,8 +1974,8 @@ async function pingVisitor(prenom) {
     await fetch(`${SB_URL}/rest/v1/visitors`, {
         method: 'POST',
         headers: {
-            'apikey': SB_KEY,
-            'Authorization': `Bearer ${SB_KEY}`,
+            'apikey': SB_KEY_ANON,
+            'Authorization': `Bearer ${SB_KEY_ANON}`,
             'Content-Type': 'application/json',
             'Prefer': 'resolution=merge-duplicates,return=minimal'
         },
@@ -2033,6 +2033,8 @@ function loadPage(fileName,el,label){
     frame.src=fileName;
 }
 
+let adminRefreshInterval = null;
+
 function openAdmin(){
     document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
     document.getElementById('admin-menu-item').classList.add('active');
@@ -2043,10 +2045,14 @@ function openAdmin(){
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
     loadVisitors();loadResources();loadBroadcast();loadCountdown();
+    // Auto-refresh visiteurs toutes les 30 secondes
+    if(adminRefreshInterval) clearInterval(adminRefreshInterval);
+    adminRefreshInterval = setInterval(() => loadVisitors(), 30000);
 }
 
 function goHome(){
     currentFile=null;
+    if(adminRefreshInterval){ clearInterval(adminRefreshInterval); adminRefreshInterval=null; }
     document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
     document.getElementById('iframe-wrapper').classList.remove('visible');
     document.getElementById('admin-panel').classList.remove('visible');
