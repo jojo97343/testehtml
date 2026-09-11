@@ -1938,27 +1938,28 @@ function closeAdminModal() {
     document.getElementById('modal-admin').classList.remove('visible');
 }
 
+const ADMIN_HASH = '4f4532d3e566afc790a3ebe4056fabedea24a9cf94bd23b18d4593b858f0a1a8';
+
+async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
 async function handleAdminLogin() {
-    const val = document.getElementById('admin-code-input').value.trim().toUpperCase();
+    const val = document.getElementById('admin-code-input').value.trim();
     const btn = document.getElementById('btn-admin-login');
     const errEl = document.getElementById('admin-error');
     if (!val) return;
     errEl.classList.remove('visible');
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
     try {
-        const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
-            method: 'POST', headers: {'Content-Type':'application/json', 'Authorization': `Bearer ${SB_KEY_ANON}`, 'apikey': SB_KEY_ANON},
-            body: JSON.stringify({code: val})
-        });
-        if (adminRes.ok) {
-            const data = await adminRes.json();
-            if (data.isAdmin) {
-                localStorage.setItem(ADMIN_KEY, val);
-                closeAdminModal();
-                enterHub('Administrateur', true);
-                btn.disabled = false; btn.textContent = 'Accéder →';
-                return;
-            }
+        const hash = await sha256(val);
+        if (hash === ADMIN_HASH) {
+            localStorage.setItem(ADMIN_KEY, val);
+            closeAdminModal();
+            enterHub('Administrateur', true);
+            btn.disabled = false; btn.textContent = 'Accéder →';
+            return;
         }
     } catch(e) {}
     errEl.classList.add('visible');
@@ -2362,11 +2363,8 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
     // Vérifier si admin déjà connecté
     const adminCode = localStorage.getItem(ADMIN_KEY);
     if (adminCode) {
-        fetch(`${SB_URL}/functions/v1/admin-login`, {
-            method: 'POST', headers: {'Content-Type':'application/json', 'Authorization': `Bearer ${SB_KEY_ANON}`, 'apikey': SB_KEY_ANON},
-            body: JSON.stringify({code: adminCode})
-        }).then(r => r.ok ? r.json() : null).then(data => {
-            if (data && data.isAdmin) { enterHub('Administrateur', true); }
+        sha256(adminCode).then(hash => {
+            if (hash === ADMIN_HASH) { enterHub('Administrateur', true); }
             else { localStorage.removeItem(ADMIN_KEY); checkPrenom(); }
         }).catch(() => checkPrenom());
         return;
