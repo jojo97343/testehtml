@@ -2101,7 +2101,7 @@ async function loadVisitors() {
     if (!rows) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
 
     const now = Date.now();
-    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 2 * 60 * 1000);
+    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
     const today = rows.filter(r => {
         const d = new Date(r.last_seen); const t = new Date();
         return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
@@ -2124,7 +2124,7 @@ async function loadVisitors() {
 
     tbody.innerHTML = rows.map(r => {
         const diff = now - new Date(r.last_seen).getTime();
-        const isOnline = diff < 2 * 60 * 1000;
+        const isOnline = diff < 1 * 60 * 1000;
         const badge = isOnline
             ? '<span class="badge badge-online">En ligne</span>'
             : '<span class="badge badge-revoked">Déconnecté</span>';
