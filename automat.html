@@ -1164,7 +1164,7 @@
                 <div class="footer-name" id="footer-name">Étudiant</div>
                 <div class="footer-role" id="footer-role">Hub Révisions</div>
             </div>
-            <button class="btn-logout" id="btn-admin-access" onclick="openAdminModal()" title="Administration" style="opacity:.4;font-size:.65rem;padding:5px 8px;letter-spacing:.5px">⚙</button>
+            <button class="btn-logout" id="btn-admin-access" onclick="openAdminModal()" title="" style="opacity:.12;font-size:.5rem;padding:3px 6px;background:transparent;border-color:transparent;color:var(--muted);letter-spacing:.5px;transition:opacity .3s" onmouseenter="this.style.opacity='.4'" onmouseleave="this.style.opacity='.12'">⚙</button>
         </div>
     </nav>
 
@@ -1455,7 +1455,7 @@
 
 <script>
 const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
-const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyaWRobmhpZGNyZmZmemVqemd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODk0MzIsImV4cCI6MjA5MjI2NTQzMn0.aRZyOhnFNn-1uUY5fArvqVlmEoGgvLXNTAsJ2zlM1GM';
 const SESSION_KEY = 'hub_sess';
 const SAVED_CODE_KEY = 'hub_last_code';
 function getSavedCode(){try{return JSON.parse(localStorage.getItem(SAVED_CODE_KEY));}catch{return null;}}
