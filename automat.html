@@ -1455,7 +1455,8 @@
 
 <script>
 const SB_URL = 'https://qridhnhidcrfffzejzgt.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyaWRobmhpZGNyZmZmemVqemd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODk0MzIsImV4cCI6MjA5MjI2NTQzMn0.aRZyOhnFNn-1uUY5fArvqVlmEoGgvLXNTAsJ2zlM1GM';
+const SB_KEY = 'sb_publishable_iELf6p0T6VpTWFNP6Hc9_g_TAzUmz9E';
+const SB_KEY_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyaWRobmhpZGNyZmZmemVqemd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODk0MzIsImV4cCI6MjA5MjI2NTQzMn0.aRZyOhnFNn-1uUY5fArvqVlmEoGgvLXNTAsJ2zlM1GM';
 const SESSION_KEY = 'hub_sess';
 const SAVED_CODE_KEY = 'hub_last_code';
 function getSavedCode(){try{return JSON.parse(localStorage.getItem(SAVED_CODE_KEY));}catch{return null;}}
@@ -1470,7 +1471,7 @@ function makeToken(){return Math.random().toString(36).slice(2)+Date.now().toStr
 function fmtDate(iso){if(!iso)return'—';return new Date(iso).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast visible '+type;clearTimeout(t._t);t._t=setTimeout(()=>{t.className='toast';},3200);}
 
-const H=()=>({'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation'});
+const H=()=>({'apikey':SB_KEY_ANON,'Authorization':`Bearer ${SB_KEY_ANON}`,'Content-Type':'application/json','Prefer':'return=representation'});
 async function sbSelect(q){const r=await fetch(`${SB_URL}/rest/v1/${q}`,{headers:H()});return r.ok?await r.json():null;}
 async function sbInsert(t,b){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:H(),body:JSON.stringify(b)});return r.ok?await r.json():null;}
 async function sbUpdate(t,f,b){const p=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');const r=await fetch(`${SB_URL}/rest/v1/${t}?${p}`,{method:'PATCH',headers:H(),body:JSON.stringify(b)});return r.ok;}
@@ -1946,7 +1947,7 @@ async function handleAdminLogin() {
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
     try {
         const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: {'Content-Type':'application/json', 'Authorization': `Bearer ${SB_KEY_ANON}`, 'apikey': SB_KEY_ANON},
             body: JSON.stringify({code: val})
         });
         if (adminRes.ok) {
@@ -2078,7 +2079,7 @@ async function loadVisitors() {
     if (!rows) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
 
     const now = Date.now();
-    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 5 * 60 * 1000);
+    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 2 * 60 * 1000);
     const today = rows.filter(r => {
         const d = new Date(r.last_seen); const t = new Date();
         return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
@@ -2101,10 +2102,10 @@ async function loadVisitors() {
 
     tbody.innerHTML = rows.map(r => {
         const diff = now - new Date(r.last_seen).getTime();
-        const isOnline = diff < 5 * 60 * 1000;
+        const isOnline = diff < 2 * 60 * 1000;
         const badge = isOnline
             ? '<span class="badge badge-online">En ligne</span>'
-            : '<span class="badge badge-revoked">' + fmtDate(r.last_seen) + '</span>';
+            : '<span class="badge badge-revoked">Déconnecté</span>';
         return `<tr>
             <td style="font-weight:600;color:var(--white)">${escHtml(r.prenom)}</td>
             <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.last_seen)}</td>
@@ -2362,7 +2363,7 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
     const adminCode = localStorage.getItem(ADMIN_KEY);
     if (adminCode) {
         fetch(`${SB_URL}/functions/v1/admin-login`, {
-            method: 'POST', headers: {'Content-Type':'application/json'},
+            method: 'POST', headers: {'Content-Type':'application/json', 'Authorization': `Bearer ${SB_KEY_ANON}`, 'apikey': SB_KEY_ANON},
             body: JSON.stringify({code: adminCode})
         }).then(r => r.ok ? r.json() : null).then(data => {
             if (data && data.isAdmin) { enterHub('Administrateur', true); }
