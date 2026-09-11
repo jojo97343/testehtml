@@ -1970,17 +1970,32 @@ let pingInterval = null;
 
 async function pingVisitor(prenom) {
     const vid = getVisitorId();
-    // Upsert : insert ou update si visitor_id existe déjà
-    await fetch(`${SB_URL}/rest/v1/visitors`, {
-        method: 'POST',
+    const now = new Date().toISOString();
+    // Essayer d'abord un PATCH (update)
+    const patch = await fetch(`${SB_URL}/rest/v1/visitors?visitor_id=eq.${encodeURIComponent(vid)}`, {
+        method: 'PATCH',
         headers: {
             'apikey': SB_KEY_ANON,
             'Authorization': `Bearer ${SB_KEY_ANON}`,
             'Content-Type': 'application/json',
-            'Prefer': 'resolution=merge-duplicates,return=minimal'
+            'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({visitor_id: vid, prenom, last_seen: new Date().toISOString()})
-    }).catch(e => console.warn('Ping visitor failed:', e));
+        body: JSON.stringify({prenom, last_seen: now})
+    });
+    // Si aucune ligne trouvée (0 rows updated), faire un INSERT
+    const count = patch.headers.get('content-range');
+    if (patch.ok && (count === null || count === '*/0')) {
+        await fetch(`${SB_URL}/rest/v1/visitors`, {
+            method: 'POST',
+            headers: {
+                'apikey': SB_KEY_ANON,
+                'Authorization': `Bearer ${SB_KEY_ANON}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({visitor_id: vid, prenom, last_seen: now})
+        });
+    }
 }
 
 function enterHub(prenom, isAdmin) {
