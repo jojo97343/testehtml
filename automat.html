@@ -1290,16 +1290,50 @@
 
                 <!-- Visiteurs en direct -->
                 <div class="section-card" style="border-color:rgba(6,214,160,.15)">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
                         <div class="section-title" style="margin-bottom:0">👥 Visiteurs en direct</div>
-                        <button class="btn-gen" onclick="loadVisitors()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <input type="text" id="visitors-search" class="form-input" placeholder="🔍 Rechercher un prénom…" style="width:200px;padding:7px 12px;font-size:.76rem" oninput="filterVisitors()">
+                            <button class="btn-gen" onclick="loadVisitors()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
+                        </div>
                     </div>
                     <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
                         <table class="codes-table">
-                            <thead><tr><th>Prénom</th><th>Dernière activité</th><th>Statut</th></tr></thead>
-                            <tbody id="visitors-tbody"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
+                            <thead><tr><th>Prénom</th><th>Dernière activité</th><th>Statut</th><th>Actions</th></tr></thead>
+                            <tbody id="visitors-tbody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
                         </table>
                     </div>
+                </div>
+
+                <!-- Graphique fréquentation -->
+                <div class="section-card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <div class="section-title" style="margin-bottom:0">📊 Fréquentation</div>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn-action" id="chart-btn-day" onclick="switchChart('day')" style="border-color:var(--violet);color:var(--violet);padding:4px 12px;font-size:.72rem">Aujourd'hui</button>
+                            <button class="btn-action" id="chart-btn-week" onclick="switchChart('week')" style="padding:4px 12px;font-size:.72rem">7 jours</button>
+                        </div>
+                    </div>
+                    <div id="chart-container" style="height:160px;display:flex;align-items:flex-end;gap:4px;padding:8px 0 0"></div>
+                    <div id="chart-labels" style="display:flex;gap:4px;margin-top:4px;font-size:.65rem;color:var(--muted)"></div>
+                </div>
+
+                <!-- Changer code admin -->
+                <div class="section-card" style="border-color:rgba(255,92,122,.15)">
+                    <div class="section-title">🔒 Changer le code admin</div>
+                    <p style="font-size:.78rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Le code est stocké sous forme de hash — personne ne peut le voir dans le code source.</p>
+                    <div class="gen-form">
+                        <div class="form-field">
+                            <label class="form-label">Nouveau code</label>
+                            <input type="password" class="form-input" id="new-admin-code" placeholder="Nouveau code secret">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Confirmer</label>
+                            <input type="password" class="form-input" id="confirm-admin-code" placeholder="Répète le code">
+                        </div>
+                        <button class="btn-gen" onclick="changeAdminCode()" style="background:rgba(255,92,122,.2);border:1px solid rgba(255,92,122,.3);color:var(--danger);box-shadow:none">Changer →</button>
+                    </div>
+                    <div id="admin-code-status" style="font-size:.76rem;margin-top:10px"></div>
                 </div>
 
                 <!-- Ressources PDF -->
@@ -1954,7 +1988,8 @@ async function handleAdminLogin() {
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
     try {
         const hash = await sha256(val);
-        if (hash === ADMIN_HASH) {
+        const storedHash = localStorage.getItem(CUSTOM_ADMIN_KEY) || ADMIN_HASH;
+        if (hash === storedHash) {
             localStorage.setItem(ADMIN_KEY, val);
             closeAdminModal();
             enterHub('Administrateur', true);
@@ -2092,16 +2127,21 @@ function handleAdminLogout() {
 
 // ── VISITEURS EN DIRECT ───────────────────────────────────────────────────
 
+let allVisitors = [];
+let currentChart = 'day';
+let customAdminHash = null;
+const CUSTOM_ADMIN_KEY = 'hub_admin_hash';
+
 async function loadVisitors() {
     const tbody = document.getElementById('visitors-tbody');
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr>';
 
     const rows = await sbSelect('visitors?order=last_seen.desc&select=*');
-    if (!rows) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
+    if (!rows) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
+    allVisitors = rows;
 
     const now = Date.now();
-    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
+    const active1min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
     const today = rows.filter(r => {
         const d = new Date(r.last_seen); const t = new Date();
         return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
@@ -2112,16 +2152,28 @@ async function loadVisitors() {
     const sToday = document.getElementById('stat-today');
     const sWeek = document.getElementById('stat-week');
     const sTotal = document.getElementById('stat-total-v');
-    if (sNow) sNow.textContent = active5min.length;
+    if (sNow) sNow.textContent = active1min.length;
     if (sToday) sToday.textContent = today.length;
     if (sWeek) sWeek.textContent = week.length;
     if (sTotal) sTotal.textContent = rows.length;
 
+    renderVisitors();
+    renderChart(currentChart);
+}
+
+function filterVisitors() { renderVisitors(); }
+
+function renderVisitors() {
+    const tbody = document.getElementById('visitors-tbody');
+    if (!tbody) return;
+    const query = (document.getElementById('visitors-search')?.value || '').trim().toLowerCase();
+    let rows = allVisitors;
+    if (query) rows = rows.filter(r => (r.prenom||'').toLowerCase().includes(query));
     if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Aucun visiteur encore.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">${query ? 'Aucun résultat.' : 'Aucun visiteur encore.'}</td></tr>`;
         return;
     }
-
+    const now = Date.now();
     tbody.innerHTML = rows.map(r => {
         const diff = now - new Date(r.last_seen).getTime();
         const isOnline = diff < 1 * 60 * 1000;
@@ -2132,9 +2184,88 @@ async function loadVisitors() {
             <td style="font-weight:600;color:var(--white)">${escHtml(r.prenom)}</td>
             <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.last_seen)}</td>
             <td>${badge}</td>
+            <td><button class="btn-action btn-delete" onclick="deleteVisitor('${r.id}','${escHtml(r.prenom)}')" style="font-size:.68rem;padding:3px 8px">🗑</button></td>
         </tr>`;
     }).join('');
 }
+
+async function deleteVisitor(id, prenom) {
+    if (!confirm(`Supprimer "${prenom}" de la liste ?`)) return;
+    const ok = await sbDelete('visitors', {id});
+    ok ? showToast(`✓ "${prenom}" supprimé.`) : showToast('Erreur.', 'error');
+    await loadVisitors();
+}
+
+function switchChart(mode) {
+    currentChart = mode;
+    document.getElementById('chart-btn-day').style.borderColor = mode==='day' ? 'var(--violet)' : 'var(--border)';
+    document.getElementById('chart-btn-day').style.color = mode==='day' ? 'var(--violet)' : 'var(--muted)';
+    document.getElementById('chart-btn-week').style.borderColor = mode==='week' ? 'var(--violet)' : 'var(--border)';
+    document.getElementById('chart-btn-week').style.color = mode==='week' ? 'var(--violet)' : 'var(--muted)';
+    renderChart(mode);
+}
+
+function renderChart(mode) {
+    const container = document.getElementById('chart-container');
+    const labelsEl = document.getElementById('chart-labels');
+    if (!container || !labelsEl) return;
+
+    let buckets = [], labels = [];
+    const now = new Date();
+
+    if (mode === 'day') {
+        // 24 heures — regrouper par heure
+        for (let h = 0; h < 24; h++) {
+            labels.push(h + 'h');
+            const count = allVisitors.filter(r => {
+                const d = new Date(r.last_seen);
+                return d.getDate()===now.getDate() && d.getMonth()===now.getMonth() && d.getHours()===h;
+            }).length;
+            buckets.push(count);
+        }
+    } else {
+        // 7 jours — regrouper par jour
+        for (let d = 6; d >= 0; d--) {
+            const day = new Date(now); day.setDate(now.getDate() - d);
+            const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+            labels.push(dayNames[day.getDay()]);
+            const count = allVisitors.filter(r => {
+                const rd = new Date(r.last_seen);
+                return rd.getDate()===day.getDate() && rd.getMonth()===day.getMonth() && rd.getFullYear()===day.getFullYear();
+            }).length;
+            buckets.push(count);
+        }
+    }
+
+    const max = Math.max(...buckets, 1);
+    container.innerHTML = buckets.map((v, i) => {
+        const h = Math.round((v / max) * 140);
+        const isActive = v > 0;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:.6rem;color:${isActive ? 'var(--violet)' : 'var(--muted)'}">${v > 0 ? v : ''}</span>
+            <div style="width:100%;height:${Math.max(h,2)}px;background:${isActive ? 'rgba(168,85,247,.5)' : 'var(--bg3)'};border-radius:3px 3px 0 0;border-top:2px solid ${isActive ? 'var(--violet)' : 'transparent'};transition:height .3s"></div>
+        </div>`;
+    }).join('');
+    labelsEl.innerHTML = labels.map(l => `<div style="flex:1;text-align:center;font-size:.55rem">${l}</div>`).join('');
+}
+
+// ── CHANGER CODE ADMIN ─────────────────────────────────────────────────────
+
+async function changeAdminCode() {
+    const newCode = document.getElementById('new-admin-code').value.trim();
+    const confirm = document.getElementById('confirm-admin-code').value.trim();
+    const status = document.getElementById('admin-code-status');
+    if (!newCode) { status.innerHTML = '<span style="color:var(--danger)">Remplis le nouveau code.</span>'; return; }
+    if (newCode !== confirm) { status.innerHTML = '<span style="color:var(--danger)">Les deux codes ne correspondent pas.</span>'; return; }
+    const hash = await sha256(newCode);
+    localStorage.setItem(CUSTOM_ADMIN_KEY, hash);
+    customAdminHash = hash;
+    document.getElementById('new-admin-code').value = '';
+    document.getElementById('confirm-admin-code').value = '';
+    status.innerHTML = '<span style="color:var(--green)">✓ Code admin changé avec succès !</span>';
+    setTimeout(() => { status.innerHTML = ''; }, 3000);
+}
+
 
 async function loadCodes(){
     const tbody=document.getElementById('codes-tbody');
@@ -2385,7 +2516,8 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
     const adminCode = localStorage.getItem(ADMIN_KEY);
     if (adminCode) {
         sha256(adminCode).then(hash => {
-            if (hash === ADMIN_HASH) { enterHub('Administrateur', true); }
+            const storedHash = localStorage.getItem(CUSTOM_ADMIN_KEY) || ADMIN_HASH;
+            if (hash === storedHash) { enterHub('Administrateur', true); }
             else { localStorage.removeItem(ADMIN_KEY); checkPrenom(); }
         }).catch(() => checkPrenom());
         return;
