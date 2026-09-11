@@ -68,165 +68,51 @@
             overflow: hidden;
         }
 
-        /* LOGIN */
-        #login-screen {
-            display: flex; align-items: center; justify-content: center;
-            position: fixed; inset: 0; z-index: 999;
-            background: var(--bg); padding: 24px;
+        /* ── MODALES ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,.75); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 20px;
         }
-
-        .login-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-
-        .login-blob {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: .25;
-            animation: blobFloat 8s ease-in-out infinite;
-        }
-
-        .blob1 { width: 500px; height: 500px; background: var(--violet); top: -100px; left: -100px; }
-        .blob2 { width: 400px; height: 400px; background: var(--pink); bottom: -80px; right: -80px; animation-delay: -3s; }
-        .blob3 { width: 300px; height: 300px; background: var(--cyan); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -6s; }
-
-        @keyframes blobFloat {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(20px,-20px) scale(1.05); }
-            66% { transform: translate(-15px,15px) scale(.95); }
-        }
-
-        .blob3 { animation: blobFloat3 8s ease-in-out infinite; animation-delay: -6s; }
-        @keyframes blobFloat3 {
-            0%,100% { transform: translate(-50%,-50%) scale(1); }
-            33% { transform: translate(calc(-50% + 20px),calc(-50% - 20px)) scale(1.05); }
-            66% { transform: translate(calc(-50% - 15px),calc(-50% + 15px)) scale(.95); }
-        }
-
-        .login-card {
-            background: rgba(22,21,34,.85);
+        .modal-overlay.visible { display: flex; }
+        .modal-card {
+            background: rgba(22,21,34,.97);
             border: 1px solid rgba(255,255,255,.1);
-            border-radius: 28px; padding: 48px 44px;
-            width: 100%; max-width: 440px;
-            position: relative; z-index: 1;
+            border-radius: 24px; padding: 40px 36px;
+            width: 100%; max-width: 420px;
             backdrop-filter: blur(20px);
-            animation: cardIn .6s cubic-bezier(.34,1.56,.64,1);
-            box-shadow: 0 40px 80px rgba(0,0,0,.5);
+            animation: cardIn .5s cubic-bezier(.34,1.56,.64,1);
+            box-shadow: 0 40px 80px rgba(0,0,0,.6);
+            position: relative;
         }
-
-        @keyframes cardIn {
-            from { opacity:0; transform: translateY(30px) scale(.95); }
-            to   { opacity:1; transform: translateY(0) scale(1); }
-        }
-
-        .login-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
-
-        .login-logo-icon {
-            width: 52px; height: 52px; border-radius: 16px;
-            background: var(--grad1);
-            display: grid; place-items: center; font-size: 24px;
-            box-shadow: 0 8px 24px rgba(168,85,247,.4);
-        }
-
-        .login-logo-text {
-            font-family: 'Clash Display', sans-serif;
-            font-size: 1.2rem; font-weight: 700; color: var(--white); line-height: 1.1;
-        }
-
-        .login-logo-sub {
-            font-size: .65rem; color: var(--muted);
-            letter-spacing: 2px; text-transform: uppercase; margin-top: 3px;
-        }
-
-        .login-title {
-            font-family: 'Clash Display', sans-serif;
-            font-size: 1.8rem; font-weight: 700; color: var(--white);
-            margin-bottom: 8px; line-height: 1.1;
-        }
-
-        .login-title span {
-            background: var(--grad1); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; background-clip: text;
-        }
-
-        .login-sub { font-size: .84rem; color: var(--muted); margin-bottom: 36px; line-height: 1.6; }
-
-        .input-label {
-            display: block; font-size: .68rem; color: var(--muted);
-            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; font-weight: 600;
-        }
-
-        .code-input {
+        @keyframes cardIn { from { opacity:0; transform: translateY(24px) scale(.96); } to { opacity:1; transform: translateY(0) scale(1); } }
+        .modal-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+        .modal-logo-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--grad1); display: grid; place-items: center; font-size: 22px; box-shadow: 0 6px 20px rgba(168,85,247,.4); }
+        .modal-logo-text { font-family: 'Clash Display', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); line-height: 1.1; }
+        .modal-logo-sub { font-size: .62rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+        .modal-title { font-family: 'Clash Display', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 6px; line-height: 1.1; }
+        .modal-title span { background: var(--grad1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .modal-sub { font-size: .82rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+        .modal-label { display: block; font-size: .66rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
+        .modal-input {
             width: 100%; background: rgba(255,255,255,.05);
             border: 1.5px solid rgba(255,255,255,.1);
-            border-radius: 14px; padding: 16px 20px;
-            font-family: 'Clash Display', sans-serif; font-size: 1.2rem; font-weight: 600;
-            color: var(--white); letter-spacing: 4px; text-align: center;
-            text-transform: uppercase; outline: none;
+            border-radius: 12px; padding: 14px 18px;
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem;
+            color: var(--white); outline: none; margin-bottom: 14px;
             transition: border-color .25s, box-shadow .25s, background .25s;
         }
-
-        .code-input:focus {
-            border-color: var(--violet);
-            box-shadow: 0 0 0 4px rgba(168,85,247,.15);
-            background: rgba(168,85,247,.08);
-        }
-
-        .code-input.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 4px rgba(255,92,122,.12);
-            animation: shake .35s ease;
-        }
-
-        @keyframes shake {
-            0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 60%{transform:translateX(8px)}
-        }
-
-        .btn-login {
-            width: 100%; border: none; border-radius: 14px;
-            padding: 16px; margin-top: 16px;
-            font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600;
-            color: #fff; cursor: pointer; letter-spacing: .5px;
-            background: var(--grad1);
-            box-shadow: 0 8px 32px rgba(168,85,247,.35);
-            transition: transform .15s, box-shadow .15s;
-            position: relative; overflow: hidden;
-        }
-
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(168,85,247,.45); }
-        .btn-login:active { transform: scale(.98); }
-        .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
-        .login-error {
-            display: none; align-items: center; gap: 8px;
-            background: rgba(255,92,122,.08); border: 1px solid rgba(255,92,122,.2);
-            border-radius: 10px; padding: 10px 14px;
-            font-size: .78rem; color: var(--danger); margin-top: 12px;
-        }
-
-        .login-error.visible { display: flex; }
-
-        .login-footer {
-            margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
-            font-size: .68rem; color: var(--muted); text-align: center; line-height: 1.6;
-        }
-        }
-
-        .last-session {
-            display: none; align-items: center; gap: 10px;
-            background: rgba(168,85,247,.08); border: 1px solid rgba(168,85,247,.18);
-            border-radius: 14px; padding: 12px 16px; margin-top: 14px;
-            cursor: pointer; transition: background .2s, border-color .2s;
-            animation: cardIn .4s cubic-bezier(.34,1.56,.64,1);
-        }
-        .last-session:hover { background: rgba(168,85,247,.15); border-color: rgba(168,85,247,.35); }
-        .last-session.visible { display: flex; }
-        .last-session-avatar {
-            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-            background: var(--grad1); display: grid; place-items: center;
-            font-size: 15px; font-weight: 700; color: #fff;
-        }
-        .last-session-info { flex: 1; text-align: left; }
-        .last-session-name { font-size: .82rem; font-weight: 600; color: var(--white); }
-        .last-session-hint { font-size: .68rem; color: var(--muted); margin-top: 2px; }
-        .last-session-arrow { color: var(--violet); font-size: 1rem; }
-
+        .modal-input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(168,85,247,.12); background: rgba(168,85,247,.04); }
+        .modal-input.code { font-family: 'Clash Display', sans-serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 4px; text-align: center; text-transform: uppercase; }
+        .modal-input.error { border-color: var(--danger); animation: shake .35s ease; }
+        .btn-modal { width: 100%; border: none; border-radius: 12px; padding: 14px; font-family: 'Clash Display', sans-serif; font-size: .95rem; font-weight: 600; color: #fff; cursor: pointer; background: var(--grad1); box-shadow: 0 6px 24px rgba(168,85,247,.3); transition: transform .15s, box-shadow .15s; }
+        .btn-modal:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(168,85,247,.4); }
+        .btn-modal:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+        .modal-error { display: none; align-items: center; gap: 8px; background: rgba(255,92,122,.08); border: 1px solid rgba(255,92,122,.2); border-radius: 8px; padding: 9px 12px; font-size: .76rem; color: var(--danger); margin-top: 10px; }
+        .modal-error.visible { display: flex; }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 60%{transform:translateX(8px)} }
         .spinner {
             display: inline-block; width: 16px; height: 16px;
             border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
@@ -1173,41 +1059,47 @@
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-bg">
-        <div class="login-blob blob1"></div>
-        <div class="login-blob blob2"></div>
-        <div class="login-blob blob3"></div>
-    </div>
-    <div class="login-card">
-        <div class="login-logo">
-            <div class="login-logo-icon">📚</div>
+<!-- ── MODALE BIENVENUE (prénom) ── -->
+<div class="modal-overlay visible" id="modal-prenom">
+    <div class="modal-card">
+        <div class="modal-logo">
+            <div class="modal-logo-icon">📚</div>
             <div>
-                <div class="login-logo-text">Hub Révisions</div>
-                <div class="login-logo-sub">Master CCA</div>
+                <div class="modal-logo-text">Hub Révisions</div>
+                <div class="modal-logo-sub">Master CCA</div>
             </div>
         </div>
-        <h1 class="login-title">Bienvenue <span>👋</span></h1>
-        <p class="login-sub">Si tu veux un code, paie 5€ et contacte Enzo.</p>
-        <label class="input-label" for="code-input">Code d'accès</label>
-        <input type="text" id="code-input" class="code-input"
-            placeholder="XXXXXXXX" maxlength="12"
-            autocomplete="username" autocorrect="off" spellcheck="false">
-        <button class="btn-login" id="btn-login" onclick="handleLogin()">Accéder au hub →</button>
-        <div class="login-error" id="login-error">
-            <span>⚠</span><span id="login-error-msg">Code incorrect ou révoqué.</span>
-        </div>
-        <div class="last-session" id="last-session" onclick="loginWithSaved()">
-            <div class="last-session-avatar" id="ls-avatar">?</div>
-            <div class="last-session-info">
-                <div class="last-session-name" id="ls-name">Continuer</div>
-                <div class="last-session-hint">Cliquer pour se reconnecter</div>
-            </div>
-            <div class="last-session-arrow">›</div>
-        </div>
-        <div class="login-footer">Accès réservé aux étudiants inscrits</div>
+        <h1 class="modal-title">Bienvenue <span>👋</span></h1>
+        <p class="modal-sub">Entre ton prénom pour personaliser ton expérience. Tu n'auras à le faire qu'une seule fois.</p>
+        <label class="modal-label" for="prenom-input">Ton prénom</label>
+        <input type="text" id="prenom-input" class="modal-input"
+            placeholder="Ex : Marie"
+            autocomplete="given-name" autocorrect="off" spellcheck="false">
+        <button class="btn-modal" id="btn-prenom" onclick="handlePrenom()">Commencer →</button>
     </div>
 </div>
+
+<!-- ── MODALE ADMIN ── -->
+<div class="modal-overlay" id="modal-admin">
+    <div class="modal-card">
+        <div class="modal-logo">
+            <div class="modal-logo-icon" style="background:var(--grad3)">⚙️</div>
+            <div>
+                <div class="modal-logo-text">Administration</div>
+                <div class="modal-logo-sub">Accès restreint</div>
+            </div>
+        </div>
+        <h1 class="modal-title">Accès <span>admin</span></h1>
+        <p class="modal-sub">Entre le code administrateur pour accéder au panneau de gestion.</p>
+        <label class="modal-label" for="admin-code-input">Code admin</label>
+        <input type="password" id="admin-code-input" class="modal-input code"
+            placeholder="••••••••" autocomplete="off">
+        <button class="btn-modal" id="btn-admin-login" onclick="handleAdminLogin()" style="background:var(--grad3)">Accéder →</button>
+        <div class="modal-error" id="admin-error"><span>⚠</span><span>Code incorrect.</span></div>
+        <button onclick="closeAdminModal()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;padding:8px">Annuler</button>
+    </div>
+</div>
+
 
 <div id="hub-screen">
     <div class="nav-overlay" id="nav-overlay" onclick="closeSidebar()"></div>
@@ -1269,10 +1161,10 @@
         <div class="nav-footer">
             <div class="footer-avatar" id="footer-avatar">E</div>
             <div class="footer-info">
-                <div class="footer-name" id="footer-name">Session</div>
-                <div class="footer-role" id="footer-role">Étudiant</div>
+                <div class="footer-name" id="footer-name">Étudiant</div>
+                <div class="footer-role" id="footer-role">Hub Révisions</div>
             </div>
-            <button class="btn-logout" onclick="handleLogout()">⏏</button>
+            <button class="btn-logout" id="btn-admin-access" onclick="openAdminModal()" title="Administration" style="opacity:.4;font-size:.65rem;padding:5px 8px;letter-spacing:.5px">⚙</button>
         </div>
     </nav>
 
@@ -1380,53 +1272,37 @@
                 <div class="admin-header">
                     <div>
                         <div class="admin-title">⚙️ Administration</div>
-                        <div class="admin-subtitle">Gestion des codes d'accès et ressources</div>
+                        <div class="admin-subtitle">Gestion du hub · Master CCA</div>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap">
-                        <button class="btn-gen" onclick="loadCodes()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺ Actualiser</button>
-                        <button class="btn-gen" onclick="kickAll()" style="background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.3);color:var(--danger);box-shadow:none">⚡ Déco. tout</button>
+                        <button class="btn-gen" onclick="loadVisitors()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺ Actualiser</button>
+                        <button class="btn-gen" onclick="handleAdminLogout()" style="background:rgba(255,92,122,.1);border:1px solid rgba(255,92,122,.3);color:var(--danger);box-shadow:none">⏏ Déconnexion admin</button>
                     </div>
                 </div>
 
+                <!-- Stats visiteurs -->
                 <div class="stats-row">
-                    <div class="stat-card"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Codes créés</div></div>
-                    <div class="stat-card"><div class="stat-value" id="stat-active" style="color:var(--green)">—</div><div class="stat-label">Actifs</div></div>
-                    <div class="stat-card"><div class="stat-value" id="stat-online" style="color:var(--cyan)">—</div><div class="stat-label">En ligne</div></div>
-                    <div class="stat-card"><div class="stat-value" id="stat-revoked" style="color:var(--muted)">—</div><div class="stat-label">Révoqués</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-now" style="color:var(--green)">—</div><div class="stat-label">En ce moment</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-today" style="color:var(--cyan)">—</div><div class="stat-label">Aujourd'hui</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-week" style="color:var(--violet)">—</div><div class="stat-label">Cette semaine</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-total-v">—</div><div class="stat-label">Total visiteurs</div></div>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">✦ Générer un nouveau code</div>
-                    <div class="gen-form">
-                        <div class="form-field">
-                            <label class="form-label">Nom / prénom</label>
-                            <input type="text" class="form-input" id="gen-name" placeholder="Ex : Marie Dupont">
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Note (optionnel)</label>
-                            <input type="text" class="form-input" id="gen-note" placeholder="Ex : Promo 2026">
-                        </div>
-                        <button class="btn-gen" id="btn-gen" onclick="generateCode()">+ Générer</button>
-                    </div>
-                </div>
-
-                <div class="section-card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-                        <div class="section-title" style="margin-bottom:0">📋 Codes existants</div>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap">
-                            <input type="text" id="codes-search" class="form-input" placeholder="🔍 Rechercher un nom, code, note…" style="width:220px;padding:7px 12px;font-size:.76rem" oninput="filterCodes()">
-                            <button class="btn-action" id="btn-codes-sort" onclick="toggleCodesSort()" style="border-color:var(--border);color:var(--text);padding:7px 12px;font-size:.74rem">Trier A→Z</button>
-                        </div>
+                <!-- Visiteurs en direct -->
+                <div class="section-card" style="border-color:rgba(6,214,160,.15)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                        <div class="section-title" style="margin-bottom:0">👥 Visiteurs en direct</div>
+                        <button class="btn-gen" onclick="loadVisitors()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
                     </div>
                     <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
                         <table class="codes-table">
-                            <thead><tr><th>Code</th><th>Nom</th><th>Note</th><th>Statut</th><th>Dernière activité</th><th>Actions</th></tr></thead>
-                            <tbody id="codes-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
+                            <thead><tr><th>Prénom</th><th>Dernière activité</th><th>Statut</th></tr></thead>
+                            <tbody id="visitors-tbody"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- ── SECTION RESSOURCES PDF ── -->
+                <!-- Ressources PDF -->
                 <div class="section-card" style="border-color:rgba(6,214,214,.15)">
                     <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                         <span>📎 Infos complémentaires — Ressources PDF / Liens</span>
@@ -1455,6 +1331,7 @@
                     </div>
                 </div>
 
+                <!-- Compte à rebours -->
                 <div class="section-card" style="border-color:rgba(168,85,247,.15)">
                     <div class="section-title">📅 Compte à rebours partiels</div>
                     <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Affiche un compteur de jours restants sur la page d'accueil de tous les étudiants.</p>
@@ -1475,6 +1352,7 @@
                     </div>
                 </div>
 
+                <!-- Broadcast -->
                 <div class="section-card" style="border-color:rgba(255,209,102,.15)">
                     <div class="section-title">📢 Message broadcast</div>
                     <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Envoie un message visible par tous les étudiants connectés. Il apparaît en bandeau en haut de leur hub.</p>
@@ -1495,21 +1373,6 @@
                     </div>
                 </div>
 
-                <div class="section-card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-                        <div class="section-title" style="margin-bottom:0">🕓 Historique</div>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap">
-                            <input type="text" id="logs-search" class="form-input" placeholder="🔍 Rechercher un nom, code…" style="width:220px;padding:7px 12px;font-size:.76rem" oninput="filterLogs()">
-                            <button class="btn-gen" onclick="loadLogs()" style="padding:6px 14px;font-size:.72rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none">↺</button>
-                        </div>
-                    </div>
-                    <div class="codes-table-wrap" style="max-height:230px;overflow-y:auto">
-                        <table class="codes-table">
-                            <thead><tr><th>Nom</th><th>Code</th><th>Connecté le</th></tr></thead>
-                            <tbody id="logs-tbody"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div><!-- /admin-panel -->
         </div><!-- /main-content -->
@@ -2039,82 +1902,109 @@ async function clearBroadcast() {
 function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 let session=null;
-function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY));}catch{return null;}}
-function saveSession(s){localStorage.setItem(SESSION_KEY,JSON.stringify(s));}
-function clearSession(){localStorage.removeItem(SESSION_KEY);}
+// ── SESSION PRÉNOM ──────────────────────────────────────────────────────
+const PRENOM_KEY = 'hub_prenom';
+const ADMIN_KEY  = 'hub_admin_sess';
+const VISITOR_KEY = 'hub_visitor_id';
 
-document.getElementById('code-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+function getPrenom() { return localStorage.getItem(PRENOM_KEY) || null; }
+function savePrenom(p) { localStorage.setItem(PRENOM_KEY, p); }
+function getVisitorId() {
+    let id = localStorage.getItem(VISITOR_KEY);
+    if (!id) { id = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(VISITOR_KEY, id); }
+    return id;
+}
 
-async function handleLogin(){
-    const val=document.getElementById('code-input').value.trim().toUpperCase();
-    const btn=document.getElementById('btn-login');
-    const errEl=document.getElementById('login-error');
-    const errMsg=document.getElementById('login-error-msg');
-    const input=document.getElementById('code-input');
-    if(!val)return;
-    input.classList.remove('error');errEl.classList.remove('visible');
-    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+document.getElementById('prenom-input').addEventListener('keydown', e => { if(e.key==='Enter') handlePrenom(); });
+document.getElementById('admin-code-input').addEventListener('keydown', e => { if(e.key==='Enter') handleAdminLogin(); });
 
-    try{
-        const adminRes=await fetch(`${SB_URL}/functions/v1/admin-login`,{
-            method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({code:val})
+function handlePrenom() {
+    const val = document.getElementById('prenom-input').value.trim();
+    if (!val) { document.getElementById('prenom-input').classList.add('error'); return; }
+    savePrenom(val);
+    document.getElementById('modal-prenom').classList.remove('visible');
+    enterHub(val, false);
+}
+
+function openAdminModal() {
+    document.getElementById('modal-admin').classList.add('visible');
+    document.getElementById('admin-code-input').value = '';
+    document.getElementById('admin-error').classList.remove('visible');
+    setTimeout(() => document.getElementById('admin-code-input').focus(), 100);
+}
+
+function closeAdminModal() {
+    document.getElementById('modal-admin').classList.remove('visible');
+}
+
+async function handleAdminLogin() {
+    const val = document.getElementById('admin-code-input').value.trim().toUpperCase();
+    const btn = document.getElementById('btn-admin-login');
+    const errEl = document.getElementById('admin-error');
+    if (!val) return;
+    errEl.classList.remove('visible');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+    try {
+        const adminRes = await fetch(`${SB_URL}/functions/v1/admin-login`, {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({code: val})
         });
-        if(adminRes.ok){const data=await adminRes.json();if(data.isAdmin){session={code:val,isAdmin:true};saveSession(session);saveLastCode(val,'Administrateur');enterHub();return;}}
-    }catch(e){}
-
-    try{
-        const rows=await sbSelect(`access_codes?code=eq.${val}&select=*`);
-        if(!rows||rows.length===0)throw new Error('Code introuvable. Vérifie la saisie.');
-        const row=rows[0];
-        if(!row.is_active)throw new Error('Ce code a été révoqué. Contacte l\'administrateur.');
-        const token=makeToken();
-        await sbUpdate('access_codes',{code:val},{session_token:token,last_seen_at:new Date().toISOString()});
-        session={code:val,token,isAdmin:false,name:row.name};
-        saveSession(session);
-        sbInsert('connection_logs',{code:val,name:row.name||null}); saveLastCode(val, row.name||'Étudiant');
-        enterHub();
-    }catch(err){
-        errMsg.textContent=err.message||'Erreur de connexion.';
-        errEl.classList.add('visible');input.classList.add('error');
-    }
-    btn.disabled=false;btn.innerHTML='Accéder au hub →';
+        if (adminRes.ok) {
+            const data = await adminRes.json();
+            if (data.isAdmin) {
+                localStorage.setItem(ADMIN_KEY, val);
+                closeAdminModal();
+                enterHub('Administrateur', true);
+                btn.disabled = false; btn.textContent = 'Accéder →';
+                return;
+            }
+        }
+    } catch(e) {}
+    errEl.classList.add('visible');
+    btn.disabled = false; btn.textContent = 'Accéder →';
 }
 
-let heartbeat=null;
-function startHeartbeat(){
-    heartbeat=setInterval(async()=>{
-        if(!session||session.isAdmin)return;
-        const rows=await sbSelect(`access_codes?code=eq.${session.code}&select=is_active,session_token`);
-        if(!rows||rows.length===0)return;
-        const row=rows[0];
-        if(!row.is_active){clearSession();showToast('⚠️ Accès révoqué.','error');setTimeout(()=>location.reload(),2500);return;}
-        if(row.session_token!==session.token){clearSession();showToast('⚠️ Session expirée : autre appareil.','error');setTimeout(()=>location.reload(),2800);return;}
-        await sbUpdate('access_codes',{code:session.code},{last_seen_at:new Date().toISOString()});
-        loadResources();
-        loadBroadcast();
-        loadCountdown();
-    },30000);
+let pingInterval = null;
+
+async function pingVisitor(prenom) {
+    const vid = getVisitorId();
+    // Upsert : insert ou update si visitor_id existe déjà
+    await fetch(`${SB_URL}/rest/v1/visitors`, {
+        method: 'POST',
+        headers: {
+            'apikey': SB_KEY,
+            'Authorization': `Bearer ${SB_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify({visitor_id: vid, prenom, last_seen: new Date().toISOString()})
+    }).catch(e => console.warn('Ping visitor failed:', e));
 }
 
-function enterHub(){
-    document.getElementById('login-screen').style.display='none';
+function enterHub(prenom, isAdmin) {
+    document.getElementById('modal-prenom').classList.remove('visible');
     document.getElementById('hub-screen').classList.add('visible');
-    if(session.isAdmin){
-        document.getElementById('admin-menu-item').style.display='flex';
-        document.getElementById('admin-divider').style.display='block';
-        document.getElementById('footer-name').textContent='Administrateur';
-        document.getElementById('footer-role').textContent='Admin';
-        document.getElementById('footer-avatar').textContent='A';
-        document.getElementById('footer-avatar').style.background='linear-gradient(135deg,#ffd166,#ff9f1c)';
-    }else{
-        const prenom=session.name?session.name.split(' ')[0]:'Étudiant';
-        document.getElementById('footer-name').textContent=session.name||'Étudiant';
-        document.getElementById('footer-role').textContent='Étudiant';
-        document.getElementById('footer-avatar').textContent=prenom[0].toUpperCase();
-        const wt=document.getElementById('welcome-title');
-        if(wt)wt.innerHTML=`Bonne <span>révision</span>, ${prenom} !`;
-        startHeartbeat();
+    if (isAdmin) {
+        document.getElementById('admin-menu-item').style.display = 'flex';
+        document.getElementById('admin-divider').style.display = 'block';
+        document.getElementById('footer-name').textContent = 'Administrateur';
+        document.getElementById('footer-role').textContent = 'Admin';
+        document.getElementById('footer-avatar').textContent = 'A';
+        document.getElementById('footer-avatar').style.background = 'linear-gradient(135deg,#ffd166,#ff9f1c)';
+        document.getElementById('btn-admin-access').style.display = 'none';
+    } else {
+        const p = prenom || 'Étudiant';
+        document.getElementById('footer-name').textContent = p;
+        document.getElementById('footer-avatar').textContent = p[0].toUpperCase();
+        const wt = document.getElementById('welcome-title');
+        if (wt) wt.innerHTML = `Bonne <span>révision</span>, ${p} !`;
+        pingVisitor(p);
+        pingInterval = setInterval(() => {
+            pingVisitor(p);
+            loadResources();
+            loadBroadcast();
+            loadCountdown();
+        }, 30000);
     }
     loadResources();
     loadBroadcast();
@@ -2122,11 +2012,6 @@ function enterHub(){
     setTimeout(showOnboarding, 800);
 }
 
-async function handleLogout(){
-    if(heartbeat)clearInterval(heartbeat);
-    if(session&&!session.isAdmin)await sbUpdate('access_codes',{code:session.code},{session_token:null});
-    clearSession();location.reload();
-}
 
 let currentFile=null;
 function loadPage(fileName,el,label){
@@ -2155,7 +2040,7 @@ function openAdmin(){
     document.getElementById('current-page').textContent='Administration';
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
-    loadCodes();loadLogs();loadResources();loadBroadcast();loadCountdown();
+    loadVisitors();loadResources();loadBroadcast();loadCountdown();
 }
 
 function goHome(){
@@ -2173,6 +2058,60 @@ function openFullscreen(){const frame=document.getElementById('content-frame');i
 
 let allCodes = [];
 let codesSortDir = 'desc';
+
+// ── ADMIN LOGOUT ──────────────────────────────────────────────────────────
+
+function handleAdminLogout() {
+    if (!confirm('Se déconnecter de l\'administration ?')) return;
+    localStorage.removeItem(ADMIN_KEY);
+    location.reload();
+}
+
+// ── VISITEURS EN DIRECT ───────────────────────────────────────────────────
+
+async function loadVisitors() {
+    const tbody = document.getElementById('visitors-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Chargement…</td></tr>';
+
+    const rows = await sbSelect('visitors?order=last_seen.desc&select=*');
+    if (!rows) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
+
+    const now = Date.now();
+    const active5min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 5 * 60 * 1000);
+    const today = rows.filter(r => {
+        const d = new Date(r.last_seen); const t = new Date();
+        return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
+    });
+    const week = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 7 * 24 * 60 * 60 * 1000);
+
+    const sNow = document.getElementById('stat-now');
+    const sToday = document.getElementById('stat-today');
+    const sWeek = document.getElementById('stat-week');
+    const sTotal = document.getElementById('stat-total-v');
+    if (sNow) sNow.textContent = active5min.length;
+    if (sToday) sToday.textContent = today.length;
+    if (sWeek) sWeek.textContent = week.length;
+    if (sTotal) sTotal.textContent = rows.length;
+
+    if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">Aucun visiteur encore.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+        const diff = now - new Date(r.last_seen).getTime();
+        const isOnline = diff < 5 * 60 * 1000;
+        const badge = isOnline
+            ? '<span class="badge badge-online">En ligne</span>'
+            : '<span class="badge badge-revoked">' + fmtDate(r.last_seen) + '</span>';
+        return `<tr>
+            <td style="font-weight:600;color:var(--white)">${escHtml(r.prenom)}</td>
+            <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.last_seen)}</td>
+            <td>${badge}</td>
+        </tr>`;
+    }).join('');
+}
 
 async function loadCodes(){
     const tbody=document.getElementById('codes-tbody');
@@ -2417,30 +2356,33 @@ function toggleSidebar(){document.getElementById('sidebar').classList.contains('
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('nav-overlay').classList.add('visible');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('nav-overlay').classList.remove('visible');}
 
-function loginWithSaved(){
-    const saved=getSavedCode();
-    if(!saved)return;
-    document.getElementById("code-input").value=saved.code;
-    handleLogin();
-}
-
 (function(){
     initTheme();
-    const s=getSession();
-    if(s){session=s;enterHub();return;}
-    const saved=getSavedCode();
-    if(saved){
-        const el=document.getElementById("last-session");
-        const av=document.getElementById("ls-avatar");
-        const nm=document.getElementById("ls-name");
-        if(el&&av&&nm){
-            av.textContent=saved.name.charAt(0).toUpperCase();
-            if(saved.name==='Administrateur'){av.style.background='linear-gradient(135deg,#ffd166,#ff9f1c)';}
-            nm.textContent="Continuer en tant que "+saved.name.split(" ")[0];
-            el.classList.add("visible");
-        }
+    // Vérifier si admin déjà connecté
+    const adminCode = localStorage.getItem(ADMIN_KEY);
+    if (adminCode) {
+        fetch(`${SB_URL}/functions/v1/admin-login`, {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({code: adminCode})
+        }).then(r => r.ok ? r.json() : null).then(data => {
+            if (data && data.isAdmin) { enterHub('Administrateur', true); }
+            else { localStorage.removeItem(ADMIN_KEY); checkPrenom(); }
+        }).catch(() => checkPrenom());
+        return;
     }
+    checkPrenom();
 })();
+
+function checkPrenom() {
+    const prenom = getPrenom();
+    if (prenom) {
+        document.getElementById('modal-prenom').classList.remove('visible');
+        enterHub(prenom, false);
+    } else {
+        document.getElementById('modal-prenom').classList.add('visible');
+        setTimeout(() => document.getElementById('prenom-input').focus(), 300);
+    }
+}
 </script>
 
 <!-- ── ONBOARDING ── -->
