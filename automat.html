@@ -1125,7 +1125,7 @@
             <div class="sem-items" id="sem-s1">
                 <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
-                <li class="menu-item" onclick="loadPage('CGS1.html',this,'Contrôle de gestion')"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
             </div>
 
@@ -1245,7 +1245,7 @@
             <h1 id="welcome-title">Bonne <span>révision</span> !</h1>
             <p>Sélectionne une matière dans le menu pour commencer à réviser.</p>
             <div class="welcome-cards">
-                <div class="welcome-card" onclick="loadPage('CGS1.html',null,'Contrôle de Gestion')">
+                <div class="welcome-card" onclick="loadPage('CG.html',null,'Contrôle de Gestion')">
                     <div class="welcome-card-icon">📊</div>
                     <div class="welcome-card-label">Contrôle de Gestion</div>
                     <div class="welcome-card-sub">Fiches & exercices</div>
@@ -2006,30 +2006,34 @@ let pingInterval = null;
 async function pingVisitor(prenom) {
     const vid = getVisitorId();
     const now = new Date().toISOString();
-    // Essayer d'abord un PATCH (update)
+
+    // Essayer un PATCH d'abord
     const patch = await fetch(`${SB_URL}/rest/v1/visitors?visitor_id=eq.${encodeURIComponent(vid)}`, {
         method: 'PATCH',
         headers: {
             'apikey': SB_KEY_ANON,
             'Authorization': `Bearer ${SB_KEY_ANON}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Prefer': 'return=representation'
         },
         body: JSON.stringify({prenom, last_seen: now})
     });
-    // Si aucune ligne trouvée (0 rows updated), faire un INSERT
-    const count = patch.headers.get('content-range');
-    if (patch.ok && (count === null || count === '*/0')) {
-        await fetch(`${SB_URL}/rest/v1/visitors`, {
-            method: 'POST',
-            headers: {
-                'apikey': SB_KEY_ANON,
-                'Authorization': `Bearer ${SB_KEY_ANON}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({visitor_id: vid, prenom, last_seen: now})
-        });
+
+    if (patch.ok) {
+        const updated = await patch.json();
+        // Si aucune ligne mise à jour, faire un INSERT
+        if (!updated || updated.length === 0) {
+            await fetch(`${SB_URL}/rest/v1/visitors`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SB_KEY_ANON,
+                    'Authorization': `Bearer ${SB_KEY_ANON}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({visitor_id: vid, prenom, last_seen: now})
+            });
+        }
     }
 }
 
@@ -2461,9 +2465,9 @@ async function moveResource(id,dir){
 // ── SEARCH ─────────────────────────────────────────────────────────────────
 
 const SEARCH_INDEX=[
-    {notion:'Seuil de rentabilité',matiere:'Contrôle de Gestion',fichier:'CGS1.html',ancre:'',icon:'📊'},
-    {notion:'Marge sur coût variable',matiere:'Contrôle de Gestion',fichier:'CGS1.html',ancre:'',icon:'📊'},
-    {notion:'Analyse des écarts',matiere:'Contrôle de Gestion',fichier:'CGS1.html',ancre:'',icon:'📊'},
+    {notion:'Seuil de rentabilité',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
+    {notion:'Marge sur coût variable',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
+    {notion:'Analyse des écarts',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
     {notion:'Bilan financier',matiere:'Finance',fichier:'FI.html',ancre:'',icon:'💰'},
     {notion:"Capacité d'autofinancement",matiere:'Finance',fichier:'FI.html',ancre:'',icon:'💰'},
     {notion:'Management participatif',matiere:'Management',fichier:'mana.html',ancre:'',icon:'👔'},
