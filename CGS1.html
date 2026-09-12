@@ -151,6 +151,29 @@ table.mini td{color:var(--text-dim);}
 .recap td.yes{color:var(--yellow);font-weight:800;}
 .recap td.no{color:var(--text-faint);opacity:.4;}
 
+/* ---------- CHAPTER RECAP TABLE ---------- */
+.chrecap{margin-top:34px;}
+.chrecap-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.chrecap-head h4{font-size:15px;font-weight:700;margin:0;color:var(--text);}
+.chrecap-head .chrecap-sub{font-size:12.5px;color:var(--text-faint);}
+.chrecap-table-wrap{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);
+}
+table.chrecap-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+table.chrecap-table th{
+  background:var(--panel2);color:var(--text);font-weight:700;
+  padding:14px 18px;text-align:left;font-size:13.5px;
+}
+table.chrecap-table th.yr-col{text-align:center;}
+table.chrecap-table td{
+  padding:13px 18px;border-top:1px solid var(--border);color:var(--text);font-weight:600;
+}
+table.chrecap-table td.yr-col{text-align:center;font-weight:700;}
+table.chrecap-table td.yr-col.yes{color:#4ade80;}
+table.chrecap-table td.yr-col.no{color:var(--text-faint);opacity:.35;}
+table.chrecap-table tr:last-child td{border-bottom:none;}
+
 /* ---------- QUIZ BUTTON ---------- */
 .quizcta{
   margin-top:26px;display:flex;justify-content:center;
@@ -379,6 +402,21 @@ table.mini td{color:var(--text-dim);}
 
   </div>
 
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Coalition interne</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Coalition externe</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Configurations de pouvoir (Mintzberg)</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Typologie d'Etzioni</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Modèles de gouvernance d'entreprise</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>RSE, entreprise à mission &amp; loi Pacte</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+      </table>
+    </div>
+  </div>
+
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch1')">Commencer le quiz du chapitre 1 →</button></div>
 </section>
 
@@ -502,6 +540,21 @@ table.mini td{color:var(--text-dim);}
       </details>
     </div>
 
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Segmentation stratégique et DAS</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Segmentation stratégique vs marketing</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Le modèle PESTEL</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Les 5(+1) forces de Porter</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>La chaîne de valeur de Porter</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Les facteurs clés de succès (FCS)</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+      </table>
+    </div>
   </div>
 
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch2')">Commencer le quiz du chapitre 2 →</button></div>
@@ -633,6 +686,21 @@ table.mini td{color:var(--text-dim);}
       </details>
     </div>
 
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Les stratégies génériques de Porter</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>L'horloge stratégique (Bowman &amp; Faulkner)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>La matrice d'Ansoff</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>La diversification</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Business Model Canvas &amp; modèle RCOV</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>La typologie de Goold &amp; Campbell</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
   </div>
 
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch3')">Commencer le quiz du chapitre 3 →</button></div>
@@ -784,6 +852,21 @@ table.mini td{color:var(--text-dim);}
         Ce cas est exactement la même mécanique que l'écart sur main d'œuvre en 4.5, avec une étape en plus (le découpage budget/activité) pour neutraliser l'effet des charges fixes sur le coût unitaire. C'est probablement l'extension la plus logique d'un futur sujet.</div>
     </div>
 
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Méthode des centres d'analyse</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Marge sur coût variable / coûts spécifiques</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Seuil de rentabilité et marge de sécurité</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Écarts sur matières premières</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Écarts sur main d'œuvre</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Écarts sur charges indirectes (4 sous-écarts)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
   </div>
 
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
