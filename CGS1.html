@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UE 533 — Contrôle de gestion et stratégie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f0b1e; --bg2:#161028; --panel:#1c1533; --panel2:#221a3d;
+  --border:#332a54; --text:#f1edfb; --text-dim:#b3a9d1; --text-faint:#8479a3;
+  --violet:#8b5cf6; --violet-soft:#a78bfa; --cyan:#22d3ee; --yellow:#facc15;
+  --grad: linear-gradient(135deg,#8b5cf6 0%,#22d3ee 100%);
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+[data-theme="light"]{
+  --bg:#f6f4fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1edfb;
+  --border:#e1d9f7; --text:#241b3d; --text-dim:#584c78; --text-faint:#8577a3;
+  --violet:#7c3aed; --violet-soft:#6d28d9; --cyan:#0891b2; --yellow:#b45309;
+  --shadow: 0 8px 24px rgba(90,70,160,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:transparent;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg); color:var(--text);
+  transition:background .3s ease,color .3s ease;
+  padding-bottom:80px;
+}
+h1,h2,h3,h4,.disp{font-family:'Clash Display',sans-serif;}
+a{color:inherit;}
+::selection{background:var(--violet);color:#fff;}
+
+/* ---------- HEADER ---------- */
+.top{padding:28px 20px 20px;max-width:1100px;margin:0 auto;}
+.eyebrow-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--panel2);border:1px solid var(--border);
+  padding:5px 12px;border-radius:100px;font-size:12.5px;color:var(--text-dim);
+  font-weight:600;
+}
+.pill b{color:var(--text);}
+.title-block h1{
+  font-size:clamp(28px,4vw,40px);font-weight:600;margin:6px 0 6px;line-height:1.1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.title-block p{color:var(--text-dim);font-size:15px;max-width:640px;line-height:1.55;margin:0 0 18px;}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.badge{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:10px 16px;min-width:118px;box-shadow:var(--shadow);
+}
+.badge .num{font-family:'Clash Display',sans-serif;font-size:22px;color:var(--cyan);font-weight:600;}
+.badge .lbl{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+
+/* ---------- NAV ---------- */
+.chnav{
+  position:sticky;top:0;z-index:40;background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:10px 20px;backdrop-filter:blur(8px);
+}
+.chnav-inner{max-width:1100px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.chnav-inner::-webkit-scrollbar{display:none;}
+.chnav-btn{
+  flex:0 0 auto;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);
+  padding:9px 16px;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:all .18s ease;font-family:inherit;
+}
+.chnav-btn:hover{color:var(--text);border-color:var(--violet-soft);}
+.chnav-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+.chapter{padding:44px 0 20px;scroll-margin-top:70px;}
+.chapter-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
+.chapter-head h2{font-size:26px;font-weight:600;margin:0;}
+.chapter-num{
+  font-family:'Clash Display',sans-serif;color:var(--violet-soft);font-size:14px;
+  border:1px solid var(--border);padding:3px 10px;border-radius:8px;
+}
+.chapter-sub{color:var(--text-faint);font-size:14px;margin:0 0 18px;max-width:720px;line-height:1.5;}
+
+.freqbar{
+  display:flex;align-items:center;gap:14px;background:var(--panel);
+  border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:26px;
+  box-shadow:var(--shadow);flex-wrap:wrap;
+}
+.freqbar .flabel{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.freqbar .years{display:flex;gap:8px;flex-wrap:wrap;}
+.yr{
+  font-size:12.5px;padding:4px 10px;border-radius:8px;font-weight:700;
+  background:var(--panel2);border:1px solid var(--border);color:var(--text-faint);
+}
+.yr.hit{background:rgba(139,92,246,.18);color:var(--violet-soft);border-color:var(--violet);}
+
+/* ---------- NOTION CARDS ---------- */
+.notions{display:flex;flex-direction:column;gap:16px;}
+.card{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 24px;box-shadow:var(--shadow);
+}
+.card.potentiel{border-color:var(--cyan);background:linear-gradient(180deg,var(--panel),rgba(34,211,238,.05));}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.card-head h3{font-size:18px;margin:0;font-weight:600;}
+.tag{
+  font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:100px;white-space:nowrap;
+}
+.tag.hot{background:rgba(250,204,21,.16);color:var(--yellow);border:1px solid rgba(250,204,21,.4);}
+.tag.watch{background:rgba(167,139,250,.16);color:var(--violet-soft);border:1px solid rgba(167,139,250,.4);}
+.tag.potentiel{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.4);}
+.card p{font-size:14.5px;line-height:1.62;color:var(--text-dim);margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text);}
+.formula{
+  background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--cyan);
+  border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;line-height:1.7;
+  font-family:'Clash Display',sans-serif;color:var(--cyan);overflow-x:auto;
+}
+.formula small{display:block;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-faint);font-size:12px;margin-top:4px;font-weight:600;}
+.example{
+  background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;
+  color:var(--text-dim);border-left:3px solid var(--violet-soft);
+}
+.example b{color:var(--violet-soft);}
+.annale-ex{
+  background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;
+  color:var(--text-dim);border-left:3px solid var(--yellow);
+}
+.annale-ex .src{display:block;font-size:11.5px;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.annale-ex code, .annale-ex .calc{font-family:'Clash Display',sans-serif;color:var(--text);}
+ul.detail-list{margin:8px 0;padding-left:20px;}
+ul.detail-list li{font-size:14.5px;color:var(--text-dim);line-height:1.6;margin-bottom:4px;}
+table.mini{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
+table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;}
+table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;}
+table.mini td{color:var(--text-dim);}
+
+.recap{margin-top:14px;}
+.recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
+.recap summary::before{content:"▸ ";color:var(--violet-soft);}
+.recap[open] summary::before{content:"▾ ";}
+.recap table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
+.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;}
+.recap th{background:var(--panel2);color:var(--text-faint);}
+.recap td.yes{color:var(--yellow);font-weight:800;}
+.recap td.no{color:var(--text-faint);opacity:.4;}
+
+/* ---------- QUIZ BUTTON ---------- */
+.quizcta{
+  margin-top:26px;display:flex;justify-content:center;
+}
+.quizbtn{
+  background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;
+  font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;
+}
+.quizbtn:hover{transform:translateY(-2px);}
+.quizbtn.final{background:linear-gradient(135deg,var(--yellow),var(--cyan));color:#1a1428;}
+
+/* ---------- MODAL QUIZ ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(8,5,18,.72);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.modal h3{margin:0 0 4px;font-size:20px;}
+.modal .qcount{color:var(--text-faint);font-size:12.5px;margin-bottom:18px;}
+.qtext{font-size:15.5px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+.opt{
+  display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);
+  color:var(--text);padding:12px 14px;border-radius:11px;margin-bottom:9px;cursor:pointer;
+  font-family:inherit;font-size:14px;transition:all .15s ease;
+}
+.opt:hover{border-color:var(--violet-soft);}
+.opt.correct{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80;}
+.opt.wrong{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
+.opt:disabled{cursor:default;}
+.explain{
+  background:var(--panel2);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 14px;
+  font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55;display:none;
+}
+.explain.show{display:block;}
+.modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.navbtn{
+  background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 18px;
+  border-radius:100px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+}
+.navbtn:disabled{opacity:.35;cursor:not-allowed;}
+.navbtn.primary{background:var(--grad);color:#fff;border:none;}
+.closex{
+  position:absolute;top:20px;right:24px;background:none;border:none;color:var(--text-faint);
+  font-size:22px;cursor:pointer;line-height:1;
+}
+.score-screen{text-align:center;padding:20px 0;}
+.score-num{font-family:'Clash Display',sans-serif;font-size:52px;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;}
+
+/* ---------- FOOTER TOOLBAR ---------- */
+.toolbar{
+  position:fixed;bottom:18px;right:18px;display:flex;gap:10px;z-index:60;
+}
+.tbtn{
+  background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:11px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13px;
+  cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;
+}
+
+@media(max-width:640px){
+  .badge{min-width:90px;padding:8px 12px;}
+  .badge .num{font-size:18px;}
+  .card{padding:18px;}
+}
+</style>
+</head>
+<body id="fiche-body">
+
+<div class="top">
+  <div class="eyebrow-row">
+    <span class="pill">Master CCA</span>
+    <span class="pill">UE 533</span>
+    <span class="pill">Semestres 1 &amp; 2</span>
+  </div>
+  <div class="title-block">
+    <h1>Contrôle de gestion et stratégie</h1>
+    <p>Gouvernance d'entreprise, diagnostic stratégique, stratégies génériques et pilotage par les coûts — construite à partir des cours 1 et 2 de l'UE et des sujets corrigés 2023 à 2026.</p>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="num">24</div><div class="lbl">Notions</div></div>
+    <div class="badge"><div class="num">4</div><div class="lbl">Années d'annales</div></div>
+    <div class="badge"><div class="num">4</div><div class="lbl">Chapitres</div></div>
+    <div class="badge"><div class="num">5</div><div class="lbl">Quiz disponibles</div></div>
+  </div>
+</div>
+
+<div class="chnav">
+  <div class="chnav-inner" id="chnav">
+    <button class="chnav-btn active" data-target="ch1">1 · Gouvernance</button>
+    <button class="chnav-btn" data-target="ch2">2 · Diagnostic stratégique</button>
+    <button class="chnav-btn" data-target="ch3">3 · Stratégies &amp; développement</button>
+    <button class="chnav-btn" data-target="ch4">4 · Pilotage &amp; coûts</button>
+    <button class="chnav-btn" data-target="potentiel">🎯 À surveiller</button>
+    <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ================= CHAPITRE 1 ================= -->
+<section class="chapter" id="ch1">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 1</span>
+    <h2>Gouvernance d'entreprise</h2>
+  </div>
+  <p class="chapter-sub">Qui détient le pouvoir dans l'entreprise, comment il s'exerce, et comment l'entreprise rend compte de sa responsabilité vis-à-vis de ses parties prenantes.</p>
+
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years">
+      <span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span>
+    </div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent les 4 années. Chapitre le plus rentable de l'UE.</span>
+  </div>
+
+  <div class="notions">
+
+    <div class="card">
+      <div class="card-head"><h3>1.1 · La coalition interne</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La <strong>coalition interne</strong> désigne la manière dont s'articulent les relations de pouvoir entre les parties prenantes <strong>internes</strong> à l'organisation. Selon la source de pouvoir dominante, elle prend l'une de ces quatre formes :</p>
+      <ul class="detail-list">
+        <li><strong>Personnalisée</strong> : tous les pouvoirs sont concentrés entre les mains d'un seul individu qui incarne l'organisation (le patron-fondateur d'une PME).</li>
+        <li><strong>Bureaucratique</strong> : les agents ont individuellement peu de pouvoir mais collectivement beaucoup ; c'est le règlement qui ordonne (administrations, grandes entreprises).</li>
+        <li><strong>Idéologique</strong> : le respect des valeurs dicte les conduites (coopératives, mutuelles, entreprises à forte culture).</li>
+        <li><strong>Professionnelle</strong> : le pouvoir est exercé individuellement et collectivement par des professionnels dotés de compétences particulières, régulé par une déontologie (cabinets d'audit, hôpitaux).</li>
+      </ul>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Le corrigé distingue deux périodes : avant 1990, l'entreprise est dirigée par Adi puis Horst Dassler qui « incarnent l'entreprise » → coalition interne <strong>personnalisée</strong> (avec une part d'idéologie familiale). Après 1990, Adidas devient une multinationale cotée dirigée par des managers non-membres de la famille, qui doivent fonder leur autorité sur leurs compétences → coalition interne <strong>professionnelle</strong>. Retenez la méthode : une même entreprise peut changer de type de coalition dans le temps, il faut toujours dater son analyse.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023 (Paprec)</th><th>2024 (Phénix)</th><th>2025 (Michelin)</th><th>2026 (Adidas)</th></tr>
+        <tr><td class="yes">Personnalisée</td><td class="yes">Idéologique + personnalisée</td><td class="yes">Professionnelle + idéologique</td><td class="yes">Avant/après 1990</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.2 · La coalition externe</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La <strong>coalition externe</strong> synthétise les relations de pouvoir entre les parties prenantes <strong>externes</strong> à l'organisation (actionnaires, État, clients, groupes de pression…). Trois formes possibles :</p>
+      <ul class="detail-list">
+        <li><strong>Dominée</strong> : un agent externe (ou une alliance d'agents) est en position de force et impose ses décisions (société mère d'une filiale à 100 %, État actionnaire).</li>
+        <li><strong>Divisée</strong> : aucun agent externe ne peut imposer sa volonté ; situation conflictuelle (bataille boursière, OPA/contre-OPA, succession familiale non préparée).</li>
+        <li><strong>Passive</strong> : les détenteurs théoriques du pouvoir s'en désintéressent (capital très émietté entre petits porteurs) ; le pouvoir réel passe alors à la coalition interne.</li>
+      </ul>
+      <div class="example"><b>Astuce méthode :</b> pensez toujours à croiser coalition interne × coalition externe : c'est ce croisement qui donne la configuration de pouvoir (voir 1.3).</div>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025, Michelin</span>Le corrigé relève que la part du résultat net distribué aux actionnaires est passée de <span class="calc">20 % à 49 %</span> en 5 ans : les actionnaires ont un pouvoir réel sur le retour financier, mais ne dirigent pas directement la stratégie. Conclusion du corrigé : coalition externe <strong>« passive quant à la stratégie mais dominée quant au retour financier »</strong> — une nuance qu'il faut savoir exprimer plutôt que de choisir une seule étiquette dominée/divisée/passive.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.3 · Les configurations de pouvoir (Mintzberg)</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le croisement coalition interne / coalition externe définit six configurations types :</p>
+      <table class="mini">
+        <tr><th>Configuration</th><th>Coalition interne</th><th>Coalition externe</th><th>Exemple</th></tr>
+        <tr><td>Autocratie</td><td>Personnalisée</td><td>Passive</td><td>PME, capital familial concentré</td></tr>
+        <tr><td>Système clos</td><td>Bureaucratique</td><td>Passive</td><td>Entreprise publique en monopole</td></tr>
+        <tr><td>Organisation missionnaire</td><td>Idéologique</td><td>Passive</td><td>Coopérative, mutuelle</td></tr>
+        <tr><td>Méritocratie</td><td>Professionnelle</td><td>Passive</td><td>Hôpital, cabinet d'avocats</td></tr>
+        <tr><td>Instrument</td><td>Bureaucratique</td><td>Dominée</td><td>Filiale d'un groupe</td></tr>
+        <tr><td>Arène politique</td><td>Politisée</td><td>Divisée</td><td>Entreprise cible d'une OPA</td></tr>
+      </table>
+      <p>Dans l'<strong>autocratie</strong>, le contrôle se fait par supervision personnelle directe. Dans le <strong>système clos</strong>, le contrôle de gestion vise le respect des procédures plus que la performance (situation de monopole). Dans l'<strong>instrument</strong>, le contrôle de gestion classique (gestion budgétaire, reporting, écarts — modèle « Sloan-Brown ») est l'outil privilégié pour piloter à distance. L'<strong>arène politique</strong> est la situation la plus instable : plus personne ne pilote réellement.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023, Paprec</span>Le corrigé qualifie Paprec d'<strong>« autocratie éclairée »</strong> : le pouvoir reste entre les mains du dirigeant (coalition interne personnalisée, coalition externe passive car la famille est majoritaire et la BPI ne fait qu'accompagner), mais celui-ci « recherche à conjuguer épanouissement personnel des salariés et réussite économique ». Ne vous arrêtez donc pas à cocher une case : le corrigé attend une nuance qualitative sur la façon dont le pouvoir est exercé.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Autocratique (Paprec)</td><td class="yes">Autoritaire/missionnaire (Phénix)</td><td class="yes">Méritocratie/instrumentale (Michelin)</td><td class="yes">Autocratique → méritocratique (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.4 · La typologie d'Etzioni (modes de contrôle)</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>Etzioni distingue les organisations selon la relation qu'entretiennent les individus avec l'organisation :</p>
+      <table class="mini">
+        <tr><th>Type</th><th>Relation individu/organisation</th><th>Moyen de contrôle</th><th>Exemple</th></tr>
+        <tr><td>Coercitive</td><td>Buts opposés</td><td>Force, menace, sanction</td><td>Prisons, asiles</td></tr>
+        <tr><td>Instrumentale</td><td>Buts divergents (sans opposition)</td><td>Calcul, intérêt, incitations, règles</td><td>Entreprises</td></tr>
+        <tr><td>Normative</td><td>Buts convergents</td><td>Identification, socialisation, idéologie</td><td>Partis, Églises, associations caritatives</td></tr>
+      </table>
+      <p>Le contrôle <strong>normatif</strong> (agir sur les croyances) est souvent le plus efficace car il n'est pas ressenti comme une contrainte par les individus.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023, Paprec</span>Le corrigé retient d'abord le mode <strong>normatif</strong> : « les salariés semblent s'approprier totalement l'entreprise et ses missions », preuve d'une identification aux valeurs de l'organisation. Il ajoute ensuite une dimension <strong>instrumentale</strong> complémentaire : les salariés sont bien rémunérés et bénéficient de perspectives de carrière. Bon réflexe d'examen : proposer le mode dominant puis un mode secondaire quand le cas le justifie, plutôt qu'une réponse unique et binaire.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Contrôle normatif (Paprec)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.5 · Les modèles de gouvernance d'entreprise</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Au-delà de la gouvernance actionnariale (créée à partir des années 1980 dans le sillage de la financiarisation de l'économie), plusieurs modèles coexistent :</p>
+      <table class="mini">
+        <tr><th>Modèle</th><th>Caractéristiques</th><th>Limite principale</th></tr>
+        <tr><td>Familial et réticulaire</td><td>Capital et direction tenus par la famille fondatrice</td><td>Compétence des héritiers, dispersion du capital</td></tr>
+        <tr><td>Managérial</td><td>Capital dispersé, actionnaires peu actifs, alliance managers/syndicats/État</td><td>Divergence d'intérêt actionnaires/dirigeants</td></tr>
+        <tr><td>Administré</td><td>Intervention forte de l'État dans la gestion</td><td>Efficacité du contrôle de l'État</td></tr>
+        <tr><td>Actionnarial</td><td>Interventions fortes des actionnaires pour créer de la valeur</td><td>Enracinement des dirigeants, vision court terme, fraudes</td></tr>
+        <tr><td>Partenarial</td><td>Banques et salariés impliqués, participations croisées</td><td>Difficulté à résister à la concurrence du modèle actionnarial</td></tr>
+      </table>
+      <p>Une <strong>gouvernance plurale</strong> peut être invoquée quand plusieurs de ces logiques coexistent (par ex. dimension économique et dimension sociétale fortement conciliées).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025, Michelin</span>Le corrigé écarte la réponse la plus évidente : bien que « le pouvoir des actionnaires soit très important aujourd'hui », il refuse de conclure à une gouvernance purement <strong>actionnariale</strong>, car l'entreprise « s'est toujours employée à concilier développement économique et développement social » (annexe sur les salariés). Conclusion retenue : gouvernance <strong>partenariale</strong>. À retenir : le corrigé pénalise la réponse automatique « fort pouvoir actionnarial = gouvernance actionnariale » sans vérifier les autres parties prenantes citées dans le cas.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Familiale (Paprec)</td><td class="yes">Plurale (Phénix)</td><td class="yes">Partenariale (Michelin)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.6 · RSE, entreprise à mission &amp; loi Pacte</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La <strong>responsabilité sociale de l'entreprise (RSE)</strong> désigne la prise en compte, par l'entreprise, des intérêts des parties prenantes au-delà de la seule logique actionnariale (Milton Friedman défend au contraire une vision purement économique de la vocation de l'entreprise, la performance économique étant elle-même jugée socialement utile).</p>
+      <p>Une <strong>entreprise à mission</strong> revendique explicitement une mission sociétale à côté de sa dimension économique.</p>
+      <div class="formula">Loi Pacte (2019)
+        <small>Articles 61-62 : les enjeux sociaux et environnementaux doivent être associés à la raison d'être de l'entreprise · Article 176 : crée le statut légal d'« entreprise à mission » · impose la présence d'un représentant de chaque sexe parmi les candidats aux postes de direction.</small>
+      </div>
+      <p>Parties prenantes RSE typiques à citer : <strong>clients</strong> (traçabilité, conditions de fabrication), <strong>actionnaires</strong> (fonds ISR/éthiques), <strong>grand public/société</strong> (image, risque de « green washing »).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Question type « donnez un exemple d'indicateur extra-financier » : le corrigé prend directement une donnée chiffrée de l'annexe — « sur les 16 membres du conseil, 4 sont des femmes, dont 2 représentant les intérêts des actionnaires » — et la qualifie d'indicateur extra-financier (parité au conseil). Méthode à retenir : pour ce type de question, il faut aller chercher un <strong>chiffre concret</strong> dans le cas, pas rester sur une définition générale de la RSE.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Def. + loi Pacte</td><td class="yes">Def. + Friedman</td><td class="yes">Loi Pacte + obligations</td><td class="yes">RSE + parties prenantes + indicateur extra-financier</td></tr></table>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch1')">Commencer le quiz du chapitre 1 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 2 ================= -->
+<section class="chapter" id="ch2">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 2</span>
+    <h2>Diagnostic stratégique</h2>
+  </div>
+  <p class="chapter-sub">Comment découper l'activité de l'entreprise en domaines pertinents, puis analyser son environnement macro et concurrentiel.</p>
+
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years">
+      <span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span>
+    </div>
+    <span style="color:var(--text-faint);font-size:13px;">— PESTEL et segmentation stratégique reviennent quasi systématiquement.</span>
+  </div>
+
+  <div class="notions">
+
+    <div class="card">
+      <div class="card-head"><h3>2.1 · Segmentation stratégique et DAS</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Un <strong>DAS</strong> (domaine d'activité stratégique, ou <em>strategic business unit</em>) correspond à une ligne de produits utilisant une technologie caractéristique, commercialisée sur un marché homogène. La segmentation stratégique consiste à regrouper ou diviser les activités de l'entreprise pour constituer des DAS homogènes.</p>
+      <p>Elle émerge d'une double perspective : celle de <strong>l'entreprise</strong> (ressources et compétences mobilisées) et celle du <strong>marché</strong> (attentes des clients).</p>
+      <div class="formula">3 critères de la segmentation stratégique
+        <small>Technologie utilisée · Clients concernés (localisation, sociodémographie) · Fonction remplie (besoin/usage du produit)</small>
+      </div>
+      <p>Règle de décision : deux activités qui diffèrent sur <strong>au moins deux</strong> de ces trois critères appartiennent à deux DAS différents (au maximum <strong>un seul</strong> critère commun peut être toléré pour parler de DAS distincts). La présence de concurrents spécifiques à une seule des deux activités est un signe supplémentaire de DAS autonomes.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Le corrigé traite la question via un tableau à trois lignes (une par critère) pour comparer chaussures de sport et vêtements de piscine (Arena) :
+        <table class="mini" style="margin-top:8px;"><tr><th>Critère</th><th>Chaussures de sport</th><th>Vêtements de piscine</th></tr>
+        <tr><td>Technologie</td><td colspan="2">Différente (tissus spécifiques au vêtement de bain)</td></tr>
+        <tr><td>Clients</td><td>Coureurs</td><td>Nageurs</td></tr>
+        <tr><td>Fonction remplie</td><td colspan="2">Clairement différente</td></tr></table>
+        Les 3 critères divergent → conclusion : <strong>deux DAS différents</strong>. Reproduisez ce tableau à l'examen : il structure la réponse et montre au correcteur que les 3 critères ont bien été vérifiés un par un.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Paprec plastiques/métaux</td><td class="yes">Invendus associations/particuliers</td><td class="no">—</td><td class="yes">Chaussures sport/natation</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.2 · Segmentation stratégique vs segmentation marketing</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <table class="mini">
+        <tr><th>Segmentation marketing</th><th>Segmentation stratégique</th></tr>
+        <tr><td>Concerne un secteur d'activité (à l'intérieur d'un DAS)</td><td>Concerne l'activité globale de l'entreprise</td></tr>
+        <tr><td>Divise les consommateurs en groupes homogènes (âge, CSP…)</td><td>Divise les activités en groupes homogènes de technologies/marchés/concurrents</td></tr>
+        <tr><td>Adapte le marketing-mix</td><td>Révèle des opportunités de création/abandon d'activité</td></tr>
+        <tr><td>Changements à court terme</td><td>Changements à long terme</td></tr>
+      </table>
+      <div class="annale-ex"><span class="src">Exemple du manuel — repère utile même hors annale</span>Danone, au sein de son pôle Produits Laitiers (un seul DAS), lance « Les deux vaches des fermiers du bio » pour toucher les consommateurs sensibles au label AB, à côté de Danacol (anticholestérol) ou Danonino (enfants) : ce sont des <strong>segments marketing différents à l'intérieur du même DAS</strong>, pas de nouveaux DAS. À l'inverse, le loueur Hertz a dû créer un <strong>réseau de distribution distinct</strong> pour proposer de la location de matériel de chantier : ressources/compétences différentes → nouveau DAS, donc segmentation stratégique.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Question dédiée (Phénix)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.3 · Le modèle PESTEL (macro-environnement)</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Le PESTEL identifie six catégories d'influences qui s'exercent sur l'organisation, indépendamment de son secteur : elles sont issues du <strong>contexte</strong>, pas de l'entreprise elle-même.</p>
+      <table class="mini">
+        <tr><th>Facteur</th><th>Exemples d'éléments</th></tr>
+        <tr><td><strong>P</strong>olitique</td><td>Stabilité politique, fiscalité, commerce extérieur, protection sociale</td></tr>
+        <tr><td><strong>E</strong>conomique</td><td>Cycle économique, PNB, taux d'intérêt, inflation, chômage, revenu disponible</td></tr>
+        <tr><td><strong>S</strong>ocioculturel</td><td>Démographie, modes de vie, consumérisme, niveau d'éducation</td></tr>
+        <tr><td><strong>T</strong>echnologique</td><td>R&amp;D publique/privée, vitesse des transferts technologiques, obsolescence</td></tr>
+        <tr><td><strong>E</strong>cologique</td><td>Lois environnementales, retraitement des déchets, consommation d'énergie</td></tr>
+        <tr><td><strong>L</strong>égal</td><td>Droit de la concurrence, droit des sociétés, droit du travail, normes de sécurité</td></tr>
+      </table>
+      <p>L'analyse PESTEL débouche systématiquement sur l'identification de <strong>menaces</strong> et d'<strong>opportunités</strong> — c'est presque toujours la question qui suit dans le sujet.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023, Paprec</span>Le corrigé traite chaque lettre en une ou deux phrases collées au cas, jamais en généralités : <strong>Politique</strong> — le recyclage est une priorité politique (opportunité) ; <strong>Économique</strong> — l'inflation fait monter le coût des matières premières (menace) ; <strong>Sociologique</strong> — sensibilité croissante au recyclage (opportunité) ; <strong>Technologique</strong> — amélioration des capacités de retraitement (opportunité) ; <strong>Légal</strong> — la loi Pacte (2019) impose la RSE (opportunité/contrainte selon l'angle). Il en déduit ensuite explicitement 2 opportunités et 1 menace, toujours reformulées à partir des mêmes phrases. Le corrigé rappelle un piège fréquent : les facteurs PESTEL décrivent le <strong>contexte</strong>, jamais l'entreprise elle-même.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">PESTEL Paprec</td><td class="yes">PESTEL Phénix</td><td class="yes">PESTEL Michelin</td><td class="no">— (remplacé par 5 forces)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.4 · Les 5(+1) forces de Porter</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Le modèle de Porter identifie les forces concurrentielles à l'œuvre dans une industrie donnée, pour évaluer la capacité de l'organisation à dégager un avantage concurrentiel.</p>
+      <div class="formula">Les 5 forces (+1)
+        <small>Intensité concurrentielle · Pouvoir de négociation des clients · Pouvoir de négociation des fournisseurs · Menace des entrants potentiels · Menace des produits de substitution · (+1) le rôle de l'État</small>
+      </div>
+      <p>Méthode d'examen : noter chaque force (souvent /10), justifier, puis en déduire les <strong>facteurs clés de succès (FCS)</strong> — voir 2.6.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Le corrigé note et justifie chaque force en une phrase : <strong>Fournisseurs</strong> 2/10 (prix des matières premières plutôt fixe) · <strong>Clients</strong> 7/10 (centrales d'achat puissantes mais Adidas reste incontournable) · <strong>Nouveaux entrants</strong> 3/10 (marché dense mais notoriété Adidas protectrice) · <strong>Substituts</strong> 4/10 (la basket classique peut remplacer la chaussure de sport, mais reste peu attractive) · <strong>Intensité concurrentielle</strong> 9/10 (marché mature, arrivée d'acteurs asiatiques low-cost) · <strong>État</strong> 3/10 (réglementation seulement). Il en déduit 3 FCS : innovation, maîtrise des coûts, marketing. Format à retenir : une note + une justification courte par force, jamais une note seule.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Paprec, notation /10</td><td class="no">—</td><td class="no">—</td><td class="yes">Adidas, notation /10</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.5 · La chaîne de valeur de Porter</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>La chaîne de valeur regroupe l'ensemble des activités qui permettent à l'organisation de proposer un produit ou service. Le coût de ces activités et la valeur qu'elles créent déterminent l'avantage concurrentiel.</p>
+      <div class="formula">9 activités de base
+        <small>5 activités primaires : logistique interne, production, logistique externe, commercialisation et vente, services · 4 activités de soutien : infrastructure de la firme, GRH, développement technologique, approvisionnements</small>
+      </div>
+      <p>On distingue la <strong>chaîne de valeur interne</strong> (processus assurés par l'entreprise) de la <strong>chaîne de valeur externe</strong> (processus amont/aval assurés par d'autres) ; l'ensemble forme une <strong>filière</strong>. Outil adapté aux produits physiques industriels — à distinguer du <strong>Business Model Canvas</strong>, plus adapté aux services et aux start-up (voir 3.5).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Le corrigé choisit 3 fonctions parmi les 9 de la chaîne de valeur et les justifie par le cas : <strong>développement technologique</strong> (l'innovation produit/process est nécessaire pour des produits qualitatifs), <strong>production</strong> (le coût de revient doit rester compétitif même si Adidas sous-traite), <strong>logistique</strong> (acheminer sans surstocker) et <strong>commercialisation/vente</strong> (le capital de marque fait vendre). Conclusion demandée : vérifier que ces forces correspondent bien aux FCS du secteur identifiés en 2.4 — c'est le lien attendu entre les deux outils.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Comparaison avec Canvas (Michelin)</td><td class="yes">3 fonctions clés (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.6 · Les facteurs clés de succès (FCS)</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Les FCS sont les éléments que doivent maîtriser les entreprises d'un secteur (ou d'un DAS) pour être performantes et développer un avantage concurrentiel. Ils se déduisent directement de l'analyse des 5(+1) forces de Porter.</p>
+      <p>FCS classiquement rencontrés : <strong>innovation</strong>, <strong>maîtrise des coûts</strong>, <strong>maîtrise de la logistique</strong>, <strong>qualité de service/marketing</strong>.</p>
+      <div class="example"><b>Lien avec le pilotage :</b> la stratégie détermine les FCS, qui déterminent eux-mêmes le choix des indicateurs du tableau de bord (Stratégie → FCS → Indicateurs).</div>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023, Paprec</span>Après l'analyse des 5+1 forces, le corrigé déduit 4 FCS classés par importance : <strong>l'innovation</strong> en premier (« le point le plus important » : nouvelles techniques de recyclage, hausse du taux de produit recyclé), puis <strong>la maîtrise des coûts</strong> (le secteur reste concurrentiel sur le prix), <strong>la logistique</strong>, et <strong>le service client</strong>. Le corrigé précise que cette liste « n'est pas forcément exhaustive » : à l'examen, 3 à 4 FCS bien justifiés suffisent, inutile d'en chercher davantage.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">4 FCS Paprec</td><td class="no">—</td><td class="no">—</td><td class="yes">FCS chaussure de sport</td></tr></table>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch2')">Commencer le quiz du chapitre 2 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 3 ================= -->
+<section class="chapter" id="ch3">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 3</span>
+    <h2>Stratégies et voies de développement</h2>
+  </div>
+  <p class="chapter-sub">Une fois le diagnostic posé : quel positionnement adopter par DAS, et par quelles voies faire grandir le portefeuille d'activités ?</p>
+
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years">
+      <span class="yr hit">2023</span><span class="yr">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span>
+    </div>
+    <span style="color:var(--text-faint);font-size:13px;">— les stratégies génériques et la diversification sont les valeurs sûres.</span>
+  </div>
+
+  <div class="notions">
+
+    <div class="card">
+      <div class="card-head"><h3>3.1 · Les stratégies génériques de Porter</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Une stratégie générique est l'avantage concurrentiel sur lequel un DAS compte pour affronter la concurrence. Porter en propose trois :</p>
+      <ul class="detail-list">
+        <li><strong>Domination par les coûts</strong> : offre à valeur comparable, prix inférieur. Impose une forte maîtrise de la comptabilité analytique, des écarts et du rendement (« serrer les boulons »). Risque : guerre des prix. Style de contrôle proche de la mission « récolter ».</li>
+        <li><strong>Différenciation</strong> : offre à valeur perçue supérieure (technologie, design, image de marque…), ce qui permet de vendre plus cher / fidéliser. Le coût de revient perd de l'importance au profit de la qualité. Style de contrôle proche de la mission « construire ».</li>
+        <li><strong>Focalisation</strong> (ou stratégie de niche/créneau) : compromis entre les deux précédentes sur un segment de marché restreint, dont on devient le spécialiste.</li>
+      </ul>
+      <p>À ces trois stratégies s'ajoute la <strong>stratégie de rupture (disruptive)</strong>, qui consiste à rompre avec les FCS du secteur pour imposer ses propres règles (ex. : Free Mobile en 2012).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026, Adidas</span>Le corrigé identifie une stratégie de <strong>différenciation</strong> en s'appuyant sur deux preuves tirées du cas : un « positionnement un peu plus haut de gamme » et un « prix légèrement supérieur », reliés à « une politique d'innovation et de créativité pour ses produits, ce qui se répercute forcément sur le prix ». Méthode : ne jamais nommer une stratégie générique sans citer le levier concret (prix, coût ou différenciation) que le cas donne à voir.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Différenciation (Paprec)</td><td class="no">—</td><td class="yes">Différenciation (Michelin)</td><td class="yes">Différenciation (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.2 · L'horloge stratégique (Bowman &amp; Faulkner)</h3><span class="tag potentiel">🎯 potentiel</span></div>
+      <p>Développée en 1996, l'horloge stratégique représente les positionnements concurrentiels selon deux critères : le <strong>prix</strong> et la <strong>valeur perçue</strong> par le client. Elle affine les 3 stratégies génériques de Porter en 6 trajectoires.</p>
+      <table class="mini">
+        <tr><th>Trajectoire</th><th>Positionnement</th><th>Exemple</th></tr>
+        <tr><td>1 — Épuration</td><td>Prix très bas, valeur perçue inférieure au standard</td><td>easyJet</td></tr>
+        <tr><td>2 — Volume-coût</td><td>Valeur conforme au standard, prix plus bas grâce au volume</td><td>Économies d'échelle</td></tr>
+        <tr><td>3 — Hybride</td><td>Baisse de prix + hausse de valeur perçue</td><td>Box internet, Club Med</td></tr>
+        <tr><td>4 — Différenciation sans surprix</td><td>Plus de qualité, prix inchangé</td><td>VW Golf</td></tr>
+        <tr><td>5 — Différenciation avec surprix</td><td>Qualité supérieure, prix supérieur</td><td>BMW, Mercedes</td></tr>
+        <tr><td>6 — Voué à l'échec</td><td>Rapport valeur/prix non attractif</td><td>Offre non renouvelée</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.3 · La matrice d'Ansoff (produits/marchés)</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>La matrice d'Ansoff identifie quatre voies de développement en croisant produits/compétences (existants ou nouveaux) et marchés (existants ou nouveaux) :</p>
+      <table class="mini">
+        <tr><th></th><th>Produits existants</th><th>Produits nouveaux</th></tr>
+        <tr><td><strong>Marchés existants</strong></td><td>Pénétration du marché</td><td>Développement de produits</td></tr>
+        <tr><td><strong>Marchés nouveaux</strong></td><td>Développement de marchés</td><td>Diversification</td></tr>
+      </table>
+      <ul class="detail-list">
+        <li><strong>Pénétration du marché</strong> (spécialisation) : augmenter les ventes sur un marché donné via l'effort marketing, sans changer le produit.</li>
+        <li><strong>Développement de produits</strong> : nouveaux produits vendus à la clientèle existante (stratégie d'innovation).</li>
+        <li><strong>Développement de marchés</strong> : gamme existante déclinée sur un nouveau marché (nouvelle segmentation marketing, internationalisation, nouveaux usages).</li>
+        <li><strong>Diversification</strong> : nouveaux produits à de nouveaux clients → définition d'un nouveau DAS (voir 3.4).</li>
+      </ul>
+      <p>Le passage inverse (diversification → pénétration) s'appelle une stratégie de <strong>recentrage</strong>.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024, Phénix</span>Le corrigé associe une croissance de Phénix concrète à chaque case de la matrice : <strong>pénétration du marché</strong> — recherche de nouveaux clients et approvisionnements sur l'offre existante ; <strong>développement des marchés</strong> — extension vers l'alimentation animale et internationalisation ; <strong>diversification</strong> — lancement d'une activité de conseil, qui « constitue clairement un DAS à part ». Il vérifie ensuite si ces choix répondent bien aux opportunités/menaces identifiées en PESTEL (2.3) : c'est le second réflexe attendu, relier Ansoff au diagnostic externe.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">3 formes de croissance (Phénix)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.4 · La diversification</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>La diversification consiste à commercialiser de nouveaux produits à de nouveaux clients (nouveau DAS). On distingue :</p>
+      <ul class="detail-list">
+        <li><strong>Intégration verticale</strong> (liée) : développement en amont ou en aval de la filière (bénéfice à chaque stade, pouvoir de marché accru).</li>
+        <li><strong>Diversification concentrique</strong> (liée) : nouvelle activité qui s'appuie sur le métier d'origine pour créer des économies de champ — le pivot peut être la clientèle, la technologie, la distribution, la marque…</li>
+        <li><strong>Diversification conglomérale/non liée</strong> : activités sans rapport entre elles, pour répartir les risques conjoncturels, financer une division par une autre, ou anticiper le déclin d'un marché.</li>
+      </ul>
+      <div class="formula">Modèle Détrie &amp; Ramanantsoa (1991) — 4 logiques
+        <small>Placement (excédent de trésorerie) · Redéploiement (activité en déclin) · Confortement (renforcer la position actuelle, synergies) · Survie (solution de dernier recours en crise)</small>
+      </div>
+      <p>Via la chaîne de valeur : une diversification est <strong>liée</strong> quand un ou plusieurs maillons (R&amp;D, logistique, marque…) sont partagés entre DAS, <strong>faiblement liée</strong> si seule la marque est commune.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025, Michelin</span>Le corrigé retient 3 DAS bien distincts : fabrication de pneus, fabrication de tissus enduits industriels, et le Guide Michelin — « des produits très différents » en technologie, fonction et clientèle. Il qualifie ensuite la diversification de <strong>« faiblement liée »</strong> : « il ne s'agit pas des maillons en amont de la chaîne de valeur comme la R&amp;D, la logistique ou le partage de machines de production, mais uniquement de la marque » Michelin, commune aux trois DAS. À retenir : c'est la marque, un seul maillon partagé, qui justifie « faiblement » plutôt que « non liée ».</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Via Ansoff (Phénix)</td><td class="yes">Diversification faiblement liée (Michelin)</td><td class="yes">Diversification liée (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.5 · Le Business Model Canvas &amp; le modèle RCOV</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>Le <strong>Canvas</strong> (Osterwalder) représente le modèle économique d'une entreprise en 9 blocs, centrés sur le client en aval et sur la création de valeur/les partenaires en amont :</p>
+      <div class="formula">9 blocs du Canvas
+        <small>Segments de clientèle · Proposition de valeur · Canaux · Relations clients · Sources de revenus · Ressources clés · Activités clés · Partenaires clés · Structure de coûts</small>
+      </div>
+      <p>Contrairement à la chaîne de valeur (outil industriel classique), le Canvas est adapté aux services, aux start-up et intègre nativement une logique de coûts/revenus.</p>
+      <p class="tag potentiel" style="display:inline-block;">🎯 à surveiller — le modèle RCOV</p>
+      <p>Le <strong>modèle RCOV</strong> (Lecocq) insiste sur les interactions entre trois composantes : <strong>Ressources et Compétences</strong>, <strong>Organisation</strong> (chaîne de valeur interne + réseau de partenaires), <strong>proposition de Valeur</strong> — dont résulte la marge générée par le business model.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024, Phénix</span>Le corrigé choisit 4 rubriques sur les 9 et donne 2 éléments maximum par rubrique, collés au cas : <strong>proposition de valeur</strong> — lutter contre le gaspillage alimentaire ; <strong>partenaires</strong> — associations et enseignes partenaires, Bpi pour l'augmentation de capital ; <strong>ressources</strong> — levée de fonds de 15 M€, subventions régionales, 180 salariés ; <strong>canaux</strong> — magasins physiques (B to B et B to C) et plateforme web. Format à retenir : choisir peu de rubriques mais les remplir avec des données chiffrées du cas, jamais avec des généralités.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">4 rubriques appliquées (Phénix)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.6 · La typologie de Goold &amp; Campbell</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>Goold et Campbell étudient le rôle du siège dans un groupe multi-DAS et proposent trois styles de gestion :</p>
+      <table class="mini">
+        <tr><th>Style</th><th>Qui définit la stratégie</th><th>Logique dominante</th></tr>
+        <tr><td>Planification stratégique</td><td>Le siège, de façon centralisée</td><td>Recherche de synergies, vision long terme</td></tr>
+        <tr><td>Contrôle stratégique</td><td>Les DAS essentiellement</td><td>Équilibre entre objectifs financiers et stratégiques</td></tr>
+        <tr><td>Contrôle financier</td><td>Les DAS uniquement</td><td>Retour financier, forte pression court terme</td></tr>
+      </table>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025, Michelin</span>Le corrigé écarte d'abord le contrôle financier pur : « il serait difficile de dire que le groupe n'est orienté que sur une logique financière, cela ne serait pas conforme aux valeurs et à l'identité de l'entreprise ». Il retient le <strong>contrôle stratégique</strong> car les DAS (pneus voiture, poids lourd, engins de chantier) partagent des ressources et la marque tout en restant autonomes sur des investissements de long terme. Méthode : commencer par éliminer le style le moins plausible avant de justifier celui retenu.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Contrôle stratégique (Michelin)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch3')">Commencer le quiz du chapitre 3 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 4 ================= -->
+<section class="chapter" id="ch4">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 4</span>
+    <h2>Pilotage et calcul de coûts</h2>
+  </div>
+  <p class="chapter-sub">La partie calculatoire de l'UE : méthode des centres d'analyse, marges, seuil de rentabilité et analyse des écarts.</p>
+
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years">
+      <span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span>
+    </div>
+    <span style="color:var(--text-faint);font-size:13px;">— un dossier calculatoire tombe systématiquement, souvent noté lourd (12 à 15 points).</span>
+  </div>
+
+  <div class="notions">
+
+    <div class="card">
+      <div class="card-head"><h3>4.1 · La méthode des centres d'analyse</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Les charges indirectes (non affectables directement à un produit) sont réparties par <strong>centre d'analyse</strong> (ex. : fabrication, distribution), à l'aide d'une <strong>unité d'œuvre (UO)</strong> pertinente (temps de main d'œuvre, nombre de produits vendus…).</p>
+      <div class="formula">Coût de l'unité d'œuvre = Total des charges du centre ÷ Nombre d'unités d'œuvre</div>
+      <p>Chaque produit se voit ensuite imputer une part des charges du centre au prorata du nombre d'UO qu'il consomme.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2026, Adidas</span>
+        L'usine fabrique sneakers (100 000 paires, 10 mn de main d'œuvre), chaussures de sport (30 000 paires, 12 mn) et chaussures de foot (10 000 paires, 15 mn). Charges indirectes : 6 000 000 € (Fabrication, UO = minute de main d'œuvre) et 1 000 000 € (Distribution, UO = produit vendu).
+        <table class="mini" style="margin-top:8px;">
+          <tr><th></th><th>Fabrication</th><th>Distribution</th></tr>
+          <tr><td>Nombre d'UO</td><td class="calc">10×100 000 + 12×30 000 + 15×10 000 = 1 510 000 mn</td><td class="calc">100 000+30 000+10 000 = 140 000 produits</td></tr>
+          <tr><td>Coût de l'UO</td><td class="calc">6 000 000 ÷ 1 510 000 = 3,9735 €/mn</td><td class="calc">1 000 000 ÷ 140 000 = 7,1429 €/produit</td></tr>
+        </table>
+        Lecture : chaque minute de fabrication « coûte » 3,9735 € de charges indirectes, et chaque produit distribué 7,1429 €, quel que soit le produit — c'est ensuite ce coût d'UO qui sert à calculer la marge sur coûts complets de chaque gamme (voir 4.2).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Management/Logistique (Paprec)</td><td class="no">—</td><td class="no">—</td><td class="yes">Fabrication/Distribution (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.2 · Marge sur coût variable, marge sur coûts spécifiques, résultat par activité</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>Pour juger de la rentabilité de plusieurs activités, on empile les niveaux de marge suivants (méthode du direct costing évolué) :</p>
+      <div class="formula">MCV = CA − charges variables (directes) propres au produit
+<small>MCS = MCV − charges fixes directes/spécifiques à l'activité (ex. : publicité dédiée)</small>
+<small>Résultat = MCS − quote-part des charges fixes indirectes (communes, réparties par centre d'analyse)</small></div>
+      <p><strong>Point clé de raisonnement</strong> (souvent demandé en commentaire) : une activité à <strong>résultat complet négatif</strong> mais à <strong>MCS positive</strong> contribue tout de même à absorber une partie des charges fixes indirectes communes ; la supprimer reviendrait à faire porter ces charges fixes par les autres produits, donc à dégrader leur propre résultat.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2023, Paprec</span>Trois activités P, M et C. Extrait du corrigé (en €) :
+        <table class="mini" style="margin-top:8px;">
+          <tr><th></th><th>P</th><th>M</th><th>C</th></tr>
+          <tr><td>CA</td><td>9 800 000</td><td>3 200 000</td><td>23 800 000</td></tr>
+          <tr><td>MCV</td><td>4 442 667</td><td>1 098 667</td><td>11 984 000</td></tr>
+          <tr><td>CF directes</td><td>1 000 000</td><td>800 000</td><td>500 000</td></tr>
+          <tr><td>MCS</td><td>3 442 667</td><td class="calc">298 667</td><td>11 484 000</td></tr>
+          <tr><td>Logistique + Management (CF indirectes)</td><td>3 360 000</td><td>1 920 000</td><td>6 720 000</td></tr>
+          <tr><td>Résultat</td><td>82 667</td><td class="calc">− 1 621 333</td><td>4 764 000</td></tr>
+        </table>
+        Le corrigé explique le résultat négatif de M (activité en lancement, CA encore faible) sans recommander sa suppression : « la marge sur coûts spécifiques est positive, donc les activités M et surtout P absorbent une part des charges fixes indirectes. Supprimer un produit qui a une marge sur coûts complets négative revient à faire absorber par les autres produits les charges fixes indirectes. » C'est exactement le raisonnement à reproduire dès qu'un résultat complet est négatif dans un sujet.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">3 activités P/M/C (Paprec)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.3 · Seuil de rentabilité et marge de sécurité</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <p>Le <strong>seuil de rentabilité (SR)</strong> est le chiffre d'affaires pour lequel l'entreprise ne réalise ni bénéfice ni perte (charges fixes exactement couvertes par la marge sur coût variable).</p>
+      <div class="formula">SR (en €) = (Charges fixes × CA) ÷ MCV
+<small>Taux de marge de sécurité = (CA − SR) ÷ CA — indique de combien le CA peut baisser tout en restant bénéficiaire</small></div>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2026, Adidas</span>Pour les sneakers (charges directes variables, charges indirectes fixes) :
+        <table class="mini" style="margin-top:8px;">
+          <tr><th>Produit</th><th>Seuil de rentabilité (€)</th><th>Taux de marge de sécurité</th></tr>
+          <tr><td>Sneakers</td><td class="calc">6 696 842,86 €</td><td class="calc">0,33 soit 33 %</td></tr>
+          <tr><td>Chaussures de sport</td><td class="calc">2 498 349,87 €</td><td class="calc">0,306 soit 30,6 %</td></tr>
+        </table>
+        Interprétation reprise du corrigé : « malgré la concurrence, les résultats montrent que l'entreprise bénéficie d'une certaine marge puisque le CA peut baisser respectivement de 33 % et 30,6 % […] tout en maintenant un bénéfice ». Toujours conclure sur ce que le chiffre veut dire pour l'activité, pas seulement le calculer.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">Sneakers/sport (Adidas)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.4 · Écarts sur matières premières (prix / quantité / volume)</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Trois causes possibles d'écart entre dépenses prévues et réelles : le <strong>prix</strong> d'achat, le <strong>rendement matière</strong> (quantité consommée par unité produite) et le <strong>volume</strong> de production.</p>
+      <div class="formula">Écart sur prix = (Pr − Pp) × qr × Vr
+<small>Écart sur quantité = (qr − qp) × Pp × Vr</small>
+<small>Écart sur volume = (Vr − Vp) × qp × Pp</small>
+<small>Écart total = Dépenses réelles − Dépenses prévues = écart sur prix + écart sur quantité + écart sur volume</small></div>
+      <p><strong>Règle mnémotechnique</strong> : un écart sur une grandeur <em>physique</em> (quantité, volume, temps) se pondère par des éléments <em>financiers prévus</em> ; un écart sur une grandeur <em>financière</em> (prix, taux, coût) se pondère par des éléments <em>physiques réels</em>.</p>
+      <p><strong>Écart global</strong> = dépenses réelles − coût prévu <em>de la production réelle</em> (= écart sur prix + écart sur quantité, sans l'effet volume) : c'est l'écart économique qui mesure les vrais gaspillages/économies.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2025, Michelin</span>Prévu : 50 000 pneus, 2,8 kg de caoutchouc/pneu, 2 €/kg. Réel : 45 000 pneus, 135 000 kg utilisés (soit 3 kg/pneu), prix 10 % plus élevé (2,2 €/kg).
+        <div class="formula" style="margin:8px 0;">Écart sur prix = (2,2 − 2) × 3 × 45 000 = <span class="calc">27 000 € (défavorable)</span>
+<small>Écart sur quantité = (3 − 2,8) × 2 × 45 000 = 18 000 € (défavorable)</small>
+<small>Écart sur volume = (45 000 − 50 000) × 2 × 2,8 = − 28 000 €</small>
+<small>Écart global = 27 000 + 18 000 = 45 000 € (défavorable) · Écart total = 45 000 − 28 000 = 17 000 € (défavorable)</small></div>
+        Commentaire du corrigé : « l'écart est défavorable en raison du prix d'achat plus élevé que prévu du caoutchouc et de la production qui a utilisé plus de caoutchouc que prévu pour fabriquer les pneus » — toujours relier chaque sous-écart à sa cause opérationnelle concrète (achats vs. rendement matière).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Caoutchouc (Michelin)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.5 · Écarts sur main d'œuvre (taux / temps / volume)</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Même logique que pour les matières, appliquée au temps de travail : le <strong>taux horaire</strong>, le <strong>temps standard</strong> (rendement de main d'œuvre) et le <strong>volume</strong> produit.</p>
+      <div class="formula">Écart sur taux = (Cur − Cup) × tr × Vr
+<small>Écart sur temps = (tr − tp) × Cup × Vr</small>
+<small>Écart sur volume = (Vr − Vp) × tp × Cup</small>
+<small>Écart global = Dr − (Cup × tp × Vr) = écart sur taux + écart sur temps</small>
+<small>Écart total = Dr − Dp = écart sur taux + écart sur temps + écart sur volume</small></div>
+      <p>Lecture économique : l'écart sur taux mesure la performance des négociateurs (achats/RH), l'écart sur temps celle des exécutants (rendement), l'écart sur volume n'est qu'une conséquence budgétaire du niveau d'activité.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2023, Paprec (centre N, emballage des palettes)</span>Prévu : 1 200 palettes, 5 mn/palette, 36 €/h. Réel : 1 100 palettes, 110 h de manutention (soit 6 mn/palette), 37 €/h, coût réel total 4 070 €.
+        <div class="formula" style="margin:8px 0;">Écart sur taux = (37 − 36) × 0,1 × 1 100 = <span class="calc">110 € (défavorable)</span>
+<small>Écart sur temps = (0,1 − 5/60) × 36 × 1 100 = 660 € (défavorable)</small>
+<small>Écart sur volume = (1 100 − 1 200) × 5/60 × 36 = − 300 €</small>
+<small>Écart global = 110 + 660 = 770 € (défavorable) · Écart total = 770 − 300 = 470 € (défavorable)</small></div>
+        Le corrigé conclut : « la raison principale de l'écart vient ici de la différence entre le standard horaire prévu par palette de 5 mn et le standard réalisé de 6 mn » — c'est-à-dire que l'écart sur temps (660 €) pèse plus lourd que l'écart sur taux (110 €) : identifiez toujours lequel des deux sous-écarts domine, c'est souvent ce qu'on vous demande de « commenter ».</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Centre N, palettes (Paprec)</td><td class="yes">Manutention palettes (Phénix)</td><td class="yes">Montage pneus (Michelin)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>4.6 · Écarts sur charges indirectes (budget / activité / rendement / volume)</h3><span class="tag potentiel">🎯 potentiel</span></div>
+      <p>Les charges indirectes comportent une partie fixe et une partie variable : le coût de l'unité d'œuvre (CUO) diminue mécaniquement quand l'activité augmente (les charges fixes se répartissent sur plus d'unités). Il faut donc subdiviser l'écart classique en <strong>quatre</strong> sous-écarts plutôt que trois.</p>
+      <div class="formula">Écart sur budget = Dépenses réelles − (CVup × Ar + CFp)
+<small>Écart sur activité = (CVup × Ar + CFp) − (Ar × CUOp)  — mesure les bonis/malis d'imputation rationnelle</small>
+<small>Écart sur rendement = (ar − ap) × Vr × CUOp</small>
+<small>Écart sur volume = (Vr − Vp) × ap × CUOp</small>
+<small>Écart total = Dépenses réelles − (Ap × CUOp) = somme des 4 sous-écarts</small></div>
+      <p>Avec : Ap/Ar = activité prévue/réelle (nombre d'UO) ; ap/ar = rendement prévu/réel (UO par unité produite) ; CVup = charge variable unitaire prévue ; CFp = charges fixes prévues.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré du manuel — pas encore vu aux annales, mais méthode identique</span>9 000 pièces prévues pour 4 500 h machine (270 000 €, dont 90 000 € de CF) ; réel : 9 450 pièces pour 4 536 h (300 000 €).
+        <div class="formula" style="margin:8px 0;">ap = 4 500/9 000 = 0,5 · ar = 4 536/9 450 = 0,48 · CUOp = 270 000/4 500 = 60 · CVup = 180 000/4 500 = 40
+<small>Écart sur budget = 300 000 − (40×4 536 + 90 000) = 300 000 − 271 440 = 28 560 € (défavorable)</small>
+<small>Écart sur activité = 271 440 − (4 536×60) = 271 440 − 272 160 = − 720 € (favorable)</small>
+<small>Écart sur rendement = (0,48 − 0,5) × 9 450 × 60 = − 11 340 € (favorable)</small>
+<small>Écart sur volume = (9 450 − 9 000) × 0,5 × 60 = 13 500 €</small>
+<small>Écart global = 300 000 − (0,5×9 450×60) = 300 000 − 283 500 = 16 500 € (défavorable) = écart sur budget + écart sur activité + écart sur rendement</small>
+<small>Écart total = 300 000 − 270 000 = 30 000 € = écart global + écart sur volume</small></div>
+        Ce cas est exactement la même mécanique que l'écart sur main d'œuvre en 4.5, avec une étape en plus (le découpage budget/activité) pour neutraliser l'effet des charges fixes sur le coût unitaire. C'est probablement l'extension la plus logique d'un futur sujet.</div>
+    </div>
+
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
+</section>
+
+<!-- ================= POTENTIEL ================= -->
+<section class="chapter" id="potentiel">
+  <div class="chapter-head">
+    <span class="chapter-num">🎯</span>
+    <h2>Notions à surveiller</h2>
+  </div>
+  <p class="chapter-sub">Présentes dans les cours 1 et 2 mais jamais testées (ou testées une seule fois) dans les 4 derniers corrigés — un examinateur qui varie ses sujets peut parfaitement les faire tomber l'an prochain.</p>
+
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Le modèle de l'agence &amp; la relation actionnaires/dirigeants</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>La théorie de l'agence explique la gouvernance par la relation entre un <strong>principal</strong> (l'actionnaire, qui délègue) et un <strong>agent</strong> (le dirigeant, mandaté). Le problème de gouvernance naît du démembrement de la fonction de propriété (contrôle par les actionnaires) et de la fonction décisionnelle (exercée par les dirigeants), qui ouvre la porte à des comportements opportunistes de l'agent (asymétrie d'information, risque de spoliation des actionnaires).</p>
+      <p>Contexte historique à connaître : la <strong>gouvernance managériale</strong> (1930-1980, pouvoir aux managers) a laissé place à la <strong>gouvernance actionnariale</strong> (à partir des années 1980, financiarisation de l'économie, création de valeur pour l'actionnaire/EVA), elle-même questionnée par les scandales financiers (Enron, WorldCom, Société Générale) qui ont motivé le renforcement légal (Sarbanes-Oxley 2002, loi de sécurité financière 2003, loi Pacte 2019).</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 L'horloge stratégique (Bowman &amp; Faulkner)</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Voir détail complet en 3.2 — les 6 trajectoires (épuration, volume-coût, hybride, différenciation sans/avec surprix, offres vouées à l'échec) permettent d'affiner la lecture binaire des stratégies génériques de Porter.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Le modèle RCOV (Lecocq)</h3><span class="tag potentiel">Jamais testé isolément</span></div>
+      <p>Voir détail complet en 3.5 — insiste sur la cohérence dynamique entre Ressources et Compétences, Organisation et proposition de Valeur pour comprendre la mécanique d'un business model.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Écarts sur charges indirectes à 4 sous-écarts</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Voir détail complet en 4.6 — extension logique et naturelle des écarts sur matières/main d'œuvre déjà bien couverts par les annales ; probablement le complément calculatoire le plus probable pour corser un futur sujet.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Les niveaux de stratégie (corporate / business / fonctionnel)</h3><span class="tag potentiel">Jamais testé isolément</span></div>
+      <p>La stratégie se décline sur 3 niveaux emboîtés : <strong>corporate</strong> (le portefeuille de DAS est-il bon ? quelles industries ?), <strong>business</strong> (quelle mission par DAS : construire/maintenir/récolter/désinvestir ? quelle stratégie générique ?), <strong>fonctionnel</strong> (déclinaison opérationnelle par fonction : marketing, production, RH…). Utile en transition d'introduction pour situer n'importe quelle question de stratégie du dossier.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Les modes de contrôle d'Ouchi et Merchant</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Complément à la typologie d'Etzioni (1.4) : Ouchi et Merchant distinguent le <strong>contrôle par la bureaucratie</strong> (procédures, supervision directe), le <strong>contrôle par les résultats</strong> (objectifs chiffrés, indicateurs) et le <strong>contrôle par les normes</strong> (culture, valeurs partagées) comme trois façons de résoudre la divergence d'intérêts entre l'organisation et les individus.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL QUIZ ================= -->
+<section class="chapter" id="finalquiz">
+  <div class="chapter-head">
+    <span class="chapter-num">Bilan</span>
+    <h2>Quiz final — toute l'UE</h2>
+  </div>
+  <p class="chapter-sub">Un mélange de questions issues des 4 chapitres pour vérifier une compréhension d'ensemble avant l'épreuve.</p>
+  <div class="quizcta"><button class="quizbtn final" onclick="openQuiz('final')">Lancer le quiz final →</button></div>
+</section>
+
+</div><!-- /wrap -->
+
+<div class="toolbar">
+  <button class="tbtn" id="exportBtn" onclick="exportPDF()">⬇ Export PDF</button>
+</div>
+
+<!-- ================= QUIZ MODAL ================= -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal">
+    <button class="closex" onclick="closeQuiz()">×</button>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ================= THEME SYNC (postMessage from hub) ================= */
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(!data) return;
+  var theme = null;
+  if (data.theme) theme = data.theme;
+  else if (data.type === 'theme-change' && data.value) theme = data.value;
+  else if (typeof data === 'string' && (data === 'dark' || data === 'light')) theme = data;
+  if(theme === 'light' || theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+});
+
+/* ================= CHAPTER NAV ================= */
+var navBtns = document.querySelectorAll('.chnav-btn');
+navBtns.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    navBtns.forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var target = document.getElementById(btn.dataset.target);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+/* ================= QUIZ DATA ================= */
+var QUIZ = {
+  ch1: [
+    {q:"La coalition interne d'une entreprise dirigée par un fondateur qui concentre tous les pouvoirs est dite :", opts:["Bureaucratique","Personnalisée","Idéologique","Professionnelle"], correct:1, exp:"Quand tous les pouvoirs sont concentrés entre les mains d'un seul individu qui incarne l'organisation, la coalition interne est personnalisée (ex. : patron-fondateur de PME)."},
+    {q:"Une coalition externe où le capital est très émietté entre de nombreux petits porteurs qui ne se déplacent pas aux assemblées est dite :", opts:["Dominée","Divisée","Passive","Politisée"], correct:2, exp:"Quand les détenteurs théoriques du pouvoir externe s'en désintéressent, la coalition externe est passive : le pouvoir réel passe alors à la coalition interne."},
+    {q:"Selon Mintzberg, une filiale contrôlée à distance par sa société mère grâce au reporting et au contrôle budgétaire correspond à la configuration :", opts:["Autocratie","Méritocratie","Instrument","Arène politique"], correct:2, exp:"La configuration instrument (coalition interne bureaucratique, coalition externe dominée) est celle où le contrôle de gestion classique (gestion à distance par les chiffres) est l'outil privilégié."},
+    {q:"Selon Etzioni, une entreprise où les individus adhèrent aux règles principalement par calcul et intérêt (rémunération, promotion) relève d'une organisation :", opts:["Coercitive","Instrumentale","Normative","Missionnaire"], correct:1, exp:"Dans les organisations instrumentales, les buts des individus divergent de ceux de l'organisation sans y être opposés ; le contrôle repose sur des incitations économiques."},
+    {q:"La loi qui crée le statut légal d'« entreprise à mission » en France est :", opts:["La loi de sécurité financière (2003)","Le Sarbanes-Oxley Act (2002)","La loi Pacte (2019)","La directive Droits des actionnaires (2018)"], correct:2, exp:"L'article 176 de la loi Pacte (2019) crée le statut d'entreprise à mission ; les articles 61-62 associent enjeux sociaux/environnementaux et raison d'être de l'entreprise."}
+  ],
+  ch2: [
+    {q:"Deux activités qui partagent la même technologie et les mêmes clients, mais remplissent une fonction différente, appartiennent à :", opts:["Deux DAS différents (2 critères sur 3 divergent, la limite étant dépassée)","Le même DAS (un seul critère diffère)","Toujours deux DAS quel que soit le nombre de critères communs","Cela dépend uniquement du chiffre d'affaires"], correct:1, exp:"On considère qu'on est en face de DAS distincts s'il y a au maximum UN critère commun sur les trois (technologie, clients, fonction). Ici deux critères sont communs (technologie, clients) : c'est donc le même DAS."},
+    {q:"Le modèle PESTEL sert à analyser :", opts:["Le micro-environnement concurrentiel de l'entreprise","Le macro-environnement (contexte global, non spécifique à l'entreprise)","La chaîne de valeur interne","Le portefeuille de DAS"], correct:1, exp:"Le PESTEL identifie les influences macro-environnementales (politiques, économiques, socioculturelles, technologiques, écologiques, légales), indépendantes du secteur précis de l'entreprise."},
+    {q:"Dans le modèle des 5(+1) forces de Porter, la sixième force ajoutée aux 5 forces concurrentielles classiques est :", opts:["Les syndicats","L'État","Les actionnaires","Les banques"], correct:1, exp:"Aux 5 forces (concurrents, clients, fournisseurs, entrants potentiels, substituts) s'ajoute le rôle de l'État comme 6e force."},
+    {q:"Un facteur clé de succès (FCS) se déduit directement :", opts:["De l'analyse PESTEL uniquement","De l'analyse des 5(+1) forces de Porter","De la matrice d'Ansoff","Du modèle Canvas"], correct:1, exp:"Les FCS sont les éléments à maîtriser pour être performant face aux forces concurrentielles identifiées via le modèle de Porter."},
+    {q:"La chaîne de valeur de Porter distingue 5 activités primaires et :", opts:["3 activités de soutien","4 activités de soutien","5 activités de soutien","2 activités de soutien"], correct:1, exp:"4 activités de soutien : infrastructure de la firme, GRH, développement technologique, approvisionnements."}
+  ],
+  ch3: [
+    {q:"Une entreprise qui vend un produit à valeur perçue comparable à la concurrence, mais à prix inférieur, mène une stratégie de :", opts:["Différenciation","Focalisation","Domination par les coûts","Diversification"], correct:2, exp:"La domination par les coûts consiste à proposer une valeur comparable à un prix inférieur, en s'appuyant sur les économies d'échelle et la maîtrise des coûts."},
+    {q:"Dans la matrice d'Ansoff, vendre de nouveaux produits à de nouveaux clients correspond à :", opts:["La pénétration du marché","Le développement de produits","Le développement de marchés","La diversification"], correct:3, exp:"La diversification (nouveaux produits × nouveaux marchés) correspond à la création d'un nouveau DAS."},
+    {q:"Une diversification où l'entreprise s'appuie sur son métier d'origine pour créer des économies de champ (même clientèle, même technologie ou même marque) est dite :", opts:["Verticale","Concentrique","Conglomérale","De confortement uniquement"], correct:1, exp:"La diversification concentrique s'appuie sur un « pivot » commun (clientèle, technologie, distribution, marque) avec l'activité d'origine pour générer des économies de champ."},
+    {q:"Le Business Model Canvas comporte :", opts:["6 blocs","7 blocs","9 blocs","5 activités primaires"], correct:2, exp:"Le Canvas d'Osterwalder comporte 9 rubriques : segments clients, proposition de valeur, canaux, relation client, revenus, ressources clés, activités clés, partenaires clés, structure de coûts."},
+    {q:"Dans la typologie de Goold et Campbell, le style où le siège définit la stratégie de façon centralisée en recherchant des synergies entre DAS est :", opts:["Le contrôle financier","Le contrôle stratégique","La planification stratégique","Le contrôle opérationnel"], correct:2, exp:"La planification stratégique donne un rôle central au siège, qui privilégie les synergies et une vision de long terme entre les différents DAS."}
+  ],
+  ch4: [
+    {q:"Le coût de l'unité d'œuvre d'un centre d'analyse se calcule par :", opts:["Charges directes ÷ chiffre d'affaires","Total des charges du centre ÷ nombre d'unités d'œuvre","Charges fixes ÷ charges variables","Marge sur coût variable ÷ volume"], correct:1, exp:"Le coût de l'UO permet ensuite d'imputer les charges indirectes du centre à chaque produit au prorata du nombre d'UO qu'il consomme."},
+    {q:"Une activité affiche un résultat sur coûts complets négatif mais une marge sur coûts spécifiques positive. Il faut :", opts:["La supprimer immédiatement pour améliorer le résultat global","La conserver : elle absorbe une partie des charges fixes indirectes communes","Augmenter son prix de vente sans autre analyse","Changer d'unité d'œuvre"], correct:1, exp:"Une MCS positive signifie que l'activité contribue à couvrir les charges fixes indirectes communes ; la supprimer ferait porter ces charges par les autres produits, dégradant leur propre résultat."},
+    {q:"Le seuil de rentabilité en euros se calcule par la formule :", opts:["(Charges fixes × CA) ÷ Marge sur coût variable","(Charges variables × CA) ÷ Marge sur coût variable","CA − charges fixes","Marge sur coût variable ÷ CA"], correct:0, exp:"SR (€) = (CF × CA) ÷ MCV. Le taux de marge de sécurité, (CA−SR)/CA, indique la baisse de CA supportable avant de repasser sous le seuil."},
+    {q:"Dans l'analyse des écarts sur matières premières, l'écart sur quantité se calcule par :", opts:["(Pr − Pp) × qr × Vr","(qr − qp) × Pp × Vr","(Vr − Vp) × qp × Pp","(Cur − Cup) × tr × Vr"], correct:1, exp:"L'écart sur quantité isole l'effet du rendement matière, pondéré par le prix prévu (Pp) et le volume réel (Vr), afin de ne pas être contaminé par la variation de prix."},
+    {q:"Dans l'analyse des écarts sur main d'œuvre, l'écart sur volume se calcule par :", opts:["(Cur − Cup) × tr × Vr","(tr − tp) × Cup × Vr","(Vr − Vp) × tp × Cup","(qr − qp) × Pp × Vr"], correct:2, exp:"L'écart sur volume isole le simple effet du niveau d'activité (Vr−Vp), pondéré par le temps standard prévu (tp) et le coût horaire prévu (Cup)."}
+  ]
+};
+QUIZ.final = [].concat(
+  [QUIZ.ch1[1], QUIZ.ch1[4]],
+  [QUIZ.ch2[0], QUIZ.ch2[2]],
+  [QUIZ.ch3[0], QUIZ.ch3[3]],
+  [QUIZ.ch4[1], QUIZ.ch4[3]],
+  [QUIZ.ch1[2], QUIZ.ch3[1]]
+);
+
+/* ================= QUIZ ENGINE ================= */
+var currentQuiz = [], currentIndex = 0, currentScore = 0, answered = false;
+
+function openQuiz(key){
+  currentQuiz = QUIZ[key];
+  currentIndex = 0;
+  currentScore = 0;
+  document.getElementById('quizModal').classList.add('open');
+  renderQuestion();
+}
+function closeQuiz(){
+  document.getElementById('quizModal').classList.remove('open');
+}
+function renderQuestion(){
+  answered = false;
+  var c = document.getElementById('quizContent');
+  if(currentIndex >= currentQuiz.length){
+    c.innerHTML =
+      '<div class="score-screen">' +
+      '<div class="score-num">'+currentScore+'/'+currentQuiz.length+'</div>' +
+      '<p style="color:var(--text-dim);margin-bottom:20px;">'+scoreMessage(currentScore, currentQuiz.length)+'</p>' +
+      '<button class="navbtn primary" onclick="closeQuiz()">Fermer</button>' +
+      '</div>';
+    return;
+  }
+  var item = currentQuiz[currentIndex];
+  var html = '<h3>Quiz</h3><div class="qcount">Question '+(currentIndex+1)+' / '+currentQuiz.length+'</div>';
+  html += '<div class="qtext">'+item.q+'</div>';
+  item.opts.forEach(function(opt, i){
+    html += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+opt+'</button>';
+  });
+  html += '<div class="explain" id="explainBox">'+item.exp+'</div>';
+  html += '<div class="modal-nav"><span></span><button class="navbtn primary" id="nextBtn" style="display:none" onclick="nextQuestion()">Suivant →</button></div>';
+  c.innerHTML = html;
+}
+function answer(i){
+  if(answered) return;
+  answered = true;
+  var item = currentQuiz[currentIndex];
+  var opts = document.querySelectorAll('.opt');
+  opts.forEach(function(o, idx){
+    o.disabled = true;
+    if(idx === item.correct) o.classList.add('correct');
+    else if(idx === i) o.classList.add('wrong');
+  });
+  if(i === item.correct) currentScore++;
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+function nextQuestion(){
+  currentIndex++;
+  renderQuestion();
+}
+function scoreMessage(score, total){
+  var pct = score/total;
+  if(pct === 1) return "Sans faute, cette partie est acquise.";
+  if(pct >= 0.7) return "Bon niveau, revoyez juste les points manqués.";
+  if(pct >= 0.4) return "Des bases correctes, mais retournez lire les fiches concernées.";
+  return "Cette partie mérite une relecture complète avant l'épreuve.";
+}
+
+/* ================= PDF EXPORT ================= */
+function exportPDF(){
+  var btn = document.getElementById('exportBtn');
+  btn.textContent = '⏳ Génération...';
+  var body = document.body;
+  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
+    var pdf = new window.jspdf.jsPDF('p','mm','a4');
+    var pageWidth = 210, pageHeight = 297;
+    var imgWidth = pageWidth;
+    var imgHeight = canvas.height * imgWidth / canvas.width;
+    var heightLeft = imgHeight, position = 0;
+    var imgData = canvas.toDataURL('image/jpeg', 0.92);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while(heightLeft > 0){
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save('UE533_Controle_gestion_strategie.pdf');
+    btn.textContent = '⬇ Export PDF';
+  }).catch(function(err){
+    console.error(err);
+    btn.textContent = '⬇ Export PDF';
+  });
+}
+</script>
+</body>
+</html>
