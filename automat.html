@@ -1125,7 +1125,7 @@
             <div class="sem-items" id="sem-s1">
                 <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
+                <li class="menu-item" onclick="loadPage('CGS1.html',this,'Contrôle de gestion')"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
             </div>
 
@@ -1245,7 +1245,7 @@
             <h1 id="welcome-title">Bonne <span>révision</span> !</h1>
             <p>Sélectionne une matière dans le menu pour commencer à réviser.</p>
             <div class="welcome-cards">
-                <div class="welcome-card" onclick="loadPage('CG.html',null,'Contrôle de Gestion')">
+                <div class="welcome-card" onclick="loadPage('CGS1.html',null,'Contrôle de Gestion')">
                     <div class="welcome-card-icon">📊</div>
                     <div class="welcome-card-label">Contrôle de Gestion</div>
                     <div class="welcome-card-sub">Fiches & exercices</div>
