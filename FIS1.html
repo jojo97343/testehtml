@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UE 532 — Finance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f0b1e; --bg2:#161028; --panel:#1c1533; --panel2:#221a3d;
+  --border:#332a54; --text:#f1edfb; --text-dim:#b3a9d1; --text-faint:#8479a3;
+  --violet:#8b5cf6; --violet-soft:#a78bfa; --cyan:#22d3ee; --yellow:#facc15;
+  --grad: linear-gradient(135deg,#8b5cf6 0%,#22d3ee 100%);
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+[data-theme="light"]{
+  --bg:#f6f4fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1edfb;
+  --border:#e1d9f7; --text:#241b3d; --text-dim:#584c78; --text-faint:#8577a3;
+  --violet:#7c3aed; --violet-soft:#6d28d9; --cyan:#0891b2; --yellow:#b45309;
+  --shadow: 0 8px 24px rgba(90,70,160,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:transparent;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg); color:var(--text);
+  transition:background .3s ease,color .3s ease;
+  padding-bottom:80px;
+}
+h1,h2,h3,h4,.disp{font-family:'Clash Display',sans-serif;}
+a{color:inherit;}
+::selection{background:var(--violet);color:#fff;}
+
+.top{padding:28px 20px 20px;max-width:1100px;margin:0 auto;}
+.eyebrow-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--border);padding:5px 12px;border-radius:100px;font-size:12.5px;color:var(--text-dim);font-weight:600;}
+.pill b{color:var(--text);}
+.title-block h1{font-size:clamp(28px,4vw,40px);font-weight:600;margin:6px 0 6px;line-height:1.1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.title-block p{color:var(--text-dim);font-size:15px;max-width:640px;line-height:1.55;margin:0 0 18px;}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.badge{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 16px;min-width:118px;box-shadow:var(--shadow);}
+.badge .num{font-family:'Clash Display',sans-serif;font-size:22px;color:var(--cyan);font-weight:600;}
+.badge .lbl{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+
+.chnav{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px;backdrop-filter:blur(8px);}
+.chnav-inner{max-width:1100px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.chnav-inner::-webkit-scrollbar{display:none;}
+.chnav-btn{flex:0 0 auto;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);padding:9px 16px;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .18s ease;font-family:inherit;}
+.chnav-btn:hover{color:var(--text);border-color:var(--violet-soft);}
+.chnav-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+.chapter{padding:44px 0 20px;scroll-margin-top:70px;}
+.chapter-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
+.chapter-head h2{font-size:26px;font-weight:600;margin:0;}
+.chapter-num{font-family:'Clash Display',sans-serif;color:var(--violet-soft);font-size:14px;border:1px solid var(--border);padding:3px 10px;border-radius:8px;}
+.chapter-sub{color:var(--text-faint);font-size:14px;margin:0 0 18px;max-width:720px;line-height:1.5;}
+.partie-label{color:var(--yellow);font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4px;}
+
+.freqbar{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:26px;box-shadow:var(--shadow);flex-wrap:wrap;}
+.freqbar .flabel{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.freqbar .years{display:flex;gap:8px;flex-wrap:wrap;}
+.yr{font-size:12.5px;padding:4px 10px;border-radius:8px;font-weight:700;background:var(--panel2);border:1px solid var(--border);color:var(--text-faint);}
+.yr.hit{background:rgba(139,92,246,.18);color:var(--violet-soft);border-color:var(--violet);}
+
+.notions{display:flex;flex-direction:column;gap:16px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);}
+.card.potentiel{border-color:var(--cyan);background:linear-gradient(180deg,var(--panel),rgba(34,211,238,.05));}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.card-head h3{font-size:18px;margin:0;font-weight:600;}
+.tag{font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:100px;white-space:nowrap;}
+.tag.hot{background:rgba(250,204,21,.16);color:var(--yellow);border:1px solid rgba(250,204,21,.4);}
+.tag.watch{background:rgba(167,139,250,.16);color:var(--violet-soft);border:1px solid rgba(167,139,250,.4);}
+.tag.potentiel{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.4);}
+.card p{font-size:14.5px;line-height:1.62;color:var(--text-dim);margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text);}
+.formula{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;line-height:1.7;font-family:'Clash Display',sans-serif;color:var(--cyan);overflow-x:auto;}
+.formula small{display:block;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-faint);font-size:12px;margin-top:4px;font-weight:600;}
+.example{background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;color:var(--text-dim);border-left:3px solid var(--violet-soft);}
+.example b{color:var(--violet-soft);}
+ul.detail-list{margin:8px 0;padding-left:20px;}
+ul.detail-list li{font-size:14.5px;color:var(--text-dim);line-height:1.6;margin-bottom:4px;}
+table.mini{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
+table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;}
+table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;}
+table.mini td{color:var(--text-dim);}
+
+.recap{margin-top:14px;}
+.recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
+.recap summary::before{content:"▸ ";color:var(--violet-soft);}
+.recap[open] summary::before{content:"▾ ";}
+.recap table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
+.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;}
+.recap th{background:var(--panel2);color:var(--text-faint);}
+.recap td.yes{color:var(--yellow);font-weight:800;}
+.recap td.no{color:var(--text-faint);opacity:.4;}
+
+.chapter-recap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:28px;box-shadow:var(--shadow);}
+.chapter-recap-title{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:14px 20px 0;}
+.chapter-recap table{width:100%;border-collapse:collapse;}
+.chapter-recap th,.chapter-recap td{padding:14px 18px;text-align:center;border-bottom:1px solid var(--border);font-size:14px;}
+.chapter-recap tr:last-child td{border-bottom:none;}
+.chapter-recap th:first-child,.chapter-recap td:first-child{text-align:left;}
+.chapter-recap th{background:var(--panel2);color:var(--text);font-weight:700;}
+.chapter-recap td:first-child{font-weight:700;color:var(--text);}
+.chapter-recap td.yes{color:#4ade80;font-weight:800;font-size:16px;}
+.chapter-recap td.no{color:var(--text-faint);font-weight:600;opacity:.5;}
+
+.quizcta{margin-top:26px;display:flex;justify-content:center;}
+.quizbtn{background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;}
+.quizbtn:hover{transform:translateY(-2px);}
+.quizbtn.final{background:linear-gradient(135deg,var(--yellow),var(--cyan));color:#1a1428;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(8,5,18,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;}
+.modal h3{margin:0 0 4px;font-size:20px;}
+.modal .qcount{color:var(--text-faint);font-size:12.5px;margin-bottom:18px;}
+.qtext{font-size:15.5px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:11px;margin-bottom:9px;cursor:pointer;font-family:inherit;font-size:14px;transition:all .15s ease;}
+.opt:hover{border-color:var(--violet-soft);}
+.opt.correct{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80;}
+.opt.wrong{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
+.opt:disabled{cursor:default;}
+.explain{background:var(--panel2);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 14px;font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55;display:none;}
+.explain.show{display:block;}
+.modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.navbtn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+.navbtn:disabled{opacity:.35;cursor:not-allowed;}
+.navbtn.primary{background:var(--grad);color:#fff;border:none;}
+.closex{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;}
+.score-screen{text-align:center;padding:20px 0;}
+.score-num{font-family:'Clash Display',sans-serif;font-size:52px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;}
+
+.toolbar{position:fixed;bottom:18px;right:18px;display:flex;gap:10px;z-index:60;}
+.tbtn{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;}
+
+@media(max-width:640px){
+  .badge{min-width:90px;padding:8px 12px;}
+  .badge .num{font-size:18px;}
+  .card{padding:18px;}
+}
+</style>
+</head>
+<body id="fiche-body">
+
+<div class="top">
+  <div class="eyebrow-row">
+    <span class="pill">Master CCA</span>
+    <span class="pill">UE 532</span>
+    <span class="pill">Semestres 1 &amp; 2</span>
+  </div>
+  <div class="title-block">
+    <h1>Finance</h1>
+    <p>Actifs financiers (obligations, actions), investissement et financement, évaluation d'entreprise — construite à partir des cours 1 et 2 de l'UE et des sujets corrigés 2023 à 2026.</p>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="num">38</div><div class="lbl">Notions</div></div>
+    <div class="badge"><div class="num">4</div><div class="lbl">Années d'annales</div></div>
+    <div class="badge"><div class="num">12</div><div class="lbl">Chapitres</div></div>
+    <div class="badge"><div class="num">13</div><div class="lbl">Quiz disponibles</div></div>
+  </div>
+</div>
+
+<div class="chnav">
+  <div class="chnav-inner" id="chnav">
+    <button class="chnav-btn active" data-target="ch1">1 · Valeur et temps</button>
+    <button class="chnav-btn" data-target="ch2">2 · Obligations</button>
+    <button class="chnav-btn" data-target="ch3">3 · Actions</button>
+    <button class="chnav-btn" data-target="ch4">4 · Valeur et information</button>
+    <button class="chnav-btn" data-target="ch5">5 · Politique d'investissement</button>
+    <button class="chnav-btn" data-target="ch6">6 · Politique de financement</button>
+    <button class="chnav-btn" data-target="ch7">7 · Démarche d'évaluation</button>
+    <button class="chnav-btn" data-target="ch8">8 · Évaluation par les flux</button>
+    <button class="chnav-btn" data-target="ch9">9 · Approche comparative</button>
+    <button class="chnav-btn" data-target="ch10">10 · Patrimoniale &amp; mixte</button>
+    <button class="chnav-btn" data-target="ch11">11 · Évaluations spécifiques</button>
+    <button class="chnav-btn" data-target="ch12">12 · Synthèse évaluation</button>
+    <button class="chnav-btn" data-target="potentiel">🎯 À surveiller</button>
+    <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section class="chapter" id="ch1">
+  <p class="partie-label">Partie 1 — Finance de marché et finance comportementale</p>
+  <div class="chapter-head"><span class="chapter-num">Chapitre 1</span><h2>La valeur et le temps</h2></div>
+  <p class="chapter-sub">Le socle de tout calcul financier : capitaliser et actualiser, comprendre pourquoi un euro aujourd'hui vaut plus qu'un euro demain.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années, sert de base à tout le dossier 1.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>1.1 · Valeur acquise par un capital / une série de versements</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La valeur acquise (C<sub>n</sub>) est la valeur future d'un capital placé aujourd'hui, ou d'une suite de versements, capitalisés à intérêts composés. Tout placement rémunère le <strong>temps</strong> (renoncement à la consommation immédiate) et parfois le <strong>risque</strong> (risque de défaut).</p>
+      <div class="formula">Capital unique : C<sub>n</sub> = C<sub>0</sub> × (1+i)<sup>n</sup><small>Série de n versements constants a, placés en fin de période, valeur acquise à la date du dernier versement : VA = a × [(1+i)<sup>n</sup> − 1] / i</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>C₀</strong> : le capital placé aujourd'hui (à la date 0)</li>
+        <li><strong>C<sub>n</sub></strong> : la valeur acquise par ce capital n périodes plus tard</li>
+        <li><strong>i</strong> : le taux d'intérêt de la période retenue (annuel, semestriel, trimestriel — il doit être cohérent avec l'unité de n)</li>
+        <li><strong>n</strong> : le nombre de périodes de capitalisation, toujours un entier</li>
+        <li><strong>a</strong> : le montant constant de chaque versement de la série</li>
+      </ul>
+      <p><strong>Pièges classiques</strong> : le taux utilisé doit être cohérent avec la durée (un taux trimestriel s'applique à un nombre de trimestres, pas d'années) ; l'exposant d'une capitalisation doit toujours être un nombre entier de périodes ; pour un taux équivalent semestriel à partir d'un taux annuel, on élève à la puissance 0,5 (jamais 0,25, qui donnerait un taux trimestriel).</p>
+      <div class="example"><b>Exemple corrigé (2025, Q1.1a)</b> : trois versements de 1 000 € réalisés en fin d'année N+1, N+2 et N+3, rémunérés au taux annuel de 2 %. On demande la valeur acquise au 31/12/N+6, soit 3 ans après le dernier versement. Chaque versement est capitalisé séparément jusqu'à cette date (5, 4 puis 3 années de capitalisation) : VA = 1 000 × 1,02⁵ + 1 000 × 1,02⁴ + 1 000 × 1,02³, ce qui équivaut à la formule groupée VA = 1 000 × [(1,02³−1)/0,02] × 1,02³ (le facteur entre crochets capitalise les 3 versements à la date du dernier versement, puis ×1,02³ les projette 3 années plus loin).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Versements semestriels 15 000 €</td><td class="yes">4 versements semestriels</td><td class="yes">Valeur acquise 31/12/N+6</td><td class="yes">3 erreurs à repérer</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>1.2 · Valeur actuelle et taux de rentabilité actuariel</h3><span class="tag hot">🔥 1/4 ans, pilier théorique</span></div>
+      <p>La valeur actuelle d'un actif est la somme actualisée de tous les revenus futurs qu'il génère. Le taux de rentabilité actuariel (Tr) égalise le coût d'acquisition de l'actif et la valeur actualisée de ses revenus futurs.</p>
+      <div class="formula">Coût d'acquisition = Σ Revenus<sub>t</sub> × (1+Tr)<sup>−t</sup></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Coût d'acquisition</strong> : le prix payé aujourd'hui (date 0) pour acquérir l'actif</li>
+        <li><strong>Revenus<sub>t</sub></strong> : les flux (coupons, dividendes, remboursement...) encaissés à la date t</li>
+        <li><strong>Tr</strong> : le taux de rentabilité actuariel recherché, celui qui égalise les deux membres</li>
+        <li><strong>t</strong> : la date (en nombre de périodes) à laquelle chaque revenu est perçu</li>
+      </ul>
+      <p>Règle de bon sens à toujours vérifier : si le prix payé est <strong>inférieur</strong> à la valorisation théorique calculée à un taux donné, le taux de rentabilité réel est nécessairement <strong>supérieur</strong> à ce taux — et inversement.</p>
+      <div class="example"><b>Exemple corrigé (2023, Q2b-c)</b> : un actif procure 5 versements annuels de 5 000 € (le premier un an et demi après la date de valorisation). Le prix posé est 20 000 = 5 000 × [1−(1+Tr)⁻⁵]/Tr × (1+Tr)⁻⁰,⁵. Une valorisation antérieure de ce même actif, à 5 %, donnait 21 125,68 K€. Puisque le prix effectivement payé (20 000) est inférieur à cette valorisation à 5 %, la rentabilité réelle Tr est nécessairement supérieure à 5 %.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Actif à 21 125,68 K€ acquis à 20 000 K€ → Tr &gt; 5 %</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>1.3 · Rémunération du temps et du risque</h3><span class="tag watch">⚡ 1/4 ans, cours pur</span></div>
+      <p>Toute rémunération d'un placement se décompose en deux éléments : la <strong>rémunération du temps</strong> (préférence pour le présent) et la <strong>rémunération du risque</strong> (risque de ne pas récupérer les sommes investies).</p>
+      <div class="formula">Rémunération d'un actif = taux sans risque + prime de risque</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="no">—</td><td class="yes">2 justifications attendues</td><td class="no">—</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 1 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Valeur acquise (versements / capital)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Valeur actuelle / taux de rentabilité actuariel</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Rémunération du temps et du risque</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch1')">Commencer le quiz du chapitre 1 →</button></div>
+</section>
+
+<section class="chapter" id="ch2">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 2</span><h2>La valeur, la performance et les risques d'une obligation</h2></div>
+  <p class="chapter-sub">Historiquement le sujet le plus riche en pièges du dossier 1 : émission, valorisation, sensibilité et risque de taux.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années, quasi systématiquement 4-5 sous-questions.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>2.1 · Valeur d'une obligation</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La valeur d'une obligation est la somme actualisée des coupons futurs (Tin = taux d'intérêt nominal × valeur nominale) et du prix de remboursement, au taux de rendement du marché (Trm) pour des titres comparables.</p>
+      <div class="formula">V = Tin × [1−(1+Trm)<sup>−(n−1)</sup>]/Trm + (Tin + P<sub>r</sub>) × (1+Trm)<sup>−n</sup></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Tin</strong> : le coupon annuel encaissé chaque année (taux d'intérêt nominal × valeur nominale)</li>
+        <li><strong>Trm</strong> : le taux de rendement du marché pour des obligations comparables à la date de valorisation (c'est le taux d'actualisation)</li>
+        <li><strong>n</strong> : le nombre d'années restant jusqu'au remboursement (la maturité résiduelle)</li>
+        <li><strong>P<sub>r</sub></strong> : le prix de remboursement (souvent la valeur nominale si remboursement au pair)</li>
+      </ul>
+      <p>Le premier terme actualise les n−1 premiers coupons ; le second terme actualise le dernier coupon <em>additionné</em> du prix de remboursement, tous deux perçus en même temps à l'échéance n.</p>
+      <p>Si les taux de marché montent après l'émission, la valeur de l'obligation baisse nécessairement, et inversement : pour offrir une rentabilité plus élevée, le prix d'un actif à revenu fixe doit être plus faible.</p>
+      <div class="example"><b>Exemple corrigé (2024, Q2e)</b> : l'obligation O₄ a un taux nominal de 3 %, un remboursement au pair (100, soit 103 avec le dernier coupon) et une maturité résiduelle de 4 ans un an après l'émission. Sa valeur se pose : V = 3 × [1−1,04⁻³]/0,04 + 103 × 1,04⁻⁴ (Tin=3, Trm=4 %, n=4, Pr=100). On peut aussi l'écrire coupon par coupon : 3×1,04⁻¹ + 3×1,04⁻² + 3×1,04⁻³ + 103×1,04⁻⁴.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Valeur 2 ans après émission</td><td class="yes">Valeur 1 an après émission</td><td class="yes">Trab à l'émission (durée 7 ans)</td><td class="yes">Valeur 3 ans après émission</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>2.2 · Prix d'émission, prime de risque et Trab</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le taux de rentabilité actuariel brut (Trab) à l'émission doit égaler <strong>taux sans risque + prime de risque</strong>. Si le taux nominal est inférieur à ce Trab requis, une prime de remboursement compense l'écart (remboursement au-dessus du prix d'émission, ou émission en dessous du pair).</p>
+      <div class="formula">Trab émission = taux sans risque + prime de risque<small>Prime de remboursement = Prix de remboursement − Prix d'émission</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Trab</strong> : le taux de rentabilité actuariel brut exigé par le marché à l'émission</li>
+        <li><strong>taux sans risque</strong> : la rémunération du seul temps (proche du taux des emprunts d'État)</li>
+        <li><strong>prime de risque</strong> : la rémunération additionnelle exigée pour le risque de défaut de l'émetteur</li>
+      </ul>
+      <p>L'émission se fait toujours sur le <strong>marché primaire</strong> (jamais secondaire) — incohérence classique piégée dans les annales.</p>
+      <div class="example"><b>Exemple corrigé (2023, Q3a)</b> : le taux sans risque est de 1 % et la prime de risque de 100 points de base (1 %), donc le Trab exigé à l'émission = 1 % + 1 % = 2 %. Or le taux d'intérêt nominal de l'obligation O n'est que de 1,5 % : il manque 0,5 point de rémunération. Ce complément ne peut venir que d'une prime de remboursement, donc d'un <strong>prix d'émission inférieur au pair</strong> (l'obligation étant remboursée au pair).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Trab requis 2 %, nominal 1,5 %</td><td class="yes">« marché secondaire » incohérent</td><td class="yes">Trab O2 vs O3 (notation)</td><td class="yes">« marché secondaire » incohérent</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>2.3 · Coupon couru et prix au pied du coupon</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Le prix total payé inclut le coupon couru depuis le dernier détachement. Le prix « au pied du coupon » l'exclut.</p>
+      <div class="formula">Prix au pied du coupon = Prix total encaissé/payé − coupon couru</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Prix total</strong> : le prix effectivement encaissé (obligataire vendeur) ou payé (acquéreur), coupon inclus</li>
+        <li><strong>Coupon couru</strong> : la fraction du coupon annuel déjà acquise depuis le dernier détachement, jusqu'à la date de la transaction</li>
+      </ul>
+      <p>Le coupon couru ne peut jamais être supérieur au taux d'intérêt nominal (c'est une fraction de coupon annuel).</p>
+      <div class="example"><b>Exemple corrigé (2023, Q3e)</b> : un obligataire revend son titre et encaisse un prix total de 104 %. Le coupon couru à cette date ressort à 1 %. Le prix de l'obligation exprimé au pied du coupon (celui qui sert de référence pour comparer la valeur du titre indépendamment de la date de transaction) est donc de 104 % − 1 % = 103 %.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">104 % − 1 % = 103 %</td><td class="no">—</td><td class="yes">Coupon couru &gt; taux nominal, incohérence</td><td class="no">—</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>2.4 · Sensibilité et variation de valeur</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La sensibilité (S) mesure la variation relative de la valeur d'une obligation pour une variation de 1 point du taux de marché. Elle est <strong>toujours négative</strong>.</p>
+      <div class="formula">S = [(V₂−V₁)/V₁] / (T₂−T₁)<small>ΔValeur/Valeur = S × ΔTrm</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>V₁, V₂</strong> : la valeur de l'obligation avant et après la variation de taux</li>
+        <li><strong>T₁, T₂</strong> : le taux de marché (Trm) avant et après la variation, exprimé dans la même unité (souvent en %)</li>
+        <li><strong>ΔTrm</strong> : la variation du taux de marché postérieure au calcul de S, exprimée dans la même unité que T₁/T₂</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2023, Q3c)</b> : la sensibilité de l'obligation O est de S = −4. Le taux de rendement du marché augmente soudainement de 100 points de base (+1 %). La variation relative de la valeur est alors : ΔValeur/Valeur = S × ΔTrm = −4 × 100 = −400 points de base, soit −4 %.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">S=−4, variation −4 %</td><td class="yes">S=−3, variation +1,5 %</td><td class="yes">Incohérence signe</td><td class="yes">Donnée manquante via signe négatif</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>2.5 · Risque de taux, risque de défaut, duration, notation</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Un investisseur n'est pas exposé au risque de taux s'il attend l'échéance de remboursement, ou s'il revend son titre après un délai correspondant exactement à la <strong>duration</strong>. Plus la maturité est longue, plus le risque de taux est élevé. La notation financière reflète le risque de défaut.</p>
+      <div class="example"><b>Exemple corrigé (2025, Q1.2c)</b> : deux obligations ont une liquidité parfaite (donc identique). Le Trab de l'obligation O2, notée AA⁻, est comparé à celui de O3, notée CCC⁺ (nettement moins bonne notation). Seule la différence de notation explique l'écart de Trab : O2 (meilleure notation, risque de défaut plus faible) peut se permettre un Trab moins élevé que O3.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">2 cas de non-exposition</td><td class="yes">O1 vs O2 maturité</td><td class="yes">Trab selon notation AA-/CCC+</td><td class="yes">Anomalie courbe Treasury bonds</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 2 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Valeur d'une obligation</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Prix d'émission, prime de risque, Trab</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Coupon couru / pied du coupon</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
+      <tr><td>Sensibilité et variation de valeur</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Risque de taux / défaut / duration / notation</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch2')">Commencer le quiz du chapitre 2 →</button></div>
+</section>
+
+<section class="chapter" id="ch3">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 3</span><h2>La valeur, la performance et les risques d'une action</h2></div>
+  <p class="chapter-sub">Rentabilité/risque, diversification, MEDAF, alpha de Jensen, analyse technique vs fondamentale, ETF.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années, chapitre le plus dense en notions.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>3.1 · Rentabilité moyenne, écart-type, coefficient de variation</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La rentabilité moyenne mesure le rendement attendu ; l'écart-type mesure le risque. Le coefficient de variation (σ/R̄) compare deux titres qui n'ont pas le même niveau de rentabilité : plus il est faible, meilleur est le couple rentabilité/risque.</p>
+      <div class="formula">Variance = Σ(R<sub>i</sub> − R̄)² / (n−1)<small>Coefficient de variation = σ / R̄</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>R<sub>i</sub></strong> : la rentabilité observée sur la période i (une année par exemple)</li>
+        <li><strong>R̄</strong> : la rentabilité moyenne de l'échantillon de périodes observées</li>
+        <li><strong>n</strong> : le nombre de périodes observées (n−1 car il s'agit d'un échantillon, pas de la population entière)</li>
+        <li><strong>σ</strong> : l'écart-type, racine carrée de la variance</li>
+      </ul>
+      <p>Piège récurrent : il faut <strong>déduire</strong> la rentabilité moyenne dans chaque parenthèse (jamais l'ajouter), et diviser par (n−1), pas n.</p>
+      <div class="example"><b>Exemple corrigé (2023, Q4a)</b> : le calcul de l'écart-type de l'action A₂ tel qu'il avait été posé contenait deux erreurs : dans chaque parenthèse, la rentabilité moyenne (12 %) avait été <em>ajoutée</em> au lieu d'être <em>déduite</em> ; et le dénominateur utilisé était n (=3) au lieu de n−1 (=2), l'échantillon comportant 3 observations.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">2 erreurs (signe, n−1)</td><td class="yes">Coefficient de variation portefeuille</td><td class="yes">Coefficient de variation A1/A2</td><td class="yes">Donnée manquante à retrouver</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>3.2 · Diversification et coefficient de corrélation</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>La diversification réduit le risque spécifique si la corrélation entre rentabilités est négative ou faible — jamais si elle est proche de +1. Le coefficient de corrélation est toujours compris entre −1 et +1.</p>
+      <div class="example"><b>Exemple corrigé (2024, Q3a)</b> : le coefficient de corrélation entre les rentabilités des actions A1 et A2 est négatif et proche de −1. La diversification via un portefeuille A1+A2 est donc efficace : elle est confirmée par le coefficient de variation du portefeuille (σ/R̄ = 4/7 ≈ 0,57), inférieur à celui de A1 seule (5/5 = 1) et de A2 seule (15/10 = 1,5).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Covariance négative efficace</td><td class="yes">Corrélation −1, portefeuille efficace</td><td class="no">—</td><td class="yes">Corrélation −0,70 mal interprétée</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>3.3 · MEDAF et bêta des capitaux propres</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le MEDAF calcule la rentabilité exigée d'une action selon son bêta, multiplié par la <strong>prime de risque du marché actions</strong> (R<sub>M</sub> − R₀) — jamais par la rentabilité moyenne des actions.</p>
+      <div class="formula">R<sub>cp</sub> = R₀ + β<sub>cp</sub> × (R<sub>M</sub> − R₀)</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>R<sub>cp</sub></strong> : le coût des capitaux propres, c'est-à-dire la rentabilité exigée par les actionnaires</li>
+        <li><strong>R₀</strong> : le taux sans risque</li>
+        <li><strong>β<sub>cp</sub></strong> : le bêta des capitaux propres de l'action, qui mesure sa sensibilité au risque de marché</li>
+        <li><strong>R<sub>M</sub></strong> : la rentabilité moyenne du marché (portefeuille de marché, indice)</li>
+        <li><strong>(R<sub>M</sub> − R₀)</strong> : la prime de risque du marché actions — jamais R<sub>M</sub> seul, ni la rentabilité moyenne des actions du texte</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2023, Q4d)</b> : dans le texte préparé, le MEDAF avait été appliqué en multipliant le bêta par la rentabilité moyenne des actions (7 %) au lieu de la prime de risque du marché actions (6 %) — une confusion entre R<sub>M</sub> et (R<sub>M</sub>−R₀) qui fausse tout le calcul du coût des capitaux propres.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Erreur : β × rentabilité moyenne</td><td class="yes">βcp via alpha de Jensen</td><td class="yes">βcp direct</td><td class="yes">βcp de S3</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>3.4 · Alpha de Jensen</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>L'alpha de Jensen est l'écart entre la rentabilité réelle d'un titre et sa rentabilité théorique MEDAF. Un alpha <strong>positif</strong> = titre sous-évalué ; <strong>négatif</strong> = surévalué.</p>
+      <div class="formula">α = Rentabilité réelle − R<sub>cp</sub> (MEDAF)</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>α</strong> : l'alpha de Jensen, l'écart de performance du titre par rapport à la norme</li>
+        <li><strong>Rentabilité réelle</strong> : la performance effectivement observée du titre sur la période</li>
+        <li><strong>R<sub>cp</sub> (MEDAF)</strong> : la rentabilité théorique qu'exigerait le MEDAF compte tenu du risque (bêta) du titre</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2025, Q1.3e)</b> : l'alpha de Jensen de l'action A3 est estimé à −2,5 %, et sa rentabilité issue du MEDAF ressort à 8,5 %. Or α = Rentabilité réelle − R<sub>cp</sub>, donc Rentabilité réelle = α + R<sub>cp</sub> = −2,5 % + 8,5 % = 6 %. Un alpha négatif signifiant une rentabilité réelle inférieure à la norme, cela traduit une action surévaluée.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="yes">Retrouver βcp via alpha</td><td class="yes">Incohérence signe alpha</td><td class="yes">Incohérence signe alpha</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>3.5 · Analyse technique (graphique) vs analyse fondamentale</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>L'analyse graphique s'appuie sur les tendances passées (supports, résistances, canaux). L'analyse fondamentale évalue la valeur intrinsèque (Gordon-Shapiro, comparables). On achète toujours sur un <strong>support</strong>, jamais sur une résistance.</p>
+      <div class="example"><b>Exemple corrigé (2026, Q1.3g)</b> : le texte affirmait qu'il fallait acheter l'action quand elle atteint une <em>résistance</em>, dans le cadre de l'analyse fondamentale. Double incohérence : une résistance/support relève de l'analyse graphique (technique), et on achète sur un support (zone de rebond attendu), jamais sur une résistance (zone où le cours a tendance à buter).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">« sur un support » = technique, pas fondamentale</td><td class="yes">Rôle de l'analyse graphique</td><td class="yes">Support/résistance</td><td class="yes">Achat sur résistance, incohérence</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>3.6 · ETF, gestion active/passive, arbitrage</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Un ETF composé des actions d'un indice reproduit sa performance : c'est une <strong>stratégie passive</strong> qui réduit le risque spécifique sans éliminer le risque de marché. L'arbitrage exploite une différence de prix injustifiée pour un même actif.</p>
+      <div class="formula">Performance ETF = Performance de l'indice répliqué</div>
+      <p><strong>Où :</strong> l'ETF étant construit en détenant (dans les mêmes proportions) toutes les actions composant l'indice, sa performance sur une période donnée est mécaniquement identique à celle de l'indice lui-même — aucun coefficient, aucune pondération supplémentaire à appliquer.</p>
+      <div class="example"><b>Exemple corrigé (2024, Q3d)</b> : l'ETF est constitué avec les actions du CAC 40, qui cote 6 000 points en début d'année. Pour que la performance de l'ETF sur l'année atteigne 10 %, il faut et il suffit que l'indice CAC 40 atteigne, en fin d'année, 6 000 × 1,1 = 6 600 points.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="yes">CAC 40 × 1,1 pour 10 %</td><td class="yes">ETF, stratégie passive</td><td class="yes">ETF, performance CAC 40</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 3 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Rentabilité moyenne, écart-type, coefficient de variation</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Diversification et coefficient de corrélation</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>MEDAF et bêta des capitaux propres</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Alpha de Jensen</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Analyse technique vs analyse fondamentale</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>ETF, gestion active/passive, arbitrage</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch3')">Commencer le quiz du chapitre 3 →</button></div>
+</section>
+
+<section class="chapter" id="ch4">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 4</span><h2>La valeur et l'information</h2></div>
+  <p class="chapter-sub">Efficience des marchés et test d'efficience via Gordon-Shapiro ; ouverture sur la finance comportementale.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— 3/4 ans, toujours via Gordon-Shapiro.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>4.1 · Efficience des marchés financiers</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Un marché est efficient quand le prix des actifs reflète toute l'information disponible. Le cours de Bourse doit alors être égal à sa valorisation théorique (Gordon-Shapiro, FTDE...).</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Valorisation 30€ vs cours 20€ → non efficient</td><td class="yes">Taux de croissance pour efficience</td><td class="no">—</td><td class="no">—</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>4.2 · Modèle de Gordon-Shapiro et test d'efficience</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Le modèle de Gordon-Shapiro valorise une action à partir de la croissance constante et infinie du dividende. Il permet aussi de calculer le taux de croissance implicite (g) qui rendrait le marché efficient.</p>
+      <div class="formula">V = D₁ / (R<sub>cp</sub> − g)</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>V</strong> : la valeur théorique de l'action (valorisation par les dividendes)</li>
+        <li><strong>D₁</strong> : le premier dividende attendu, un an après la date de valorisation</li>
+        <li><strong>R<sub>cp</sub></strong> : le coût des capitaux propres (taux de rentabilité exigé par l'actionnaire)</li>
+        <li><strong>g</strong> : le taux de croissance annuel constant et perpétuel du dividende (nécessairement inférieur à R<sub>cp</sub>)</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2024, Q8)</b> : le cours de Bourse observé est de 40 €, le prochain dividende de 3 € et le coût des capitaux propres de 10 %. Pour que le marché soit efficient, il faut que le cours égale la valorisation Gordon-Shapiro : 40 = 3/(0,1−g) → 4−40g = 3 → g = 1/40 = 2,5 %. C'est ce taux de croissance du dividende qui rendrait le marché efficient.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Gordon-Shapiro action A3</td><td class="yes">g=2,5 % pour efficience</td><td class="no">—</td><td class="yes">Valorisation action S5</td></tr></table></details>
+    </div>
+    <div class="card potentiel">
+      <div class="card-head"><h3>4.3 · Finance comportementale et anomalies boursières</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>La finance comportementale étudie les biais psychologiques des investisseurs (excès de confiance, mimétisme, aversion à la perte) qui expliquent des anomalies boursières non prévues par la théorie des marchés efficients : bulles spéculatives, krachs, effets calendaires.</p>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 4 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Efficience des marchés financiers</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Gordon-Shapiro et test d'efficience</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>Finance comportementale et anomalies</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
+</section>
+
+<section class="chapter" id="ch5">
+  <p class="partie-label">Partie 2 — Investissement et financement</p>
+  <div class="chapter-head"><span class="chapter-num">Chapitre 5</span><h2>La politique d'investissement</h2></div>
+  <p class="chapter-sub">Le cœur du dossier 2 : flux de trésorerie, CAF d'exploitation, coût du capital, bêta, VAN et TIR.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années, presque toujours 5-6 sous-questions liées.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>5.1 · Flux de trésorerie vs bénéfice comptable / BFRE</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Un projet s'analyse toujours en <strong>flux de trésorerie</strong> (jamais en bénéfice comptable) car ce sont les dates d'encaissement/décaissement réel qui déterminent la rentabilité. Le BFRE est la trésorerie immobilisée par le décalage du cycle d'exploitation ; investi en début de projet, récupéré en fin de projet.</p>
+      <div class="formula">BFRE = Stocks + Créances d'exploitation − Dettes d'exploitation<small>ou BFRE (en jours de CA) = BFRE(€) / CA × 360</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Stocks</strong> : matières premières, en-cours et produits finis non encore vendus</li>
+        <li><strong>Créances d'exploitation</strong> : sommes dues par les clients (et avances versées aux fournisseurs le cas échéant)</li>
+        <li><strong>Dettes d'exploitation</strong> : sommes dues aux fournisseurs, dettes fiscales et sociales (et avances reçues des clients)</li>
+        <li><strong>CA</strong> : le chiffre d'affaires annuel, quand le BFRE est exprimé en jours de CA (norme sectorielle usuelle)</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2025, Q2.1)</b> : l'accroissement du BFRE en fin de première année représente 5 % du chiffre d'affaires généré cette même année. Si cet accroissement (récupéré en fin de 3ᵉ année) est de 1 000 K€, alors : 1 000 = 0,05 × CA → CA = 1 000/0,05 = 20 000 K€.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">CA retrouvé via ΔBFRE</td><td class="yes">CA retrouvé via ΔBFRE</td><td class="yes">CA via BFRE 5 %</td><td class="yes">Tableau des flux complet</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.2 · CAF d'exploitation</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>La CAF d'exploitation représente le flux de trésorerie net généré par l'exploitation, après IS, à partir de l'EBE et des DADP (dotations, non-flux de trésorerie mais réduisent l'IS).</p>
+      <div class="formula">CAF d'exploitation = (CA × taux d'EBE − DADP) × (1 − tis) + DADP<small>= CA × taux d'EBE × (1−tis) + DADP × tis</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>CA</strong> : le chiffre d'affaires généré par le projet sur l'année</li>
+        <li><strong>taux d'EBE</strong> : l'excédent brut d'exploitation exprimé en % du CA (taux de marge d'exploitation avant amortissements)</li>
+        <li><strong>DADP</strong> : les dotations aux amortissements et provisions — une charge comptable mais pas un flux de trésorerie, d'où sa réintégration en fin de formule</li>
+        <li><strong>tis</strong> : le taux d'impôt sur les sociétés</li>
+      </ul>
+      <p>Le raisonnement : (CA×taux d'EBE − DADP) donne le résultat avant impôt, qu'on impose au taux tis pour obtenir le résultat net ; on <em>rajoute</em> ensuite les DADP puisqu'elles n'ont jamais été décaissées. C'est la question la plus systématique de tout l'examen : retrouver le CA, le taux d'EBE ou la CAF à partir des autres éléments.</p>
+      <div class="example"><b>Exemple corrigé (2026, Q2.1b)</b> : CA = 12 000, DADP = 6 000/3 = 2 000 par an, tis = 0,25. La CAF d'exploitation posée = (12 000 × taux d'EBE − 2 000) × (1−0,25) + 2 000 = 2 750, ce qui permet de retrouver le taux d'EBE recherché (25 % dans ce dossier).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Taux d'EBE = 25 %</td><td class="yes">Taux d'EBE = 25 %</td><td class="yes">CA via 2 méthodes</td><td class="yes">CAF d'exploitation complète</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.3 · Coût du capital, coût des capitaux propres, coût de la dette</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le coût du capital pondère le coût des capitaux propres (MEDAF, majoré parfois d'une prime d'illiquidité) et le coût de la dette après IS, selon la structure financière.</p>
+      <div class="formula">R<sub>c</sub> = R<sub>cp</sub> × VCP/(VCP+VDF) + R<sub>d</sub> × (1−tis) × VDF/(VCP+VDF)</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>R<sub>c</sub></strong> : le coût du capital, moyenne pondérée du coût des deux sources de financement</li>
+        <li><strong>R<sub>cp</sub></strong> : le coût des capitaux propres (MEDAF, éventuellement + prime d'illiquidité)</li>
+        <li><strong>R<sub>d</sub></strong> : le coût de la dette avant impôt (taux d'intérêt payé aux prêteurs)</li>
+        <li><strong>(1−tis)</strong> : l'économie d'impôt liée à la déductibilité des intérêts d'emprunt</li>
+        <li><strong>VCP, VDF</strong> : la valeur de marché des capitaux propres et de la dette financière, dont la somme pondère chaque coût</li>
+      </ul>
+      <p>Conditions pour l'utiliser comme taux d'actualisation d'un projet : même risque d'exploitation <strong>et</strong> même risque financier que les autres actifs de l'entreprise.</p>
+      <div class="example"><b>Exemple corrigé (2026, Q2.1c)</b> : R<sub>cp</sub> = R₀ + β<sub>cp</sub>×prime = 0,02 + 2×0,05 = 0,12 ; VCP/(VCP+VDF) = 1/3 ; R<sub>d</sub> = 0,04, tis = 0,25, VDF/(VCP+VDF) = 2/3. D'où R<sub>c</sub> = 0,12 × 1/3 + 0,04 × 0,75 × 2/3.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Conditions d'utilisation</td><td class="yes">Prime d'illiquidité</td><td class="yes">Rcp retrouvé</td><td class="yes">Coût du capital complet</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.4 · Désendettement / réendettement du bêta (formule de Hamada)</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le bêta des actifs (β<sub>a</sub>) mesure le seul risque d'exploitation, identique pour une société comparable et le projet (même activité). Le bêta des capitaux propres (β<sub>cp</sub>) intègre en plus le risque financier : plus l'endettement est élevé, plus β<sub>cp</sub> est grand.</p>
+      <div class="formula">Désendettement : β<sub>a</sub> = β<sub>cp</sub> × VCP/(VCP+VDF) + β<sub>d</sub> × VDF/(VCP+VDF)<small>Réendettement : β<sub>cp</sub> = β<sub>a</sub> + (β<sub>a</sub> − β<sub>d</sub>) × VDF/VCP</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>β<sub>a</sub></strong> : le bêta des actifs, qui ne dépend que du risque d'exploitation (identique pour la comparable et le projet, même activité)</li>
+        <li><strong>β<sub>cp</sub></strong> : le bêta des capitaux propres, qui dépend en plus du risque financier (l'endettement)</li>
+        <li><strong>β<sub>d</sub></strong> : le bêta de la dette (souvent proche de 0 si la dette est peu risquée)</li>
+        <li><strong>VCP, VDF</strong> : la valeur des capitaux propres et de la dette financière de l'entité concernée (comparable pour le désendettement, projet/entreprise pour le réendettement)</li>
+      </ul>
+      <p>Vérification obligatoire : la somme des deux pondérations doit toujours être égale à 1.</p>
+      <div class="example"><b>Exemple corrigé (2026, Q2.1c)</b> : β<sub>a</sub> de la société comparable = 0,9 (par construction, égal à celui du projet). Le projet est financé avec VDF/VCP = 2/3 ÷ 1/3 et β<sub>d</sub> = 0,4. Réendettement : β<sub>cp</sub> = 0,9 + (0,9−0,4) × (2/3)/(1/3) = 0,9 + 0,5×2 = 1,9, arrondi à 2.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Pondérations erronées (1,1≠1)</td><td class="yes">Pondérations erronées</td><td class="yes">βcp projet P4</td><td class="yes">βcp arrondi</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.5 · VAN</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <div class="formula">VAN = −I₀ + Σ FT<sub>t</sub> × (1+i)<sup>−t</sup></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>I₀</strong> : l'investissement initial décaissé en début de projet (immobilisations + BFRE de départ)</li>
+        <li><strong>FT<sub>t</sub></strong> : le flux de trésorerie net généré par le projet à la date t</li>
+        <li><strong>i</strong> : le taux d'actualisation retenu (coût du capital ou taux spécifique au projet)</li>
+      </ul>
+      <p>Un projet est accepté si sa VAN est positive au taux d'actualisation retenu.</p>
+      <div class="example"><b>Exemple corrigé (2023, Q7)</b> : le projet P1 dégage des flux de −1 500 en 0, puis 600, 600 et 1 300 sur 3 ans. Au taux de 10 % : VAN = −1 500 + 600×1,1⁻¹ + 600×1,1⁻² + 1 300×1,1⁻³, que l'on peut regrouper en −1 500 + 600×[1−1,1⁻²]/0,1 + 1 300×1,1⁻³ pour les deux premiers flux identiques.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">VAN au taux de 10 %</td><td class="yes">VAN du projet P</td><td class="yes">VAN du projet P1</td><td class="yes">VAN du projet P1</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.6 · TIR, hypothèse de réinvestissement, TIR global</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Le TIR est le taux qui annule la VAN. Son calcul suppose implicitement que les flux intermédiaires soient réinvestis <strong>au TIR lui-même</strong> — hypothèse rarement réaliste. Le TIR global corrige ce biais en réinvestissant à un taux réaliste choisi explicitement.</p>
+      <div class="formula">I₀ = [Σ FT<sub>t</sub> × (1+taux réinvestissement)<sup>n−t</sup>] × (1+TIRG)<sup>−n</sup></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>I₀</strong> : l'investissement initial (même donnée que pour la VAN)</li>
+        <li><strong>FT<sub>t</sub></strong> : les flux de trésorerie intermédiaires du projet</li>
+        <li><strong>taux de réinvestissement</strong> : le taux réaliste (souvent le taux de rentabilité moyen des actifs de l'entreprise) auquel on suppose que les flux intermédiaires sont replacés jusqu'à la fin du projet</li>
+        <li><strong>n</strong> : la durée totale du projet</li>
+        <li><strong>TIRG</strong> : le taux interne de rentabilité global recherché, celui qui actualise la valeur acquise des flux réinvestis jusqu'à égaler I₀</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2026, Q2.1e)</b> : les flux 2 750, 2 750 et 4 250 sont réinvestis à 10 % jusqu'en fin de projet (année 3) : 7 000 = [2 750×1,1² + 2 750×1,1 + 4 250] × (1+TIRG)⁻³. Les deux premiers flux sont capitalisés (portés dans le futur) au taux réaliste de 10 %, puis l'ensemble est actualisé au TIRG recherché.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">TIR 26 % non réaliste</td><td class="no">—</td><td class="yes">TIR global n'apporte rien</td><td class="yes">TIR global posé</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.7 · Choix entre projets, rationnement en capital, indice de rentabilité</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <p>Pour des projets indépendants, l'entreprise retient <strong>tous</strong> les projets à VAN positive, sauf si elle est rationnée en capital : elle sélectionne alors selon l'indice de rentabilité le plus élevé.</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">P1 non retenu, rationnement</td><td class="yes">Indice de rentabilité P2</td><td class="yes">Rationnement P2/P3</td><td class="yes">Pas de rationnement, P2&amp;P3 retenus</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>5.8 · Prime d'illiquidité</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Les actions d'une société non cotée sont plus difficiles à revendre : cet inconvénient est compensé par une prime d'illiquidité ajoutée au coût des capitaux propres.</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="yes">Prime = 4 %</td><td class="yes">Prime retrouvée par différence</td><td class="yes">Prime dans Rcp</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 5 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Flux de trésorerie vs bénéfice comptable / BFRE</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>CAF d'exploitation</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Coût du capital / Rcp / Rd</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Désendettement / réendettement du bêta</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>VAN</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>TIR / TIR global</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Choix entre projets / rationnement en capital</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Prime d'illiquidité</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch5')">Commencer le quiz du chapitre 5 →</button></div>
+</section>
+
+<section class="chapter" id="ch6">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 6</span><h2>La politique de financement</h2></div>
+  <p class="chapter-sub">Financements internes/externes, risques de l'augmentation de capital, OCA.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— 3/4 ans, essentiellement augmentation de capital et OCA.</span></div>
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>6.1 · Financements internes (autofinancement)</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>L'autofinancement (CAF conservée après dividendes) est la première source de financement. Il évite frais et risque financier de l'endettement, mais peut freiner la croissance si les besoins dépassent la capacité de génération de trésorerie interne.</p>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>6.2 · Augmentation de capital : risques associés</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>Une augmentation de capital fait croître le nombre d'actions et risque de faire baisser, pour les actionnaires non participants :</p>
+      <ul class="detail-list"><li>le dividende par action ;</li><li>le cours de l'action ;</li><li>le contrôle exercé par les actionnaires non participants.</li></ul>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">3 risques cités</td><td class="no">—</td><td class="yes">3 risques cités (question quasi identique)</td><td class="no">—</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>6.3 · OCA (obligations convertibles en actions)</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Une OCA laisse le choix à l'obligataire, à l'échéance, entre un remboursement en numéraire ou la conversion en actions. La conversion devient profitable si la valeur des actions reçues dépasse le remboursement en numéraire.</p>
+      <div class="formula">Conversion profitable si : (nombre d'actions reçues) × (cours de l'action) &gt; prix de remboursement en numéraire</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Nombre d'actions reçues</strong> : la parité de conversion fixée dans le contrat d'émission (ex. : 1 obligation convertie en 10 actions)</li>
+        <li><strong>Cours de l'action</strong> : le cours anticipé ou observé à la date de la décision de conversion — c'est l'inconnue que l'on cherche à seuiller</li>
+        <li><strong>Prix de remboursement en numéraire</strong> : l'alternative à la conversion, fixée elle aussi au contrat (souvent avec une prime)</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2023, Q11)</b> : chaque obligation convertible donne droit à 10 actions ; le remboursement en numéraire alternatif est de 1 000 €. Soit V le cours de l'action recherché : la conversion est profitable si 10 × V ≥ 1 000, soit V ≥ 100 €. En dessous de ce cours, l'obligataire préfère le remboursement en numéraire.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Seuil V ≥ 100 €</td><td class="yes">Avantage OCA vs classique</td><td class="yes">Seuil C &gt; 52,5 €</td><td class="no">—</td></tr></table></details>
+    </div>
+    <div class="card potentiel">
+      <div class="card-head"><h3>6.4 · Valeur de l'entreprise et structure financière</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>Cette sous-partie traite de l'influence (ou non, selon Modigliani-Miller en marché parfait) de la structure financière sur la valeur globale de l'entreprise — elle éclaire pourquoi le coût du capital dépend de la pondération VCP/VDF.</p>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 6 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Financements internes (autofinancement)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Augmentation de capital : risques associés</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
+      <tr><td>OCA (obligations convertibles en actions)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+      <tr><td>Valeur de l'entreprise et structure financière</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch6')">Commencer le quiz du chapitre 6 →</button></div>
+</section>
+
+<section class="chapter" id="ch7">
+  <p class="partie-label">Partie 3 — Évaluation de l'entreprise</p>
+  <div class="chapter-head"><span class="chapter-num">Chapitre 7</span><h2>Le contexte et la démarche de l'évaluation</h2></div>
+  <p class="chapter-sub">Chapitre introductif qui structure toute la logique du dossier 3.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— jamais interrogé isolément dans les 4 dernières sessions.</span></div>
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>7.1 · Le contexte de l'évaluation</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>Une entreprise est évaluée dans des contextes variés : cession, transmission, introduction en Bourse, litige, fusion-acquisition. Le contexte oriente le choix des méthodes les plus pertinentes.</p>
+    </div>
+    <div class="card potentiel">
+      <div class="card-head"><h3>7.2 · La démarche de l'évaluation</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>La démarche consiste à choisir une ou plusieurs méthodes selon les données disponibles, puis à recouper les résultats car aucune méthode seule n'est totalement satisfaisante — d'où l'intérêt de la méthode mixte (chapitre 10).</p>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 7 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Le contexte de l'évaluation</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>La démarche de l'évaluation</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch7')">Commencer le quiz du chapitre 7 →</button></div>
+</section>
+
+<section class="chapter" id="ch8">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 8</span><h2>L'évaluation par les flux (FTDE)</h2></div>
+  <p class="chapter-sub">Le calcul de la VCP par les FTDE est quasi systématique dans le dossier 3.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>8.1 · Principes et limites des FTDE</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>La méthode des flux de trésorerie disponibles pour l'entreprise (FTDE) valorise les capitaux propres en actualisant les flux futurs prévisionnels, puis en retranchant l'endettement financier net.</p>
+      <p><strong>Deux limites classiques</strong> à citer systématiquement : la nécessité de construire un plan d'affaires détaillé (hypothèses subjectives), et le poids très important de la <strong>valeur terminale</strong>, calculée à l'infini sur des hypothèses de croissance très incertaines.</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="yes">2 limites FTDE</td><td class="yes">2 limites FTDE</td><td class="yes">2 limites FTDE</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>8.2 · Calcul de la VCP par les FTDE</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <div class="formula">VCP = Σ FTDE<sub>t</sub> × (1+R<sub>c</sub>)<sup>−t</sup> + Valeur terminale × (1+R<sub>c</sub>)<sup>−n</sup> − Endettement financier net<small>Valeur terminale = FTDE<sub>n+1</sub> / (R<sub>c</sub> − g)</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>FTDE<sub>t</sub></strong> : le flux de trésorerie disponible pour l'entreprise (CAF d'exploitation − investissements − variation de BFRE) prévu à la date t</li>
+        <li><strong>R<sub>c</sub></strong> : le coût du capital, taux d'actualisation car les FTDE rémunèrent à la fois les actionnaires et les prêteurs</li>
+        <li><strong>n</strong> : le nombre d'années couvertes par le plan d'affaires détaillé</li>
+        <li><strong>Valeur terminale</strong> : la valeur, projetée à l'infini au-delà de l'année n, des FTDE supposés croître au taux constant g</li>
+        <li><strong>Endettement financier net</strong> : endettement financier brut − trésorerie active (à déduire une seule fois, en valeur actuelle)</li>
+      </ul>
+      <p>Deux erreurs très fréquemment piégées : utiliser le coût des capitaux propres au lieu du coût du capital, et <strong>ajouter</strong> la trésorerie active à l'endettement net au lieu de la <strong>déduire</strong>.</p>
+      <div class="example"><b>Exemple corrigé (2026, Q3.1a)</b> : VCP(S1) = 15×1,06⁻¹ + 20×1,06⁻² + 25×1,06⁻³ + [25×1,05/(0,06−0,05)]×1,06⁻³ − 45. Les trois premiers termes actualisent les FTDE des 3 années du plan d'affaires ; le quatrième terme actualise la valeur terminale (25×1,05 étant le FTDE de l'année 4, croissant à g=5 %) ; 45 est l'endettement financier net déduit une fois pour toutes.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">VCP E1, endettement net</td><td class="yes">VCP E1, provision retraite</td><td class="yes">VCP E1, endettement net</td><td class="yes">VCP S1, PPER</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>8.3 · Actualisation des dividendes (Gordon-Shapiro)</h3><span class="tag hot">🔥 3/4 ans</span></div>
+      <p>Alternative aux FTDE pour valoriser directement une action : actualisation des dividendes futurs à croissance constante, au coût des <strong>capitaux propres</strong> (jamais le coût du capital, car on valorise directement l'action).</p>
+      <div class="formula">V(action) = D₁ / (R<sub>cp</sub> − g)</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>D₁</strong> : le premier dividende attendu par les actionnaires après la date de valorisation</li>
+        <li><strong>R<sub>cp</sub></strong> : le coût des capitaux propres — <em>jamais</em> le coût du capital, puisqu'on valorise ici directement l'action détenue par l'actionnaire</li>
+        <li><strong>g</strong> : le taux de croissance annuel perpétuel du dividende</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2026, Q3.4)</b> : le prochain dividende attendu est de 2 € et croît ensuite de façon décalée sur 2 ans (facteur 1,1⁻²), au coût des capitaux propres de 10 % et un taux de croissance de 5 % : V = 2×1,1⁻² / (0,1−0,05).</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="yes">g=2,5 % efficience E2</td><td class="no">—</td><td class="yes">Valorisation action S5</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 8 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Principes et limites des FTDE</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Calcul de la VCP par les FTDE</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Actualisation des dividendes (Gordon-Shapiro)</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch8')">Commencer le quiz du chapitre 8 →</button></div>
+</section>
+
+<section class="chapter" id="ch9">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 9</span><h2>L'évaluation par l'approche comparative</h2></div>
+  <p class="chapter-sub">Multiples et inducteurs de valeur, méthode incontournable du dossier 3.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— présent les 4 années.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>9.1 · Principes des comparables, échantillon, inducteur de valeur</h3><span class="tag hot">🔥 2/4 ans</span></div>
+      <p>La méthode applique à la société évaluée un multiple observé sur une société (ou un échantillon) comparable en termes d'activité et de risque.</p>
+      <p><strong>Deux limites classiques</strong> : il faut qu'existe une entreprise réellement comparable, et que la valeur de cette comparable soit elle-même connue de façon fiable.</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="no">—</td><td class="yes">2 limites comparables</td><td class="yes">2 limites comparables</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>9.2 · Multiples et calcul de la VCP</h3><span class="tag hot">🔥 4/4 ans</span></div>
+      <div class="formula">Multiple (m) = VGE (comparable) / EBITDA (ou EBIT net d'IS) (comparable)<small>VCP (société évaluée) = m × EBITDA (ou EBIT net d'IS) − Endettement financier net</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>VGE</strong> : la valeur globale de l'entreprise comparable = VCP + VDF (capitaux propres + dette financière) de cette comparable, connue par hypothèse</li>
+        <li><strong>EBITDA / EBIT net d'IS</strong> : l'inducteur de valeur retenu, calculé de façon identique pour le comparable et la société évaluée</li>
+        <li><strong>m</strong> : le multiple qui en résulte, supposé transposable à la société évaluée car les deux entreprises sont comparables</li>
+        <li><strong>Endettement financier net</strong> : à déduire de VGE (société évaluée) = m × inducteur pour isoler la VCP</li>
+      </ul>
+      <p>VGE = VCP + VDF de la société comparable. L'inducteur doit être cohérent entre le comparable et la société évaluée.</p>
+      <div class="example"><b>Exemple corrigé (2023, Q15)</b> : la société comparable C a une VGE = VCP + VDF = 250 + 150 = 400 M€ et un EBITDA de 40 M€, d'où m = 400/40 = 10. La société E4 a un EBITDA de 70 et un endettement financier net de 250 : VCP(E4) = 10 × 70 − 250 = 450 M€.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">VCP E4 via EBITDA</td><td class="yes">EBITDA comparable, VCP E3</td><td class="yes">VCP E2 via EBIT net d'IS</td><td class="yes">VCP S3 via EBIT net d'IS</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>9.3 · PER (Price Earning Ratio)</h3><span class="tag watch">⚡ 1/4 ans</span></div>
+      <div class="formula">PER = Cours / BNPA<small>Taux de rentabilité attendu = 1 / PER</small></div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>Cours</strong> : le cours de Bourse actuel de l'action</li>
+        <li><strong>BNPA</strong> : le bénéfice net par action (résultat net de l'exercice ÷ nombre d'actions)</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2026, Q3.2a)</b> : le cours de l'action S2 est de 50 € pour un BNPA de 5 € : PER = 50/5 = 10. Le taux de rentabilité attendu par les investisseurs qui achètent le titre à ce prix est donc 1/PER = 1/10 = 10 %.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">PER S2, taux de rentabilité</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 9 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Principes des comparables, échantillon, inducteur</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Multiples et calcul de la VCP</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>PER (Price Earning Ratio)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch9')">Commencer le quiz du chapitre 9 →</button></div>
+</section>
+
+<section class="chapter" id="ch10">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 10</span><h2>L'évaluation par les approches patrimoniales et mixtes</h2></div>
+  <p class="chapter-sub">ANCC et méthode indirecte des praticiens — tendance récente à surveiller de près.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— 2/4 ans, en nette hausse depuis 2025.</span></div>
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>10.1 · ANCC (actif net comptable corrigé)</h3><span class="tag hot">🔥 2/4 ans, en hausse</span></div>
+      <p>L'ANCC retraite le bilan comptable en valeurs réelles (actifs et dettes réévalués, fiscalité différée sur les retraitements) pour obtenir la valeur patrimoniale des capitaux propres. Limite majeure : elle ne reflète que l'activité <strong>passée</strong> et ignore les actifs immatériels créés en interne.</p>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="no">—</td><td class="yes">Tableau ANCC E3</td><td class="yes">Tableau ANCC S4</td></tr></table></details>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>10.2 · Méthode mixte : méthode indirecte des praticiens</h3><span class="tag potentiel">🎯 Potentiel, vu une fois</span></div>
+      <p>Cette méthode pondère l'ANCC (valeur patrimoniale, activité passée) et une valeur de rendement (actualisation de résultats prévisionnels, intégrant la croissance future). Elle comble les limites respectives de chaque approche isolée.</p>
+      <div class="formula">VCP = pondération₁ × ANCC + pondération₂ × Valeur de rendement</div>
+      <p><strong>Où :</strong></p>
+      <ul class="detail-list">
+        <li><strong>ANCC</strong> : la valeur patrimoniale des capitaux propres, reflet de l'activité passée</li>
+        <li><strong>Valeur de rendement (VR)</strong> : une valeur de rentabilité, obtenue en actualisant à l'infini un résultat prévisionnel (VR = Résultat courant net d'IS<sub>N+1</sub> / (R<sub>cp</sub>−g)), qui intègre la croissance future</li>
+        <li><strong>pondération₁, pondération₂</strong> : les poids respectifs (dont la somme fait 1) accordés à chaque approche selon le jugement de l'évaluateur</li>
+      </ul>
+      <div class="example"><b>Exemple corrigé (2025, Q3.3)</b> : ANCC = 99,75 M€. Le résultat courant net d'IS de l'année N+1 est de 15×1,02, actualisé à l'infini au coût des capitaux propres (12 %) diminué du taux de croissance (2 %) : VR = (15×1,02)/(0,12−0,02) = 15×1,02/0,1. La VCP retenue = 0,4 × 99,75 + 0,6 × VR.</div>
+      <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="no">—</td><td class="no">—</td><td class="yes">VCP = 0,4×ANCC + 0,6×VR</td><td class="no">—</td></tr></table></details>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 10 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>ANCC (actif net comptable corrigé)</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Méthode mixte : méthode indirecte des praticiens</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch10')">Commencer le quiz du chapitre 10 →</button></div>
+</section>
+
+<section class="chapter" id="ch11">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 11</span><h2>Autres évaluations particulières et spécifiques</h2></div>
+  <p class="chapter-sub">Approche immobilière et start-up — jamais interrogé dans les 4 dernières sessions.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— jamais tombé, chapitre entièrement en réserve.</span></div>
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>11.1 · Approche immobilière</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>L'évaluation de biens immobiliers repose sur des méthodes spécifiques (comparaison directe avec des transactions similaires, capitalisation des revenus locatifs) distinctes des méthodes classiques d'évaluation d'entreprise.</p>
+    </div>
+    <div class="card potentiel">
+      <div class="card-head"><h3>11.2 · Approche spécifique pour les start-up</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>Les start-up (résultats souvent négatifs, absence d'historique) nécessitent des méthodes adaptées : multiples de chiffre d'affaires ou d'utilisateurs, méthode des scorecards, méthode du capital-risque (Venture Capital Method) actualisant une valeur de sortie future.</p>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 11 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Approche immobilière</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Approche spécifique pour les start-up</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch11')">Commencer le quiz du chapitre 11 →</button></div>
+</section>
+
+<section class="chapter" id="ch12">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 12</span><h2>Synthèse et comparaison des méthodes d'évaluation</h2></div>
+  <p class="chapter-sub">Primes/décotes et limites croisées des méthodes — jamais interrogé isolément.</p>
+  <div class="freqbar"><span class="flabel">Fréquence aux annales</span><div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr">2026</span></div><span style="color:var(--text-faint);font-size:13px;">— jamais tombé isolément ; la prime d'illiquidité qu'il synthétise est testée ailleurs (chapitre 5).</span></div>
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>12.1 · Prix et valeur : primes et décotes</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>Le prix effectivement payé peut s'écarter de la valeur théorique calculée : une <strong>prime</strong> se justifie par un contrôle majoritaire ou une synergie stratégique, une <strong>décote</strong> par l'illiquidité du titre (non coté) ou une position minoritaire.</p>
+    </div>
+    <div class="card potentiel">
+      <div class="card-head"><h3>12.2 · Comparaison et limites des méthodes d'évaluation</h3><span class="tag potentiel">🎯 Jamais testé</span></div>
+      <p>Chaque méthode (flux, comparables, patrimoniale) a ses limites propres ; une évaluation robuste croise plusieurs méthodes et retient une fourchette de valeurs plutôt qu'un chiffre unique.</p>
+    </div>
+  </div>
+  <div class="chapter-recap">
+    <div class="chapter-recap-title">Récapitulatif — notions du chapitre 12 aux annales</div>
+    <table>
+      <tr><th>Notion</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+      <tr><td>Prix et valeur : primes et décotes</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+      <tr><td>Comparaison et limites des méthodes d'évaluation</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    </table>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch12')">Commencer le quiz du chapitre 12 →</button></div>
+</section>
+
+<section class="chapter" id="potentiel">
+  <div class="chapter-head"><span class="chapter-num">🎯</span><h2>Notions à surveiller</h2></div>
+  <p class="chapter-sub">Présentes dans les cours 1 et 2 mais jamais testées (ou testées une seule fois) dans les 4 derniers corrigés — un examinateur qui varie ses sujets peut parfaitement les faire tomber l'an prochain.</p>
+  <div class="notions">
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Les fintechs et les plateformes de crowdfunding</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Les fintechs réinventent des services financiers traditionnels (paiement, crédit, gestion d'actifs) en ligne, souvent à moindre coût. Le crowdfunding permet à des particuliers de financer directement des projets, sous forme de dons, de prêts (avec ou sans intérêt) ou de prises de participation (crowdequity) — il ne se limite donc pas aux seuls dons ou prêts sans intérêt.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 La technologie blockchain et les cryptoactifs</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>La blockchain est un registre décentralisé et infalsifiable de transactions, validées par un réseau de participants (et non par une autorité centrale comme une banque). Les cryptoactifs reposent sur cette technologie pour garantir la sécurité des transactions sans tiers de confiance centralisé.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Le trading haute fréquence (THF)</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Le THF utilise des algorithmes pour passer un très grand nombre d'ordres en quelques millisecondes. Il facilite les opérations d'arbitrage mais est aussi critiqué pour amplifier la volatilité en période de stress de marché.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Financements internes (autofinancement)</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Voir détail complet en 6.1 — la CAF conservée après dividendes reste la première source de financement, jamais interrogée isolément dans les 4 dernières sessions.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Valeur de l'entreprise et structure financière</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Voir détail complet en 6.4 — la question de la neutralité (ou non) de la structure financière sur la valeur de l'entreprise (Modigliani-Miller) éclaire indirectement le calcul du coût du capital.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Contexte et démarche de l'évaluation</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Voir détail complet en 7.1-7.2 — chapitre introductif jamais interrogé isolément, mais qui structure la logique de tout le dossier 3.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Approches immobilière et start-up</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Voir détail complet en 11.1-11.2 — chapitre entier jamais interrogé, probablement le complément le plus probable pour un futur sujet inhabituel.</p></div>
+    <div class="card potentiel"><div class="card-head"><h3>🎯 Synthèse : primes, décotes et limites des méthodes</h3><span class="tag potentiel">Jamais testé</span></div>
+    <p>Voir détail complet en 12.1-12.2 — jamais testé isolément, mais la logique de décote pour illiquidité y est directement rattachée à la prime d'illiquidité du chapitre 5.</p></div>
+  </div>
+</section>
+
+<section class="chapter" id="finalquiz">
+  <div class="chapter-head"><span class="chapter-num">Bilan</span><h2>Quiz final — toute l'UE</h2></div>
+  <p class="chapter-sub">Un mélange de questions issues des 12 chapitres pour vérifier une compréhension d'ensemble avant l'épreuve.</p>
+  <div class="quizcta"><button class="quizbtn final" onclick="openQuiz('final')">Lancer le quiz final →</button></div>
+</section>
+
+</div>
+
+<div class="toolbar"><button class="tbtn" id="exportBtn" onclick="exportPDF()">⬇ Export PDF</button></div>
+
+<div class="modal-overlay" id="quizModal">
+  <div class="modal">
+    <button class="closex" onclick="closeQuiz()">×</button>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(!data) return;
+  var theme = null;
+  if (data.theme) theme = data.theme;
+  else if (data.type === 'theme-change' && data.value) theme = data.value;
+  else if (typeof data === 'string' && (data === 'dark' || data === 'light')) theme = data;
+  if(theme === 'light' || theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+});
+
+var navBtns = document.querySelectorAll('.chnav-btn');
+navBtns.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    navBtns.forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var target = document.getElementById(btn.dataset.target);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+var QUIZ = {
+  ch1: [
+    {q:"Pour capitaliser 4 versements semestriels, la puissance utilisée dans la formule doit être :", opts:["Un nombre entier","3,5","0,25"], correct:0, exp:"La puissance représente un nombre de versements : elle doit toujours être un nombre entier."},
+    {q:"Pour obtenir un taux équivalent semestriel à partir d'un taux annuel de 3 %, on calcule :", opts:["(1,03)^0,5 − 1","(1,03)^0,25 − 1","1,03/2"], correct:0, exp:"Un taux semestriel équivalent s'obtient avec une puissance de 0,5 (un semestre = 1/2 d'année)."},
+    {q:"La rémunération d'un actif se décompose en :", opts:["Rémunération du temps + rémunération du risque","Uniquement le taux sans risque","Uniquement la prime de risque"], correct:0, exp:"Rémunération = taux sans risque (temps) + prime de risque."},
+    {q:"Si un actif valorisé à 21 125,68 K€ au taux de 5 % est acheté 20 000 K€, le taux de rentabilité réel est :", opts:["Inférieur à 5 %","Supérieur à 5 %","Exactement 5 %"], correct:1, exp:"Payer moins cher que la valorisation théorique procure nécessairement une rentabilité supérieure au taux utilisé pour cette valorisation."}
+  ],
+  ch2: [
+    {q:"Une obligation est toujours émise sur :", opts:["Le marché primaire","Le marché secondaire","Les deux indifféremment"], correct:0, exp:"L'émission se fait sur le marché primaire ; les échanges ultérieurs ont lieu sur le marché secondaire."},
+    {q:"Le signe de la sensibilité d'une obligation est :", opts:["Toujours négatif","Toujours positif","Variable selon les cas"], correct:0, exp:"Une hausse des taux fait toujours baisser la valeur d'une obligation : la sensibilité est structurellement négative."},
+    {q:"Le coupon couru peut-il être supérieur au taux d'intérêt nominal ?", opts:["Non, jamais","Oui, si les taux montent","Oui, si l'obligation est décotée"], correct:0, exp:"Le coupon couru est une fraction du coupon annuel (nominal) : il ne peut donc jamais lui être supérieur."},
+    {q:"Un investisseur n'est pas exposé au risque de taux s'il :", opts:["Attend l'échéance ou revend après un délai = duration","Revend le titre le lendemain de l'achat","Investit uniquement en actions"], correct:0, exp:"Ces deux situations neutralisent l'effet d'une variation des taux sur la valeur de revente."},
+    {q:"Si le taux nominal (1,5 %) est inférieur au Trab requis (2 %), le prix d'émission est :", opts:["Au-dessus du pair","En dessous du pair","Toujours égal au pair"], correct:1, exp:"Une prime de remboursement doit compenser l'écart ; l'obligation étant remboursée au pair, le prix d'émission est nécessairement inférieur au pair."}
+  ],
+  ch3: [
+    {q:"Dans le calcul de la variance d'un échantillon de rentabilités, le dénominateur est :", opts:["n − 1","n","n + 1"], correct:0, exp:"Pour un échantillon (et non toute la population), on divise par n−1."},
+    {q:"Le MEDAF multiplie le bêta par :", opts:["La prime de risque du marché (RM − R0)","La rentabilité moyenne des actions","Le taux sans risque"], correct:0, exp:"Erreur classique : il ne faut jamais multiplier le bêta par la rentabilité moyenne des actions, mais par la prime de risque du marché."},
+    {q:"Un alpha de Jensen positif signifie que le titre est :", opts:["Sous-évalué","Surévalué","Sans risque"], correct:0, exp:"Alpha positif = rentabilité réelle supérieure à la norme MEDAF = signe de sous-évaluation."},
+    {q:"Une conclusion du type « le titre est sur un support » relève de :", opts:["L'analyse technique (graphique)","L'analyse fondamentale","Le MEDAF"], correct:0, exp:"Supports et résistances sont des notions d'analyse graphique, jamais d'analyse fondamentale."},
+    {q:"La performance d'un ETF CAC 40 est :", opts:["Égale à celle de l'indice CAC 40","Toujours supérieure à celle de l'indice","Indépendante de l'indice"], correct:0, exp:"Un ETF composé des actions d'un indice reproduit exactement la performance de cet indice."}
+  ],
+  ch4: [
+    {q:"Un marché est efficient quand :", opts:["Le cours reflète toute l'information disponible","Le cours est toujours supérieur à la valeur théorique","Il n'y a qu'un seul investisseur"], correct:0, exp:"Définition de l'efficience informationnelle des marchés."},
+    {q:"Dans le modèle de Gordon-Shapiro, g représente :", opts:["Le taux de croissance constant du dividende","Le taux sans risque","Le bêta de l'action"], correct:0, exp:"g est le taux de croissance perpétuel du dividende utilisé dans la formule V = D1/(Rcp−g)."}
+  ],
+  ch5: [
+    {q:"Un projet d'investissement s'analyse en :", opts:["Flux de trésorerie","Bénéfice comptable","Chiffre d'affaires uniquement"], correct:0, exp:"Seuls les flux de trésorerie réels (dates d'encaissement/décaissement) déterminent la rentabilité."},
+    {q:"La formule de la CAF d'exploitation est :", opts:["(CA×taux d'EBE − DADP)×(1−tis) + DADP","CA×taux d'EBE","EBE − IS"], correct:0, exp:"C'est la formule centrale à maîtriser parfaitement, tombée à chaque session."},
+    {q:"Le calcul du TIR suppose que les flux intermédiaires sont réinvestis :", opts:["Au taux du TIR lui-même","Au taux sans risque","Ils ne sont jamais réinvestis"], correct:0, exp:"C'est précisément cette hypothèse, souvent irréaliste, qui justifie le calcul d'un TIR global."},
+    {q:"Face à des projets indépendants à VAN positive, sans rationnement du capital, l'entreprise doit :", opts:["Retenir tous les projets","N'en retenir qu'un seul","Retenir le projet le plus long"], correct:0, exp:"Sans contrainte de capital, tout projet à VAN positive crée de la valeur et doit être accepté."},
+    {q:"Dans la formule du désendettement du bêta, la somme des deux pondérations VCP et VDF doit être égale à :", opts:["1","0","Le taux d'IS"], correct:0, exp:"Les deux pondérations (VCP/(VCP+VDF) et VDF/(VCP+VDF)) doivent toujours sommer à 1 ; sinon une erreur s'est glissée dans les données."}
+  ],
+  ch6: [
+    {q:"Une augmentation de capital risque de faire baisser (pour les non-participants) :", opts:["Dividende par action, cours, contrôle","Uniquement le cours de l'action","Rien, elle est toujours neutre"], correct:0, exp:"Trois risques classiques à citer systématiquement."},
+    {q:"La conversion d'une OCA devient profitable quand :", opts:["La valeur des actions reçues dépasse le remboursement en numéraire","Le cours de l'action baisse","Jamais, il faut toujours rembourser en numéraire"], correct:0, exp:"L'obligataire compare la valeur de conversion à l'alternative du remboursement en numéraire."}
+  ],
+  ch7: [
+    {q:"La démarche d'évaluation consiste à :", opts:["Croiser plusieurs méthodes car aucune n'est totalement satisfaisante seule","N'utiliser qu'une seule méthode toujours","Ignorer le contexte de l'évaluation"], correct:0, exp:"Chaque méthode a ses limites propres, d'où l'intérêt de recouper les résultats."}
+  ],
+  ch8: [
+    {q:"Le taux d'actualisation des FTDE est :", opts:["Le coût du capital","Le coût des capitaux propres","Le taux sans risque"], correct:0, exp:"Erreur fréquente : utiliser le coût des capitaux propres au lieu du coût du capital pour actualiser les FTDE."},
+    {q:"L'endettement financier net se calcule :", opts:["Endettement brut − trésorerie active","Endettement brut + trésorerie active","Trésorerie active seule"], correct:0, exp:"Il faut déduire la trésorerie active de l'endettement brut, jamais l'ajouter."},
+    {q:"Une limite majeure des FTDE est :", opts:["Le poids de la valeur terminale, très incertaine","La simplicité excessive de la méthode","L'absence de besoin de prévisions"], correct:0, exp:"La valeur terminale, calculée à l'infini, repose sur des hypothèses de croissance très subjectives."}
+  ],
+  ch9: [
+    {q:"La méthode des comparables nécessite :", opts:["Une société comparable dont la valeur est connue","Uniquement les comptes de la société évaluée","Un historique de 10 ans minimum"], correct:0, exp:"Deux conditions indispensables : comparabilité de l'activité et connaissance de la valeur du comparable."},
+    {q:"Le PER se calcule par :", opts:["Cours / BNPA","BNPA / Cours","Cours × BNPA"], correct:0, exp:"PER = Cours / Bénéfice Net Par Action ; son inverse donne le taux de rentabilité attendu."}
+  ],
+  ch10: [
+    {q:"L'ANCC reflète :", opts:["La seule activité passée de l'entreprise","La croissance future de l'entreprise","Le cours de bourse actuel"], correct:0, exp:"Limite classique de l'ANCC : elle ignore la croissance future et les actifs immatériels non achetés."},
+    {q:"La méthode indirecte des praticiens combine :", opts:["ANCC et valeur de rendement","Deux valeurs de rendement","ANCC et PER"], correct:0, exp:"C'est une pondération entre la valeur patrimoniale (ANCC) et une valeur de rendement prévisionnelle."}
+  ],
+  ch11: [
+    {q:"Une start-up sans historique de résultats positifs peut être valorisée par :", opts:["Des multiples de chiffre d'affaires ou d'utilisateurs","Uniquement l'ANCC","Uniquement le PER"], correct:0, exp:"Faute de résultats significatifs, on recourt à des inducteurs alternatifs (CA, utilisateurs)."}
+  ],
+  ch12: [
+    {q:"Une décote de valorisation peut se justifier par :", opts:["L'illiquidité du titre non coté","Une synergie stratégique","Un contrôle majoritaire"], correct:0, exp:"L'illiquidité justifie une décote ; le contrôle majoritaire et les synergies justifient plutôt une prime."}
+  ]
+};
+QUIZ.final = [].concat(
+  [QUIZ.ch1[0], QUIZ.ch1[3]],
+  [QUIZ.ch2[1], QUIZ.ch2[4]],
+  [QUIZ.ch3[1], QUIZ.ch3[2]],
+  [QUIZ.ch4[1]],
+  [QUIZ.ch5[1], QUIZ.ch5[4]],
+  [QUIZ.ch6[1]],
+  [QUIZ.ch8[0], QUIZ.ch8[1]],
+  [QUIZ.ch9[1]],
+  [QUIZ.ch10[0]],
+  [QUIZ.ch12[0]]
+);
+
+var currentQuiz = [], currentIndex = 0, currentScore = 0, answered = false;
+
+function openQuiz(key){
+  currentQuiz = QUIZ[key];
+  currentIndex = 0;
+  currentScore = 0;
+  document.getElementById('quizModal').classList.add('open');
+  renderQuestion();
+}
+function closeQuiz(){
+  document.getElementById('quizModal').classList.remove('open');
+}
+function renderQuestion(){
+  answered = false;
+  var c = document.getElementById('quizContent');
+  if(currentIndex >= currentQuiz.length){
+    c.innerHTML =
+      '<div class="score-screen">' +
+      '<div class="score-num">'+currentScore+'/'+currentQuiz.length+'</div>' +
+      '<p style="color:var(--text-dim);margin-bottom:20px;">'+scoreMessage(currentScore, currentQuiz.length)+'</p>' +
+      '<button class="navbtn primary" onclick="closeQuiz()">Fermer</button>' +
+      '</div>';
+    return;
+  }
+  var item = currentQuiz[currentIndex];
+  var html = '<h3>Quiz</h3><div class="qcount">Question '+(currentIndex+1)+' / '+currentQuiz.length+'</div>';
+  html += '<div class="qtext">'+item.q+'</div>';
+  item.opts.forEach(function(opt, i){
+    html += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+opt+'</button>';
+  });
+  html += '<div class="explain" id="explainBox">'+item.exp+'</div>';
+  html += '<div class="modal-nav"><span></span><button class="navbtn primary" id="nextBtn" style="display:none" onclick="nextQuestion()">Suivant →</button></div>';
+  c.innerHTML = html;
+}
+function answer(i){
+  if(answered) return;
+  answered = true;
+  var item = currentQuiz[currentIndex];
+  var opts = document.querySelectorAll('.opt');
+  opts.forEach(function(o, idx){
+    o.disabled = true;
+    if(idx === item.correct) o.classList.add('correct');
+    else if(idx === i) o.classList.add('wrong');
+  });
+  if(i === item.correct) currentScore++;
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+function nextQuestion(){
+  currentIndex++;
+  renderQuestion();
+}
+function scoreMessage(score, total){
+  var pct = score/total;
+  if(pct === 1) return "Sans faute, cette partie est acquise.";
+  if(pct >= 0.7) return "Bon niveau, revoyez juste les points manqués.";
+  if(pct >= 0.4) return "Des bases correctes, mais retournez lire les fiches concernées.";
+  return "Cette partie mérite une relecture complète avant l'épreuve.";
+}
+
+function exportPDF(){
+  var btn = document.getElementById('exportBtn');
+  btn.textContent = '⏳ Génération...';
+  var body = document.body;
+  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
+    var pdf = new window.jspdf.jsPDF('p','mm','a4');
+    var pageWidth = 210, pageHeight = 297;
+    var imgWidth = pageWidth;
+    var imgHeight = canvas.height * imgWidth / canvas.width;
+    var heightLeft = imgHeight, position = 0;
+    var imgData = canvas.toDataURL('image/jpeg', 0.92);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while(heightLeft > 0){
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save('UE532_Finance.pdf');
+    btn.textContent = '⬇ Export PDF';
+  }).catch(function(err){
+    console.error(err);
+    btn.textContent = '⬇ Export PDF';
+  });
+}
+</script>
+</body>
+</html>
