@@ -1123,7 +1123,7 @@
                 <span>Semestre 1</span><span class="sem-arrow">›</span>
             </div>
             <div class="sem-items" id="sem-s1">
-                <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
+                <li class="menu-item" onclick="loadPage('FIS1.html',this,'Finance')"><div class="item-icon">💰</div><span class="item-label">Finance</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
                 <li class="menu-item" onclick="loadPage('CGS1.html',this,'Contrôle de gestion')"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
@@ -1245,6 +1245,11 @@
             <h1 id="welcome-title">Bonne <span>révision</span> !</h1>
             <p>Sélectionne une matière dans le menu pour commencer à réviser.</p>
             <div class="welcome-cards">
+                <div class="welcome-card" onclick="loadPage('FIS1.html',null,'Finance')">
+                    <div class="welcome-card-icon">💰</div>
+                    <div class="welcome-card-label">Finance</div>
+                    <div class="welcome-card-sub">Fiches & exercices</div>
+                </div>
                 <div class="welcome-card" onclick="loadPage('CGS1.html',null,'Contrôle de Gestion')">
                     <div class="welcome-card-icon">📊</div>
                     <div class="welcome-card-label">Contrôle de Gestion</div>
@@ -2468,8 +2473,8 @@ const SEARCH_INDEX=[
     {notion:'Seuil de rentabilité',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
     {notion:'Marge sur coût variable',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
     {notion:'Analyse des écarts',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
-    {notion:'Bilan financier',matiere:'Finance',fichier:'FI.html',ancre:'',icon:'💰'},
-    {notion:"Capacité d'autofinancement",matiere:'Finance',fichier:'FI.html',ancre:'',icon:'💰'},
+    {notion:'Bilan financier',matiere:'Finance',fichier:'FIS1.html',ancre:'',icon:'💰'},
+    {notion:"Capacité d'autofinancement",matiere:'Finance',fichier:'FIS1.html',ancre:'',icon:'💰'},
     {notion:'Management participatif',matiere:'Management',fichier:'mana.html',ancre:'',icon:'👔'},
     {notion:'Capital social',matiere:'Droit des Sociétés',fichier:'SO.html',ancre:'',icon:'⚖️'},
     {notion:'Contrat de travail',matiere:'Droit du Travail',fichier:'DT.html',ancre:'',icon:'👷'},
