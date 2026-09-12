@@ -677,6 +677,12 @@
         html, body { width: 100%; height: 100%; overflow: hidden; }
         #hub-screen { width: 100vw; height: 100vh; }
 
+        /* ── SIDEBAR TOGGLE ── */
+        nav { transition: width .3s cubic-bezier(.4,0,.2,1), opacity .3s; }
+        nav.collapsed { width: 0 !important; overflow: hidden; opacity: 0; pointer-events: none; }
+        #btn-toggle-sidebar svg { transition: transform .3s; }
+        nav.collapsed ~ main #btn-toggle-sidebar svg { transform: scaleX(-1); }
+
         /* ── MOBILE ── */
         @media (max-width: 768px) {
             .burger { display: flex; }
@@ -1172,6 +1178,11 @@
         <div class="topbar">
             <button class="burger" onclick="toggleSidebar()">
                 <span></span><span></span><span></span>
+            </button>
+            <button class="btn-topbar" id="btn-toggle-sidebar" onclick="toggleSidebarCollapse()" title="Masquer/afficher le menu" style="display:flex;flex-shrink:0">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 9l-3 3 3 3"/>
+                </svg>
             </button>
 
             <div class="topbar-breadcrumb">
@@ -2515,12 +2526,22 @@ function toggleSem(id){
     const headers=document.querySelectorAll('.menu-semester');
     headers.forEach(h=>{if((h.getAttribute('onclick')||'').includes(`'${id}'`))h.classList.toggle('open');});
 }
+function toggleSidebarCollapse() {
+    const nav = document.getElementById('sidebar');
+    nav.classList.toggle('collapsed');
+    localStorage.setItem('hub_sidebar_collapsed', nav.classList.contains('collapsed') ? '1' : '0');
+}
+
 function toggleSidebar(){document.getElementById('sidebar').classList.contains('open')?closeSidebar():openSidebar();}
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('nav-overlay').classList.add('visible');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('nav-overlay').classList.remove('visible');}
 
 (function(){
     initTheme();
+    // Restaurer état sidebar
+    if (localStorage.getItem('hub_sidebar_collapsed') === '1') {
+        document.getElementById('sidebar').classList.add('collapsed');
+    }
     // Vérifier si admin déjà connecté
     const adminCode = localStorage.getItem(ADMIN_KEY);
     if (adminCode) {
