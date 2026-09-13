@@ -2104,7 +2104,15 @@ function loadPage(fileName,el,label){
     if(label)document.getElementById('current-page').textContent=label;
     const loader=document.getElementById('loader');loader.className='loader loading';
     const frame=document.getElementById('content-frame');
-    frame.onload=()=>{loader.className='loader done';setTimeout(()=>loader.className='loader',600);};
+    frame.onload=()=>{
+        loader.className='loader done';
+        setTimeout(()=>loader.className='loader',600);
+        // Envoyer le thème actuel à la fiche dès qu'elle est chargée
+        try {
+            const theme = localStorage.getItem(THEME_KEY) || 'dark';
+            frame.contentWindow.postMessage({ type: 'theme', theme }, '*');
+        } catch(e) {}
+    };
     frame.src=fileName;
 }
 
