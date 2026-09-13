@@ -1132,7 +1132,7 @@
                 <li class="menu-item" onclick="loadPage('FIS1.html',this,'Finance')"><div class="item-icon">💰</div><span class="item-label">Finance</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
                 <li class="menu-item" onclick="loadPage('CGS1.html',this,'Contrôle de gestion')"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
+                <li class="menu-item" onclick="loadPage('ANGS1.html',this,'Anglais des affaires')"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
             </div>
 
             <div class="menu-semester" onclick="toggleSem('s2')">
@@ -1271,9 +1271,9 @@
                     <div class="welcome-card-label">Management</div>
                     <div class="welcome-card-sub">Fiches & exercices</div>
                 </div>
-                <div class="welcome-card" onclick="loadPage('SO.html',null,'Droit des Sociétés')">
-                    <div class="welcome-card-icon">⚖️</div>
-                    <div class="welcome-card-label">Droit des Sociétés</div>
+                <div class="welcome-card" onclick="loadPage('ANGS1.html',null,'Anglais des affaires')">
+                    <div class="welcome-card-icon">🇬🇧</div>
+                    <div class="welcome-card-label">Anglais des affaires</div>
                     <div class="welcome-card-sub">Fiches & exercices</div>
                 </div>
             </div>
