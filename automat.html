@@ -1553,6 +1553,11 @@ function toggleTheme() {
     const next = isLight ? 'dark' : 'light';
     localStorage.setItem(THEME_KEY, next);
     applyTheme(next);
+    // Synchroniser avec la fiche ouverte dans l'iframe
+    const frame = document.getElementById('content-frame');
+    if (frame && frame.contentWindow) {
+        try { frame.contentWindow.postMessage({ type: 'theme', theme: next }, '*'); } catch(e) {}
+    }
 }
 
 function initTheme() {
