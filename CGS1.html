@@ -242,6 +242,21 @@ table.chrecap-table tr:last-child td{border-bottom:none;}
   .badge{min-width:90px;padding:8px 12px;}
   .badge .num{font-size:18px;}
   .card{padding:18px;}
+
+  /* Tables overflowed the screen on mobile — make them scroll horizontally
+     instead of squeezing/breaking out of the viewport. */
+  table.mini, .recap table, table.chrecap-table{
+    min-width:480px;
+  }
+  .card, .annale-ex, .recap, .formula{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chrecap-table-wrap{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
 }
 </style>
 </head>
