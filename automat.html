@@ -2289,7 +2289,8 @@ function renderChart(mode, sessions) {
     const container = document.getElementById('chart-container');
     const labelsEl = document.getElementById('chart-labels');
     if (!container || !labelsEl) return;
-    const src = sessions !== undefined ? sessions : allSessions;
+    // Utiliser seulement les connexions au hub (fiche null) pour la fréquentation
+    const src = (sessions !== undefined ? sessions : allSessions).filter(r => !r.fiche);
 
     let buckets = [], labels = [];
     const now = new Date();
@@ -2298,7 +2299,7 @@ function renderChart(mode, sessions) {
         for (let h = 0; h < 24; h++) {
             labels.push(h + 'h');
             const count = src.filter(r => {
-                const d = new Date(r.connected_at || r.last_seen);
+                const d = new Date(r.connected_at);
                 return d.getDate()===now.getDate() && d.getMonth()===now.getMonth() && d.getHours()===h;
             }).length;
             buckets.push(count);
@@ -2309,7 +2310,7 @@ function renderChart(mode, sessions) {
             const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
             labels.push(dayNames[day.getDay()]);
             const count = src.filter(r => {
-                const rd = new Date(r.connected_at || r.last_seen);
+                const rd = new Date(r.connected_at);
                 return rd.getDate()===day.getDate() && rd.getMonth()===day.getMonth() && rd.getFullYear()===day.getFullYear();
             }).length;
             buckets.push(count);
@@ -2372,10 +2373,12 @@ function renderDaysChart(sessions) {
     const labelsEl = document.getElementById('chart-days-labels');
     if (!container || !labelsEl) return;
 
+    // Connexions au hub uniquement (fiche null)
+    const src = sessions.filter(r => !r.fiche);
     const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
     const buckets = Array(7).fill(0);
-    sessions.forEach(r => {
-        const d = new Date(r.connected_at || r.last_seen);
+    src.forEach(r => {
+        const d = new Date(r.connected_at);
         buckets[d.getDay()]++;
     });
 
