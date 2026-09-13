@@ -48,8 +48,21 @@ a{color:inherit;}
 .badge .lbl{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
 
 .chnav{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px;backdrop-filter:blur(8px);}
-.chnav-inner{max-width:1100px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
-.chnav-inner::-webkit-scrollbar{display:none;}
+.chnav-wrap{max-width:1100px;margin:0 auto;position:relative;display:flex;align-items:center;gap:6px;}
+.chnav-inner{display:flex;gap:8px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--border) transparent;flex:1;}
+.chnav-inner::-webkit-scrollbar{height:5px;}
+.chnav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+.chnav-inner::-webkit-scrollbar-track{background:transparent;}
+.chnav-arrow{
+  flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:var(--panel2);
+  border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:all .15s ease;
+}
+.chnav-arrow:hover{border-color:var(--violet-soft);color:var(--violet-soft);}
+.chnav-arrow:disabled{opacity:.25;cursor:default;pointer-events:none;}
+.chnav-fade{position:absolute;top:0;bottom:0;width:36px;pointer-events:none;z-index:2;transition:opacity .2s ease;}
+.chnav-fade.left{left:36px;background:linear-gradient(90deg,var(--bg),transparent);}
+.chnav-fade.right{right:36px;background:linear-gradient(270deg,var(--bg),transparent);}
 .chnav-btn{flex:0 0 auto;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);padding:9px 16px;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .18s ease;font-family:inherit;}
 .chnav-btn:hover{color:var(--text);border-color:var(--violet-soft);}
 .chnav-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
@@ -169,21 +182,27 @@ table.mini td{color:var(--text-dim);}
 </div>
 
 <div class="chnav">
-  <div class="chnav-inner" id="chnav">
-    <button class="chnav-btn active" data-target="ch1">1 · Valeur et temps</button>
-    <button class="chnav-btn" data-target="ch2">2 · Obligations</button>
-    <button class="chnav-btn" data-target="ch3">3 · Actions</button>
-    <button class="chnav-btn" data-target="ch4">4 · Valeur et information</button>
-    <button class="chnav-btn" data-target="ch5">5 · Politique d'investissement</button>
-    <button class="chnav-btn" data-target="ch6">6 · Politique de financement</button>
-    <button class="chnav-btn" data-target="ch7">7 · Démarche d'évaluation</button>
-    <button class="chnav-btn" data-target="ch8">8 · Évaluation par les flux</button>
-    <button class="chnav-btn" data-target="ch9">9 · Approche comparative</button>
-    <button class="chnav-btn" data-target="ch10">10 · Patrimoniale &amp; mixte</button>
-    <button class="chnav-btn" data-target="ch11">11 · Évaluations spécifiques</button>
-    <button class="chnav-btn" data-target="ch12">12 · Synthèse évaluation</button>
-    <button class="chnav-btn" data-target="potentiel">🎯 À surveiller</button>
-    <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+  <div class="chnav-wrap">
+    <button class="chnav-arrow" id="chnavLeft" onclick="scrollChnav(-1)" aria-label="Précédent">‹</button>
+    <div class="chnav-inner" id="chnav">
+      <button class="chnav-btn active" data-target="ch1">1 · Valeur et temps</button>
+      <button class="chnav-btn" data-target="ch2">2 · Obligations</button>
+      <button class="chnav-btn" data-target="ch3">3 · Actions</button>
+      <button class="chnav-btn" data-target="ch4">4 · Valeur et information</button>
+      <button class="chnav-btn" data-target="ch5">5 · Politique d'investissement</button>
+      <button class="chnav-btn" data-target="ch6">6 · Politique de financement</button>
+      <button class="chnav-btn" data-target="ch7">7 · Démarche d'évaluation</button>
+      <button class="chnav-btn" data-target="ch8">8 · Évaluation par les flux</button>
+      <button class="chnav-btn" data-target="ch9">9 · Approche comparative</button>
+      <button class="chnav-btn" data-target="ch10">10 · Patrimoniale &amp; mixte</button>
+      <button class="chnav-btn" data-target="ch11">11 · Évaluations spécifiques</button>
+      <button class="chnav-btn" data-target="ch12">12 · Synthèse évaluation</button>
+      <button class="chnav-btn" data-target="potentiel">🎯 À surveiller</button>
+      <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+    </div>
+    <div class="chnav-fade left" id="chnavFadeLeft"></div>
+    <div class="chnav-fade right" id="chnavFadeRight"></div>
+    <button class="chnav-arrow" id="chnavRight" onclick="scrollChnav(1)" aria-label="Suivant">›</button>
   </div>
 </div>
 
@@ -894,6 +913,27 @@ navBtns.forEach(function(btn){
     if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
   });
 });
+
+var chnavEl = document.getElementById('chnav');
+var chnavLeftBtn = document.getElementById('chnavLeft');
+var chnavRightBtn = document.getElementById('chnavRight');
+var chnavFadeLeft = document.getElementById('chnavFadeLeft');
+var chnavFadeRight = document.getElementById('chnavFadeRight');
+function scrollChnav(dir){
+  chnavEl.scrollBy({left: dir * 220, behavior:'smooth'});
+}
+function updateChnavArrows(){
+  var maxScroll = chnavEl.scrollWidth - chnavEl.clientWidth;
+  var atStart = chnavEl.scrollLeft <= 2;
+  var atEnd = chnavEl.scrollLeft >= maxScroll - 2;
+  chnavLeftBtn.disabled = atStart;
+  chnavRightBtn.disabled = atEnd || maxScroll <= 0;
+  chnavFadeLeft.style.opacity = atStart ? '0' : '1';
+  chnavFadeRight.style.opacity = atEnd ? '0' : '1';
+}
+chnavEl.addEventListener('scroll', updateChnavArrows);
+window.addEventListener('resize', updateChnavArrows);
+updateChnavArrows();
 
 var QUIZ = {
   ch1: [
