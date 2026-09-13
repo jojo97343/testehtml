@@ -1334,6 +1334,19 @@
                     <div id="chart-labels" style="display:flex;gap:4px;margin-top:4px;font-size:.65rem;color:var(--muted)"></div>
                 </div>
 
+                <!-- Graphique fiches les plus consultées -->
+                <div class="section-card">
+                    <div class="section-title" style="margin-bottom:16px">📚 Fiches les plus consultées</div>
+                    <div id="chart-fiches"></div>
+                </div>
+
+                <!-- Graphique jours de la semaine -->
+                <div class="section-card">
+                    <div class="section-title" style="margin-bottom:16px">📅 Activité par jour de la semaine</div>
+                    <div id="chart-days" style="height:120px;display:flex;align-items:flex-end;gap:8px;padding:8px 0 0"></div>
+                    <div id="chart-days-labels" style="display:flex;gap:8px;margin-top:4px;font-size:.7rem;color:var(--muted)"></div>
+                </div>
+
                 <!-- Changer code admin -->
                 <div class="section-card" style="border-color:rgba(255,92,122,.15)">
                     <div class="section-title">🔒 Changer le code admin</div>
@@ -2058,6 +2071,24 @@ async function pingVisitor(prenom) {
     }
 }
 
+async function insertSession(prenom, fiche = null) {
+    await fetch(`${SB_URL}/rest/v1/sessions`, {
+        method: 'POST',
+        headers: {
+            'apikey': SB_KEY_ANON,
+            'Authorization': `Bearer ${SB_KEY_ANON}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+            visitor_id: getVisitorId(),
+            prenom,
+            fiche,
+            connected_at: new Date().toISOString()
+        })
+    }).catch(() => {});
+}
+
 function enterHub(prenom, isAdmin) {
     document.getElementById('modal-prenom').classList.remove('visible');
     document.getElementById('hub-screen').classList.add('visible');
@@ -2076,6 +2107,7 @@ function enterHub(prenom, isAdmin) {
         const wt = document.getElementById('welcome-title');
         if (wt) wt.innerHTML = `Bonne <span>révision</span>, ${p} !`;
         pingVisitor(p);
+        insertSession(p, null); // Enregistrer la connexion
         pingInterval = setInterval(() => {
             pingVisitor(p);
             loadResources();
@@ -2091,6 +2123,8 @@ function enterHub(prenom, isAdmin) {
 
 
 let currentFile=null;
+let currentPrenom=null;
+
 function loadPage(fileName,el,label){
     currentFile=fileName;
     document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
@@ -2102,6 +2136,9 @@ function loadPage(fileName,el,label){
     document.getElementById('btn-home').style.display='block';
     if(window.innerWidth<=768)closeSidebar();
     if(label)document.getElementById('current-page').textContent=label;
+    // Enregistrer l'ouverture de la fiche
+    const p = document.getElementById('footer-name').textContent;
+    if (p && p !== 'Administrateur') insertSession(p, fileName);
     const loader=document.getElementById('loader');loader.className='loader loading';
     const frame=document.getElementById('content-frame');
     frame.onload=()=>{
@@ -2161,6 +2198,7 @@ function handleAdminLogout() {
 // ── VISITEURS EN DIRECT ───────────────────────────────────────────────────
 
 let allVisitors = [];
+let allSessions = [];
 let currentChart = 'day';
 let customAdminHash = null;
 const CUSTOM_ADMIN_KEY = 'hub_admin_hash';
@@ -2169,17 +2207,23 @@ async function loadVisitors() {
     const tbody = document.getElementById('visitors-tbody');
     if (!tbody) return;
 
-    const rows = await sbSelect('visitors?order=last_seen.desc&select=*');
+    const [rows, sessions] = await Promise.all([
+        sbSelect('visitors?order=last_seen.desc&select=*'),
+        sbSelect('sessions?order=connected_at.desc&select=*')
+    ]);
+
+    allSessions = sessions || [];
+
     if (!rows) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Erreur.</td></tr>'; return; }
     allVisitors = rows;
 
     const now = Date.now();
     const active1min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
-    const today = rows.filter(r => {
-        const d = new Date(r.last_seen); const t = new Date();
+    const today = allSessions.filter(r => {
+        const d = new Date(r.connected_at); const t = new Date();
         return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
     });
-    const week = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 7 * 24 * 60 * 60 * 1000);
+    const week = allSessions.filter(r => (now - new Date(r.connected_at).getTime()) < 7 * 24 * 60 * 60 * 1000);
 
     const sNow = document.getElementById('stat-now');
     const sToday = document.getElementById('stat-today');
@@ -2191,7 +2235,9 @@ async function loadVisitors() {
     if (sTotal) sTotal.textContent = rows.length;
 
     renderVisitors();
-    renderChart(currentChart);
+    renderChart(currentChart, allSessions);
+    renderFichesChart(allSessions);
+    renderDaysChart(allSessions);
 }
 
 function filterVisitors() { renderVisitors(); }
@@ -2235,35 +2281,34 @@ function switchChart(mode) {
     document.getElementById('chart-btn-day').style.color = mode==='day' ? 'var(--violet)' : 'var(--muted)';
     document.getElementById('chart-btn-week').style.borderColor = mode==='week' ? 'var(--violet)' : 'var(--border)';
     document.getElementById('chart-btn-week').style.color = mode==='week' ? 'var(--violet)' : 'var(--muted)';
-    renderChart(mode);
+    renderChart(mode, allSessions);
 }
 
-function renderChart(mode) {
+function renderChart(mode, sessions) {
     const container = document.getElementById('chart-container');
     const labelsEl = document.getElementById('chart-labels');
     if (!container || !labelsEl) return;
+    const src = sessions !== undefined ? sessions : allSessions;
 
     let buckets = [], labels = [];
     const now = new Date();
 
     if (mode === 'day') {
-        // 24 heures — regrouper par heure
         for (let h = 0; h < 24; h++) {
             labels.push(h + 'h');
-            const count = allVisitors.filter(r => {
-                const d = new Date(r.last_seen);
+            const count = src.filter(r => {
+                const d = new Date(r.connected_at || r.last_seen);
                 return d.getDate()===now.getDate() && d.getMonth()===now.getMonth() && d.getHours()===h;
             }).length;
             buckets.push(count);
         }
     } else {
-        // 7 jours — regrouper par jour
         for (let d = 6; d >= 0; d--) {
             const day = new Date(now); day.setDate(now.getDate() - d);
             const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
             labels.push(dayNames[day.getDay()]);
-            const count = allVisitors.filter(r => {
-                const rd = new Date(r.last_seen);
+            const count = src.filter(r => {
+                const rd = new Date(r.connected_at || r.last_seen);
                 return rd.getDate()===day.getDate() && rd.getMonth()===day.getMonth() && rd.getFullYear()===day.getFullYear();
             }).length;
             buckets.push(count);
@@ -2271,7 +2316,7 @@ function renderChart(mode) {
     }
 
     const max = Math.max(...buckets, 1);
-    container.innerHTML = buckets.map((v, i) => {
+    container.innerHTML = buckets.map((v) => {
         const h = Math.round((v / max) * 140);
         const isActive = v > 0;
         return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
@@ -2281,6 +2326,71 @@ function renderChart(mode) {
     }).join('');
     labelsEl.innerHTML = labels.map(l => `<div style="flex:1;text-align:center;font-size:.55rem">${l}</div>`).join('');
 }
+
+function renderFichesChart(sessions) {
+    const el = document.getElementById('chart-fiches');
+    if (!el) return;
+
+    const fichesMap = {};
+    const fichesLabels = {
+        'FIS1.html': '💰 Finance S1',
+        'CGS1.html': '📊 Contrôle de gestion S1',
+        'ANGS1.html': '🇬🇧 Anglais S1',
+        'MSIS1.html': '💻 Management SI S1',
+    };
+
+    sessions.filter(r => r.fiche).forEach(r => {
+        const label = fichesLabels[r.fiche] || r.fiche;
+        fichesMap[label] = (fichesMap[label] || 0) + 1;
+    });
+
+    if (!Object.keys(fichesMap).length) {
+        el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:20px 0">Aucune consultation de fiche encore.</div>';
+        return;
+    }
+
+    const sorted = Object.entries(fichesMap).sort((a,b) => b[1]-a[1]);
+    const max = sorted[0][1];
+
+    el.innerHTML = sorted.map(([label, count]) => {
+        const pct = Math.round((count / max) * 100);
+        return `<div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px">
+                <span style="color:var(--white);font-weight:500">${label}</span>
+                <span style="color:var(--violet);font-weight:700">${count}</span>
+            </div>
+            <div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--violet),var(--cyan));border-radius:4px;transition:width .5s"></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderDaysChart(sessions) {
+    const container = document.getElementById('chart-days');
+    const labelsEl = document.getElementById('chart-days-labels');
+    if (!container || !labelsEl) return;
+
+    const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const buckets = Array(7).fill(0);
+    sessions.forEach(r => {
+        const d = new Date(r.connected_at || r.last_seen);
+        buckets[d.getDay()]++;
+    });
+
+    const max = Math.max(...buckets, 1);
+    container.innerHTML = buckets.map((v, i) => {
+        const h = Math.round((v / max) * 100);
+        const isActive = v > 0;
+        const isWeekend = i === 0 || i === 6;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:.65rem;color:${isActive ? 'var(--cyan)' : 'var(--muted)'}">${v > 0 ? v : ''}</span>
+            <div style="width:100%;height:${Math.max(h,2)}px;background:${isActive ? (isWeekend ? 'rgba(6,214,214,.5)' : 'rgba(168,85,247,.5)') : 'var(--bg3)'};border-radius:3px 3px 0 0;border-top:2px solid ${isActive ? (isWeekend ? 'var(--cyan)' : 'var(--violet)') : 'transparent'};transition:height .3s"></div>
+        </div>`;
+    }).join('');
+    labelsEl.innerHTML = dayNames.map((d, i) => `<div style="flex:1;text-align:center;color:${(i===0||i===6)?'var(--cyan)':'var(--muted)'}">${d}</div>`).join('');
+}
+
 
 // ── CHANGER CODE ADMIN ─────────────────────────────────────────────────────
 
