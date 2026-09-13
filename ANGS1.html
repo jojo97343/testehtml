@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UE 536 — Anglais des affaires</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f0b1e; --bg2:#161028; --panel:#1c1533; --panel2:#221a3d;
+  --border:#332a54; --text:#f1edfb; --text-dim:#b3a9d1; --text-faint:#8479a3;
+  --violet:#8b5cf6; --violet-soft:#a78bfa; --cyan:#22d3ee; --yellow:#facc15;
+  --grad: linear-gradient(135deg,#8b5cf6 0%,#22d3ee 100%);
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+[data-theme="light"]{
+  --bg:#f6f4fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1edfb;
+  --border:#e1d9f7; --text:#241b3d; --text-dim:#584c78; --text-faint:#8577a3;
+  --violet:#7c3aed; --violet-soft:#6d28d9; --cyan:#0891b2; --yellow:#b45309;
+  --shadow: 0 8px 24px rgba(90,70,160,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:transparent;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg); color:var(--text);
+  transition:background .3s ease,color .3s ease;
+  padding-bottom:80px;
+}
+h1,h2,h3,h4,.disp{font-family:'Clash Display',sans-serif;}
+a{color:inherit;}
+::selection{background:var(--violet);color:#fff;}
+
+.top{padding:28px 20px 20px;max-width:1100px;margin:0 auto;}
+.eyebrow-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--border);padding:5px 12px;border-radius:100px;font-size:12.5px;color:var(--text-dim);font-weight:600;}
+.pill b{color:var(--text);}
+.title-block h1{font-size:clamp(28px,4vw,40px);font-weight:600;margin:6px 0 6px;line-height:1.1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.title-block p{color:var(--text-dim);font-size:15px;max-width:640px;line-height:1.55;margin:0 0 18px;}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.badge{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 16px;min-width:118px;box-shadow:var(--shadow);}
+.badge .num{font-family:'Clash Display',sans-serif;font-size:22px;color:var(--cyan);font-weight:600;}
+.badge .lbl{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+
+.chnav{position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px;backdrop-filter:blur(8px);}
+.chnav-row{max-width:1100px;margin:0 auto;position:relative;display:flex;align-items:center;gap:6px;}
+.chnav-inner{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;touch-action:pan-x;cursor:grab;flex:1;}
+.chnav-inner.dragging{cursor:grabbing;scroll-behavior:auto;}
+.chnav-inner::-webkit-scrollbar{display:none;}
+.chnav-btn{flex:0 0 auto;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);padding:9px 16px;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .18s ease;font-family:inherit;}
+.chnav-btn:hover{color:var(--text);border-color:var(--violet-soft);}
+.chnav-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
+.chnav-arrow{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;font-family:inherit;box-shadow:var(--shadow);z-index:2;}
+.chnav-arrow:hover{border-color:var(--violet-soft);color:var(--violet-soft);}
+.chnav-arrow.hidden{visibility:hidden;pointer-events:none;}
+@media(max-width:640px){.chnav-arrow{display:none;}}
+
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+.chapter{padding:44px 0 20px;scroll-margin-top:70px;}
+.chapter-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
+.chapter-head h2{font-size:26px;font-weight:600;margin:0;}
+.chapter-num{font-family:'Clash Display',sans-serif;color:var(--violet-soft);font-size:14px;border:1px solid var(--border);padding:3px 10px;border-radius:8px;}
+.chapter-sub{color:var(--text-faint);font-size:14px;margin:0 0 18px;max-width:720px;line-height:1.5;}
+.partie-label{color:var(--yellow);font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4px;}
+
+.freqbar{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:26px;box-shadow:var(--shadow);flex-wrap:wrap;}
+.freqbar .flabel{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.freqbar .years{display:flex;gap:8px;flex-wrap:wrap;}
+.yr{font-size:12.5px;padding:4px 10px;border-radius:8px;font-weight:700;background:var(--panel2);border:1px solid var(--border);color:var(--text-faint);}
+.yr.hit{background:rgba(139,92,246,.18);color:var(--violet-soft);border-color:var(--violet);}
+
+.notions{display:flex;flex-direction:column;gap:16px;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);}
+.card.potentiel{border-color:var(--cyan);background:linear-gradient(180deg,var(--panel),rgba(34,211,238,.05));}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.card-head h3{font-size:18px;margin:0;font-weight:600;}
+.tag{font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:100px;white-space:nowrap;}
+.tag.hot{background:rgba(250,204,21,.16);color:var(--yellow);border:1px solid rgba(250,204,21,.4);}
+.tag.watch{background:rgba(167,139,250,.16);color:var(--violet-soft);border:1px solid rgba(167,139,250,.4);}
+.tag.potentiel{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.4);}
+.card p{font-size:14.5px;line-height:1.62;color:var(--text-dim);margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text);}
+.formula{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;line-height:1.7;font-family:'Clash Display',sans-serif;color:var(--cyan);overflow-x:auto;}
+.formula small{display:block;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-faint);font-size:12px;margin-top:4px;font-weight:600;}
+.example{background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;color:var(--text-dim);border-left:3px solid var(--violet-soft);}
+.example b{color:var(--violet-soft);}
+ul.detail-list{margin:8px 0;padding-left:20px;}
+ul.detail-list li{font-size:14.5px;color:var(--text-dim);line-height:1.6;margin-bottom:4px;}
+table.mini{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
+table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;}
+table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;}
+table.mini td{color:var(--text-dim);}
+
+.recap{margin-top:14px;}
+.recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
+.recap summary::before{content:"▸ ";color:var(--violet-soft);}
+.recap[open] summary::before{content:"▾ ";}
+.recap table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
+.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;}
+.recap th{background:var(--panel2);color:var(--text-faint);}
+.recap td.yes{color:var(--yellow);font-weight:800;}
+.recap td.no{color:var(--text-faint);opacity:.4;}
+
+.quizcta{margin-top:26px;display:flex;justify-content:center;}
+.quizbtn{background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;}
+.quizbtn:hover{transform:translateY(-2px);}
+.quizbtn.final{background:linear-gradient(135deg,var(--yellow),var(--cyan));color:#1a1428;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(8,5,18,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;}
+.modal h3{margin:0 0 4px;font-size:20px;}
+.modal .qcount{color:var(--text-faint);font-size:12.5px;margin-bottom:18px;}
+.qtext{font-size:15.5px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:11px;margin-bottom:9px;cursor:pointer;font-family:inherit;font-size:14px;transition:all .15s ease;}
+.opt:hover{border-color:var(--violet-soft);}
+.opt.correct{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80;}
+.opt.wrong{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
+.opt:disabled{cursor:default;}
+.explain{background:var(--panel2);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 14px;font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55;display:none;}
+.explain.show{display:block;}
+.modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.navbtn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+.navbtn:disabled{opacity:.35;cursor:not-allowed;}
+.navbtn.primary{background:var(--grad);color:#fff;border:none;}
+.closex{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;}
+.score-screen{text-align:center;padding:20px 0;}
+.score-num{font-family:'Clash Display',sans-serif;font-size:52px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;}
+
+.toolbar{position:fixed;bottom:18px;right:18px;display:flex;gap:10px;z-index:60;}
+.tbtn{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;}
+
+@media(max-width:640px){
+  .badge{min-width:90px;padding:8px 12px;}
+  .badge .num{font-size:18px;}
+  .card{padding:18px;}
+}
+</style>
+</head>
+<body id="fiche-body">
+
+<div class="top">
+  <div class="eyebrow-row">
+    <span class="pill">Master CCA</span>
+    <span class="pill">UE 536</span>
+    <span class="pill">Anglais des affaires</span>
+  </div>
+  <div class="title-block">
+    <h1>Anglais des affaires</h1>
+    <p>Grammaire attendue, syntaxe, vocabulaire thématique et structures de phrases pour l'épreuve — construite à partir des 4 corrigés officiels (2023 à 2025 + rattrapage 2024) : audit, régulation financière (SEC), formation post-Covid, financiarisation (Boeing).</p>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="num">18</div><div class="lbl">Points de grammaire</div></div>
+    <div class="badge"><div class="num">4</div><div class="lbl">Sujets corrigés analysés</div></div>
+    <div class="badge"><div class="num">25</div><div class="lbl">Phrases passe-partout</div></div>
+    <div class="badge"><div class="num">9</div><div class="lbl">Quiz disponibles</div></div>
+  </div>
+</div>
+
+<div class="chnav">
+  <div class="chnav-row">
+    <button class="chnav-arrow hidden" id="chnavLeft" aria-label="Défiler à gauche">‹</button>
+    <div class="chnav-inner" id="chnav">
+      <button class="chnav-btn active" data-target="ch1">1 · Comprendre le barème</button>
+      <button class="chnav-btn" data-target="ch2">2 · Grammaire attendue</button>
+      <button class="chnav-btn" data-target="ch3">3 · Syntaxe académique</button>
+      <button class="chnav-btn" data-target="ch4">4 · Vocabulaire thématique</button>
+      <button class="chnav-btn" data-target="ch5">5 · Connecteurs logiques</button>
+      <button class="chnav-btn" data-target="ch6">6 · Reformuler (rephrase)</button>
+      <button class="chnav-btn" data-target="ch7">7 · Phrases types par question</button>
+      <button class="chnav-btn" data-target="ch8">8 · Banque passe-partout</button>
+      <button class="chnav-btn" data-target="potentiel">🎯 Pièges classiques</button>
+      <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+    </div>
+    <button class="chnav-arrow" id="chnavRight" aria-label="Défiler à droite">›</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ================= CHAPITRE 1 ================= -->
+<section class="chapter" id="ch1">
+  <p class="partie-label">Méthode générale</p>
+  <div class="chapter-head"><span class="chapter-num">Chapitre 1</span><h2>Comprendre le barème et le format de l'épreuve</h2></div>
+  <p class="chapter-sub">4 questions sur un article de presse économique (business/audit/finance), 3 heures, ~20 points. Chaque question mélange fond (contenu) et forme (grammaire/syntaxe).</p>
+
+  <div class="freqbar"><span class="flabel">Constant sur les 4 sessions</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2024 (rattrap.)</span><span class="yr hit">2025</span></div><span style="color:var(--text-faint);font-size:13px;">— structure identique à chaque session : Q1 résumé+ton, Q2/Q3 rephrase+connaissances, Q4 commentaire de citation.</span></div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>1.1 · Structure invariable du sujet</h3><span class="tag hot">🔥 4/4 sessions</span></div>
+      <p>Chaque sujet suit toujours la même logique : un article de presse (Big Four, SEC, Boeing, formation post-Covid...) suivi de 4 questions notées entre 3 et 7 points chacune, pour un total ramené sur 20.</p>
+      <div class="formula">Q1 : Résumé des arguments + ton du journaliste + justification
+        <small>Q2 : Question de compréhension → rephrase + connaissances personnelles</small>
+        <small>Q3 : Question de compréhension approfondie → rephrase + connaissances personnelles</small>
+        <small>Q4 : Commentaire d'une citation extraite du texte → rephrase, analyse, avis</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.2 · Où sont les points de grammaire/syntaxe ?</h3><span class="tag hot">🔥 Sur chaque question</span></div>
+      <p>Chaque question comporte une ligne dédiée dans le barème : « grammar and syntax » ou « grammar and language fluency », entre 0,5 et 2 points. Sur 20 points au total, la grammaire pèse donc à elle seule entre 3 et 5 points — jamais négligeable.</p>
+      <div class="example"><b>Observé dans les 4 corrigés</b> : chaque question, sans exception, réserve une fraction de son barème à « grammar and syntax » — la fiche de correction sépare toujours contenu et forme.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.3 · « Rephrase » : ce que ça veut vraiment dire</h3><span class="tag hot">🔥 Mot-clé de 3 questions sur 4</span></div>
+      <p>La consigne « please rephrase » signifie qu'il est interdit de recopier les phrases du texte : il faut reformuler avec ses propres mots (synonymes, changement de structure), puis ajouter des connaissances personnelles (« add your own knowledge »). Une réponse qui recopie le texte perd des points de fond même si le contenu est correct.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.4 · Respecter le nombre de lignes indiqué</h3><span class="tag watch">⚡ Cadrage attendu</span></div>
+      <p>Chaque question précise une fourchette de lignes (ex. « 6-10 lines », « 8-14 lines »). Une réponse trop courte perd des points de fond (arguments manquants) ; une réponse trop longue dilue la qualité et le temps disponible pour les autres questions.</p>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch1')">Commencer le quiz du chapitre 1 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 2 ================= -->
+<section class="chapter" id="ch2">
+  <p class="partie-label">Fondamentaux linguistiques</p>
+  <div class="chapter-head"><span class="chapter-num">Chapitre 2</span><h2>Points de grammaire attendus</h2></div>
+  <p class="chapter-sub">Les structures grammaticales qui reviennent systématiquement dans les corrigés officiels — celles que le correcteur s'attend à voir maîtrisées.</p>
+
+  <div class="freqbar"><span class="flabel">Fréquence dans les corrigés</span><div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2024 (rattrap.)</span><span class="yr hit">2025</span></div><span style="color:var(--text-faint);font-size:13px;">— présentes dans les 4 corrigés, indépendamment du thème de l'article.</span></div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>2.1 · Le présent simple pour l'analyse et les faits généraux</h3><span class="tag hot">🔥 Essentiel</span></div>
+      <p>Le résumé d'un article et l'analyse de fond s'écrivent presque exclusivement au présent simple, même si l'article rapporte des événements passés — car on décrit ce que le texte "dit" et "fait" maintenant.</p>
+      <div class="formula">The text sheds light on... / The journalist analyzes... / The article states that...
+        <small>Piège : ne pas basculer au prétérit pour résumer un article, sauf pour rapporter un fait historique daté.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.2 · La voix passive, marqueur de registre formel</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le style journalistique/économique utilise beaucoup la voix passive pour insister sur l'action plutôt que sur l'auteur (registre neutre, impersonnel) : "directors will be held accountable", "an auditor's report will be issued", "reforms should be implemented cautiously".</p>
+      <div class="formula">be + participe passé : is expected to / will be held accountable / is provided / has been increasing
+        <small>Utile pour reformuler activement une phrase passive du texte, ou inversement.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.3 · Les modaux de nuance : should / could / may / might</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Ces modaux permettent de nuancer une affirmation, de suggérer une solution ou d'exprimer une possibilité — indispensables dans les réponses de type « commentaire » ou « solution » (Q3, Q4).</p>
+      <div class="formula">should (recommandation) : one solution is that regulators should...
+        <small>could / may (possibilité) : this could increase their reliance on clients</small>
+        <small>might (nuance plus faible) : this might undermine their competencies</small>
+      </div>
+      <p><strong>Piège classique</strong> : confondre "must" (obligation forte) et "should" (recommandation) change le sens d'une phrase de commentaire — à utiliser avec discernement.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.4 · Le conditionnel pour l'hypothèse</h3><span class="tag hot">🔥 Fréquent (Q3/Q4)</span></div>
+      <p>Utilisé pour exprimer une conséquence hypothétique ou une critique indirecte, souvent avec "if" ou en style indirect. Structure typique des questions de commentaire/solution.</p>
+      <div class="formula">If + prétérit, ... + would/could + base verbale
+        <small>Ex. : If firms were forced out of consulting, they would become more dependent on audit revenue.</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.5 · Les propositions relatives (which / who / that)</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Elles permettent de complexifier une phrase simple pour atteindre un niveau académique — indispensables pour "rephraser" sans répéter la structure du texte source.</p>
+      <div class="formula">which introduit une info sur une chose : a proposal which requires companies to report...
+        <small>who introduit une info sur une personne : an auditor who is in charge of examining...</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.6 · Gérondif vs infinitif après verbe/préposition</h3><span class="tag watch">⚡ Piège classique</span></div>
+      <p>Erreur fréquente de niveau intermédiaire : après une préposition, on utilise toujours le gérondif (verbe + -ing), jamais l'infinitif.</p>
+      <div class="formula">in order to + base verbale (but) : in order to avoid conflicts of interest
+        <small>after / by / without + V-ing : by focusing on one service only...</small>
+        <small>helps + base verbale ou V-ing : helps assess / helps strengthen</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.7 · Accord sujet-verbe avec noms collectifs</h3><span class="tag hot">🔥 Piège récurrent</span></div>
+      <p>"The Big Four", "the SEC", "the government" sont grammaticalement singuliers en anglais des affaires malgré leur sens pluriel apparent (sauf "the Big Four" qui reste souvent traité comme un groupe pluriel dans l'usage journalistique — à vérifier au cas par cas selon le sujet réel désigné).</p>
+      <div class="formula">The SEC monitors securities exchanges. (singulier : l'organisme)
+        <small>The Big Four provide auditing services. (pluriel : quatre entités distinctes)</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.8 · Comparatifs et superlatifs</h3><span class="tag watch">⚡ Fréquent en Q1 (ton du journaliste)</span></div>
+      <p>Utilisés pour caractériser un ton critique ou une évolution ("stricter", "more financialized", "the most toxic CEO in memory") — un indicateur clé pour justifier le ton du journaliste en Q1.</p>
+      <div class="formula">adjectif court + -er / the + adjectif court + -est
+        <small>more + adjectif long / the most + adjectif long</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.9 · Prépositions figées des collocations d'affaires</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Les prépositions after specific verbs/adjectives sont fixes en anglais des affaires et changent le sens si mal utilisées.</p>
+      <div class="formula">responsible for / in charge of / consult for (a client) / comply with (standards)
+        <small>accountable for / focus on / rely on / result from</small>
+      </div>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch2')">Commencer le quiz du chapitre 2 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 3 ================= -->
+<section class="chapter" id="ch3">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 3</span><h2>Syntaxe académique — structurer une phrase de niveau Master</h2></div>
+  <p class="chapter-sub">Passer d'une succession d'idées simples à une syntaxe fluide et argumentée, comme dans les corrigés officiels.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>3.1 · La phrase à double proposition (subordination)</h3><span class="tag hot">🔥 Essentiel</span></div>
+      <p>Éviter les phrases courtes juxtaposées (style SMS) ; relier deux idées avec une conjonction de subordination pour montrer un lien logique (cause, conséquence, opposition).</p>
+      <div class="formula">Idée A + because/as/since + Idée B (cause)
+        <small>Idée A + although/while + Idée B (opposition)</small>
+        <small>Idée A + so that/in order that + Idée B (but)</small>
+      </div>
+      <div class="example"><b>Style corrigé</b> : "Auditing helps a company verify whether its financial statements comply with the accounting standards, <i>as</i> this process is extremely important for shareholders."</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.2 · Ouvrir un paragraphe avec un connecteur + reformulation</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Les corrigés démarrent presque toujours un paragraphe de synthèse par une expression de cadrage ("According to the text...", "In Paragraph X...") suivie d'une reformulation, jamais d'une citation brute.</p>
+      <div class="formula">According to + source, + sujet + verbe reformulé...
+        <small>As stated in Paragraph X, + reformulation...</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.3 · La structure en trois temps : constat → explication → conséquence</h3><span class="tag hot">🔥 Structure des Q2/Q3</span></div>
+      <p>Une réponse développée de niveau Master suit presque toujours ce schéma : on énonce un fait, on l'explique (pourquoi/comment), puis on tire une conséquence ou une implication plus large.</p>
+      <div class="formula">Constat : "X is common practice among..."
+        <small>Explication : "This is because / Here's why..."</small>
+        <small>Conséquence : "As a result, / This means that..."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.4 · Éviter l'accumulation de propositions relatives</h3><span class="tag watch">⚡ Piège de sur-complexification</span></div>
+      <p>Une phrase avec plus de deux relatives imbriquées ("which... who... that...") devient illisible et pénalise la fluidité. Mieux vaut couper en deux phrases courtes reliées par un connecteur.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.5 · Position de l'adverbe de fréquence/manière</h3><span class="tag watch">⚡ Piège classique</span></div>
+      <p>En anglais, l'adverbe se place généralement entre le sujet et le verbe (jamais entre le verbe et son complément direct comme en français).</p>
+      <div class="formula">Sujet + adverbe + verbe : "auditors often need to explain..."
+        <small>Faux (calque du français) : "auditors need often to explain"</small>
+      </div>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch3')">Commencer le quiz du chapitre 3 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 4 ================= -->
+<section class="chapter" id="ch4">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 4</span><h2>Vocabulaire thématique récurrent</h2></div>
+  <p class="chapter-sub">Les 4 sujets tournent tous autour d'un noyau commun de vocabulaire économique/financier — l'apprendre une fois sert à tous les sujets futurs.</p>
+
+  <div class="freqbar"><span class="flabel">Thèmes rencontrés</span><div class="years"><span class="yr hit">Audit / Big Four</span><span class="yr hit">Régulateurs (SEC)</span><span class="yr hit">Gouvernance & finance</span><span class="yr hit">RH / formation</span></div></div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>4.1 · Champ lexical de l'audit et de la conformité</h3><span class="tag hot">🔥 Présent dans 3 sujets sur 4</span></div>
+      <p>Vocabulaire indispensable, quel que soit le sujet précis de l'article.</p>
+      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <tr><td>auditor / auditing</td><td>auditeur / audit</td></tr>
+      <tr><td>independence / conflict of interest</td><td>indépendance / conflit d'intérêts</td></tr>
+      <tr><td>compliance / to comply with</td><td>conformité / se conformer à</td></tr>
+      <tr><td>disclosure</td><td>divulgation d'information</td></tr>
+      <tr><td>financial statements</td><td>états financiers</td></tr>
+      <tr><td>stakeholders / shareholders</td><td>parties prenantes / actionnaires</td></tr>
+      <tr><td>regulator / regulatory body</td><td>régulateur / organisme de régulation</td></tr>
+      <tr><td>oversight</td><td>supervision, surveillance</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.2 · Champ lexical de la gouvernance et de la finance</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <tr><td>shareholder value / stakeholder value</td><td>valeur actionnariale / valeur partenariale</td></tr>
+      <tr><td>layoffs</td><td>licenciements</td></tr>
+      <tr><td>mergers and acquisitions</td><td>fusions-acquisitions</td></tr>
+      <tr><td>stock buybacks / dividends</td><td>rachats d'actions / dividendes</td></tr>
+      <tr><td>CSR (Corporate Social Responsibility)</td><td>responsabilité sociétale des entreprises</td></tr>
+      <tr><td>C-suite</td><td>dirigeants de haut niveau (CEO, CFO...)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.3 · Champ lexical des ressources humaines et compétences</h3><span class="tag watch">⚡ Vu au moins une fois</span></div>
+      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <tr><td>skill gap</td><td>écart/manque de compétences</td></tr>
+      <tr><td>interpersonal / communication skills</td><td>compétences relationnelles / de communication</td></tr>
+      <tr><td>coaching / training programs</td><td>coaching / programmes de formation</td></tr>
+      <tr><td>recruits / junior staff</td><td>nouvelles recrues / jeunes collaborateurs</td></tr>
+      <tr><td>critical thinking</td><td>esprit critique</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.4 · Le vocabulaire du ton et du registre journalistique</h3><span class="tag hot">🔥 Indispensable pour Q1</span></div>
+      <p>Utilisé systématiquement pour qualifier le ton du journaliste — question posée dans les 4 sujets.</p>
+      <table class="mini"><tr><th>Adjectif</th><th>Sens</th></tr>
+      <tr><td>neutral / descriptive / informative</td><td>ton factuel, sans jugement</td></tr>
+      <tr><td>critical</td><td>critique</td></tr>
+      <tr><td>ironic / biased</td><td>ironique / partial</td></tr>
+      <tr><td>thought-provoking</td><td>qui pousse à la réflexion</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 5 ================= -->
+<section class="chapter" id="ch5">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 5</span><h2>Connecteurs logiques et vocabulaire redondant</h2></div>
+  <p class="chapter-sub">Les mots de liaison qui reviennent dans tous les corrigés, à réutiliser sans hésitation pour structurer n'importe quelle réponse.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>5.1 · Introduire un résumé (verbe de cadrage)</h3><span class="tag hot">🔥 4/4 sessions, phrase d'ouverture</span></div>
+      <p>Le tout premier verbe utilisé pour présenter un article — jamais "talks about", toujours une expression plus riche.</p>
+      <div class="formula">sheds light on / deals with / focuses on / presents / addresses the issue of
+        <small>Ex. : "The text sheds light on the impact of financialization on..."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.2 · Ajouter une idée</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <div class="formula">In addition, / Furthermore, / Moreover, / Besides,
+        <small>Also, + sujet + verbe (jamais en tout début de phrase formelle si évitable)</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.3 · Exprimer une conséquence</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <div class="formula">As a result, / Therefore, / Consequently, / This means that...
+        <small>This has + verbe + object : "this has undermined the confidence of employees"</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.4 · Exprimer une opposition ou une nuance</h3><span class="tag hot">🔥 Fréquent en Q4 (commentaire)</span></div>
+      <div class="formula">However, / Nevertheless, / On the other hand, / Yet,
+        <small>While + proposition, + proposition principale (opposition en tête de phrase)</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.5 · Donner un exemple ou préciser une source</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <div class="formula">According to the text/article/Paragraph X, / As can be read from Paragraph X,
+        <small>For example, / For instance, / such as...</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.6 · Reformuler une idée déjà énoncée</h3><span class="tag watch">⚡ Utile pour éviter la répétition</span></div>
+      <div class="formula">In other words, / That is to say, / Put differently,
+        <small>Clearly, / Undoubtedly, (pour renforcer une conclusion)</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.7 · Ordonner une liste d'arguments</h3><span class="tag watch">⚡ Fréquent en Q3 (plusieurs éléments à citer)</span></div>
+      <div class="formula">First of all, / Secondly, / Thirdly, / And finally,
+        <small>Utile quand la question attend plusieurs éléments (ex. "3 risques", "2 limites")</small>
+      </div>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch5')">Commencer le quiz du chapitre 5 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 6 ================= -->
+<section class="chapter" id="ch6">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 6</span><h2>Techniques de reformulation (rephrasing)</h2></div>
+  <p class="chapter-sub">La compétence la plus testée de l'épreuve : ne jamais recopier le texte, toujours le dire autrement.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>6.1 · Changer la voix (actif ↔ passif)</h3><span class="tag hot">🔥 Technique n°1</span></div>
+      <p>Le moyen le plus rapide et le plus sûr de reformuler une phrase du texte sans en changer le sens.</p>
+      <div class="formula">Texte : "Independent auditors oversee the disclosure."
+        <small>Reformulation : "The disclosure is overseen by independent auditors." / "Independent auditors are responsible for overseeing the disclosure."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>6.2 · Remplacer par un synonyme de même registre</h3><span class="tag hot">🔥 Technique n°2</span></div>
+      <table class="mini"><tr><th>Mot du texte</th><th>Synonyme académique</th></tr>
+      <tr><td>show / say</td><td>indicate / reveal / suggest / state</td></tr>
+      <tr><td>big / important</td><td>significant / substantial / considerable</td></tr>
+      <tr><td>help</td><td>enable / allow / contribute to</td></tr>
+      <tr><td>because</td><td>since / as / given that</td></tr>
+      <tr><td>a lot of</td><td>numerous / a considerable amount of</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>6.3 · Nominalisation (verbe → nom)</h3><span class="tag watch">⚡ Technique avancée</span></div>
+      <p>Transformer une proposition verbale en groupe nominal donne un ton plus académique — technique visible dans les corrigés de niveau Master.</p>
+      <div class="formula">"...because the regulator wants to avoid fraud" → "...in order to avoid the risk of fraud"
+        <small>"...if companies disclose more" → "...the disclosure of more information by companies"</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>6.4 · Inverser l'ordre : cause/conséquence</h3><span class="tag watch">⚡ Technique avancée</span></div>
+      <p>Reformuler en partant de la conséquence puis en expliquant la cause (au lieu de suivre l'ordre du texte) montre une vraie compréhension, pas une paraphrase mécanique.</p>
+      <div class="formula">Texte : "X happened because of Y." → Reformulation : "Y is the reason why X happened." / "This is due to Y, which explains X."</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>6.5 · Ajouter ses connaissances personnelles (« add your own knowledge »)</h3><span class="tag hot">🔥 Attendu dans 3 questions sur 4</span></div>
+      <p>Ne pas se contenter de reformuler : enrichir avec une définition de cours (ex. définir la SEC, le MEDAF appliqué au contexte, le rôle du CSR) que le texte ne donne pas explicitement.</p>
+      <div class="example"><b>Corrigé 2023</b> : après avoir reformulé le rôle de l'auditeur, la copie ajoute une définition générale de l'auditeur indépendant non issue directement du texte.</div>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch6')">Commencer le quiz du chapitre 6 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 7 ================= -->
+<section class="chapter" id="ch7">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 7</span><h2>Structures de phrases types par type de question</h2></div>
+  <p class="chapter-sub">Un squelette de phrase prêt à l'emploi pour chacune des 4 questions récurrentes — à adapter au sujet du jour.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>7.1 · Q1 — Résumé + ton du journaliste</h3><span class="tag hot">🔥 4/4 sessions</span></div>
+      <div class="formula">"The text, [taken from / abridged from] [source], sheds light on [topic]."
+        <small>"The journalist starts by analyzing... Then, [he/she] discusses..."</small>
+        <small>"The tone of the journalist is [neutral/critical/ironic], as [he/she] [gives facts / expresses a clear opinion / cites different opinions]."</small>
+        <small>"For example, '[courte citation < 15 mots]' illustrates this [neutral/critical] stance."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>7.2 · Q2/Q3 — Rephrase + connaissances personnelles</h3><span class="tag hot">🔥 Structure la plus utilisée</span></div>
+      <div class="formula">"According to the text / As stated in Paragraph X, [reformulation de l'idée]."
+        <small>"This is because... / Here's why : ..."</small>
+        <small>"In addition, [connaissance personnelle non explicitement dans le texte]."</small>
+        <small>"As a result, [conséquence] / This means that [implication plus large]."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>7.3 · Q4 — Commentaire d'une citation</h3><span class="tag hot">🔥 4/4 sessions</span></div>
+      <div class="formula">"This quotation suggests that [reformulation de la citation]."
+        <small>"In other words, [reformulation plus simple]."</small>
+        <small>"These words are thought-provoking, as they highlight [enjeu]."</small>
+        <small>"It is high time that [recommandation] / One solution would be to..."</small>
+        <small>"The question is how [enjeu ouvert à discuter]."</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>7.4 · Structure d'une conclusion de paragraphe</h3><span class="tag watch">⚡ Utile pour clore chaque réponse</span></div>
+      <div class="formula">"Overall, / All in all, [synthèse en une phrase]."
+        <small>"This shows/proves that [reprise de l'idée centrale de la question]."</small>
+      </div>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch7')">Commencer le quiz du chapitre 7 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 8 ================= -->
+<section class="chapter" id="ch8">
+  <div class="chapter-head"><span class="chapter-num">Chapitre 8</span><h2>Banque de phrases passe-partout</h2></div>
+  <p class="chapter-sub">Des phrases réutilisables quel que soit le sujet tombé le jour de l'examen — à mémoriser telles quelles.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>8.1 · Pour toute introduction de réponse</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"The text, published in [source], deals with the issue of..."</li>
+        <li>"According to the article, [sujet] is a major concern for..."</li>
+        <li>"As mentioned in the introduction of the text,..."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.2 · Pour qualifier un ton (Q1)</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"The journalist remains neutral throughout the article, simply reporting facts."</li>
+        <li>"The tone is rather critical, as the author does not hide his/her disapproval of..."</li>
+        <li>"The journalist encourages readers to think critically about..."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.3 · Pour développer une explication (Q2/Q3)</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"This is extremely important for [stakeholders/shareholders/employees] because..."</li>
+        <li>"Without this [mechanism/regulation/process], [conséquence négative] could occur."</li>
+        <li>"This helps strengthen trust/confidence in [sujet]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.4 · Pour commenter/critiquer (Q4)</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"These words suggest that [interprétation]."</li>
+        <li>"It is undeniable that [constat]."</li>
+        <li>"This raises the question of how [enjeu] could be addressed."</li>
+        <li>"The government/regulators should intervene to find effective solutions to..."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.5 · Pour conclure sur un enjeu ouvert</h3><span class="tag watch">⚡ Utile en fin de copie</span></div>
+      <ul class="detail-list">
+        <li>"The real challenge lies in finding a balance between [A] and [B]."</li>
+        <li>"Ultimately, this issue calls for a more nuanced/sophisticated approach rather than a radical one."</li>
+        <li>"Only time will tell whether [mesure/réforme] truly achieves its goal."</li>
+        <li>"This debate is far from over, and [acteur] will need to keep monitoring the situation."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.6 · Pour présenter des chiffres et des statistiques</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"Statistics from [source] indicate/show that [chiffre]."</li>
+        <li>"[Chiffre] has increased/decreased significantly over the past [durée]."</li>
+        <li>"This figure has [more than] doubled/tripled since [date]."</li>
+        <li>"[Chiffre] represents a considerable share of [total]."</li>
+        <li>"These numbers clearly illustrate/confirm the extent of [phénomène]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.7 · Pour exprimer une cause ou une origine</h3><span class="tag hot">🔥 Universel</span></div>
+      <ul class="detail-list">
+        <li>"This is mainly due to / attributable to [cause]."</li>
+        <li>"[Phénomène] stems from / results from [cause]."</li>
+        <li>"One of the main reasons behind [phénomène] is..."</li>
+        <li>"Given that [cause], it comes as no surprise that [conséquence]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.8 · Pour comparer ou opposer deux éléments</h3><span class="tag watch">⚡ Utile en Q2/Q3</span></div>
+      <ul class="detail-list">
+        <li>"Unlike [A], [B] tends to / is more likely to..."</li>
+        <li>"Compared to [A], [B] appears to be..."</li>
+        <li>"While [A] focuses on [aspect], [B] prioritizes [autre aspect]."</li>
+        <li>"Both [A] and [B] share the same objective, namely [objectif]."</li>
+        <li>"The main difference between [A] and [B] lies in [critère]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.9 · Pour définir une notion (terme technique)</h3><span class="tag hot">🔥 Utile pour « add your own knowledge »</span></div>
+      <ul class="detail-list">
+        <li>"[Terme] refers to / can be defined as [définition]."</li>
+        <li>"[Terme] is a [catégorie] that aims to [objectif]."</li>
+        <li>"In other words, [terme] means that [reformulation simple]."</li>
+        <li>"[Terme] should not be confused with [terme proche], which instead refers to..."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.10 · Pour nuancer une affirmation (hedging)</h3><span class="tag watch">⚡ Utile pour éviter les généralisations abusives</span></div>
+      <ul class="detail-list">
+        <li>"This seems to suggest that... / This tends to indicate that..."</li>
+        <li>"To some extent, [affirmation nuancée]."</li>
+        <li>"[Affirmation] is not always the case, however, as / but this may vary depending on..."</li>
+        <li>"It could be argued that [affirmation], although [nuance]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.11 · Pour exprimer un but ou une finalité</h3><span class="tag watch">⚡ Fréquent avec les réformes/régulateurs</span></div>
+      <ul class="detail-list">
+        <li>"In order to / so as to [objectif], [acteur] decided to..."</li>
+        <li>"The purpose/aim/goal of this [mesure/proposal] is to..."</li>
+        <li>"This measure is intended to / designed to [objectif]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.12 · Pour insister sur un point important</h3><span class="tag watch">⚡ Utile pour souligner l'argument central</span></div>
+      <ul class="detail-list">
+        <li>"It is worth noting/highlighting that [point important]."</li>
+        <li>"What is particularly striking/noteworthy is that [point important]."</li>
+        <li>"Above all, [point le plus important]."</li>
+        <li>"Not only does [A], but it also [B]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.13 · Pour évoquer le court terme vs le long terme</h3><span class="tag watch">⚡ Fréquent (shareholder value, investissement)</span></div>
+      <ul class="detail-list">
+        <li>"In the short run/term, [conséquence immédiate]; however, in the long run, [conséquence durable]."</li>
+        <li>"While this may bring short-term benefits, it could jeopardize [enjeu] in the long run."</li>
+        <li>"This short-termist approach fails to take into account [enjeu de long terme]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.14 · Pour présenter un contre-argument ou une limite</h3><span class="tag watch">⚡ Utile en Q4</span></div>
+      <ul class="detail-list">
+        <li>"One could argue, however, that [contre-argument]."</li>
+        <li>"This approach is not without its limits/drawbacks, as [limite]."</li>
+        <li>"Critics/Some experts argue that [contre-argument]."</li>
+        <li>"That being said, [nuance/limite]."</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.15 · Pour reformuler les verbes "de base" trop simples</h3><span class="tag hot">🔥 Utile pour éviter la répétition</span></div>
+      <table class="mini"><tr><th>Verbe simple</th><th>Alternatives plus riches</th></tr>
+      <tr><td>show</td><td>demonstrate / reveal / highlight / illustrate</td></tr>
+      <tr><td>think</td><td>believe / consider / argue</td></tr>
+      <tr><td>make (a decision)</td><td>reach / adopt / implement (a decision/measure)</td></tr>
+      <tr><td>give (information)</td><td>provide / supply / disclose</td></tr>
+      <tr><td>use</td><td>rely on / make use of / resort to</td></tr>
+      <tr><td>look at</td><td>examine / assess / analyze</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch8')">Commencer le quiz du chapitre 8 →</button></div>
+</section>
+
+<!-- ================= POTENTIEL / PIÈGES ================= -->
+<section class="chapter" id="potentiel">
+  <div class="chapter-head"><span class="chapter-num">🎯</span><h2>Pièges classiques à éviter</h2></div>
+  <p class="chapter-sub">Les erreurs qui coûtent des points sur la ligne "grammar and syntax", même quand le contenu est correct.</p>
+
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Recopier des phrases entières du texte</h3><span class="tag potentiel">Perte de points garantie</span></div>
+      <p>Même avec un contenu juste, une réponse qui recopie mot pour mot une phrase du texte source ne respecte pas la consigne "rephrase" et est pénalisée en fond comme en forme.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Confondre "its" et "it's"</h3><span class="tag potentiel">Faute classique</span></div>
+      <p>"its" = possessif ("the company changed its policy") ; "it's" = contraction de "it is". Une confusion fréquente et facilement évitable qui saute aux yeux du correcteur.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Oublier le -s de la 3e personne du singulier</h3><span class="tag potentiel">Faute classique</span></div>
+      <p>"The SEC monitor..." au lieu de "The SEC monitors..." — erreur d'autant plus visible que les sujets institutionnels (the SEC, the company, the auditor) sont omniprésents dans ce type de texte.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Traduire littéralement une expression française</h3><span class="tag potentiel">Calque à éviter</span></div>
+      <p>Ex. "actually" ne veut pas dire "actuellement" (= currently/nowadays) ; "eventually" ne veut pas dire "éventuellement" (= possibly/potentially). Ces faux-amis reviennent souvent en anglais des affaires.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Utiliser "people" ou "person" au pluriel incorrectement</h3><span class="tag potentiel">Faute classique</span></div>
+      <p>"people" est déjà pluriel ("people are concerned", jamais "peoples are" dans ce sens) ; le pluriel de "person" est "people", pas "persons" (sauf usage juridique très spécifique).</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Mal gérer les dénombrables/indénombrables</h3><span class="tag potentiel">Faute classique</span></div>
+      <p>"information", "advice", "research" sont indénombrables en anglais (jamais de -s, pas de "an information"). On dit "a piece of information", "much information", pas "many informations".</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Ne pas justifier une affirmation par le texte</h3><span class="tag potentiel">Perte de points de fond</span></div>
+      <p>Une affirmation sur le ton du journaliste ou une critique doit toujours être appuyée par une référence au texte ("as stated in Paragraph X", une courte citation) — l'absence de justification fait perdre les points dédiés à la "justification" dans le barème.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ FINAL ================= -->
+<section class="chapter" id="finalquiz">
+  <div class="chapter-head"><span class="chapter-num">Bilan</span><h2>Quiz final — grammaire, syntaxe et vocabulaire mélangés</h2></div>
+  <p class="chapter-sub">Un mélange de questions issues des 8 chapitres pour vérifier une compréhension d'ensemble avant l'épreuve.</p>
+  <div class="quizcta"><button class="quizbtn final" onclick="openQuiz('final')">Lancer le quiz final →</button></div>
+</section>
+
+</div><!-- /wrap -->
+
+<div class="toolbar">
+  <button class="tbtn" id="exportBtn" onclick="exportPDF()">⬇ Export PDF</button>
+</div>
+
+<!-- ================= QUIZ MODAL ================= -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal">
+    <button class="closex" onclick="closeQuiz()">×</button>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ============ THEME SYNC WITH PARENT HUB ============ */
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(!data) return;
+  var theme = null;
+  if (data.theme) theme = data.theme;
+  else if (data.type === 'theme-change' && data.value) theme = data.value;
+  else if (typeof data === 'string' && (data === 'dark' || data === 'light')) theme = data;
+  if(theme === 'light' || theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+});
+
+/* ============ CHAPTER NAV ============ */
+var navBtns = document.querySelectorAll('.chnav-btn');
+navBtns.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    navBtns.forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var target = document.getElementById(btn.dataset.target);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+/* ============ CHAPTER NAV — SCROLL/DRAG/WHEEL SUPPORT ============ */
+(function(){
+  var scroller = document.getElementById('chnav');
+  var leftBtn = document.getElementById('chnavLeft');
+  var rightBtn = document.getElementById('chnavRight');
+  if(!scroller) return;
+
+  function updateArrows(){
+    var maxScroll = scroller.scrollWidth - scroller.clientWidth - 2;
+    leftBtn.classList.toggle('hidden', scroller.scrollLeft <= 2);
+    rightBtn.classList.toggle('hidden', scroller.scrollLeft >= maxScroll);
+  }
+
+  leftBtn.addEventListener('click', function(){ scroller.scrollBy({left:-220, behavior:'smooth'}); });
+  rightBtn.addEventListener('click', function(){ scroller.scrollBy({left:220, behavior:'smooth'}); });
+  scroller.addEventListener('scroll', updateArrows);
+  window.addEventListener('resize', updateArrows);
+
+  /* vertical wheel -> horizontal scroll (desktop trackpads/mice) */
+  scroller.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      scroller.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  /* click-and-drag scrolling (desktop mouse) */
+  var isDown = false, startX = 0, startScroll = 0, moved = false;
+  scroller.addEventListener('mousedown', function(e){
+    isDown = true; moved = false;
+    scroller.classList.add('dragging');
+    startX = e.pageX;
+    startScroll = scroller.scrollLeft;
+  });
+  window.addEventListener('mouseup', function(){
+    isDown = false;
+    scroller.classList.remove('dragging');
+  });
+  window.addEventListener('mousemove', function(e){
+    if(!isDown) return;
+    var dx = e.pageX - startX;
+    if(Math.abs(dx) > 5) moved = true;
+    scroller.scrollLeft = startScroll - dx;
+  });
+  /* suppress the click-to-jump if the user was actually dragging */
+  scroller.addEventListener('click', function(e){
+    if(moved){ e.stopPropagation(); e.preventDefault(); moved = false; }
+  }, true);
+
+  updateArrows();
+})();
+
+/* ============ QUIZ DATA ============ */
+var QUIZ = {
+  ch1: [
+    {q:"Combien de questions comporte systématiquement un sujet d'UE 536 ?", opts:["4","2","6"], correct:0, exp:"Les 4 corrigés analysés suivent tous la même structure : 4 questions notées sur un total ramené à 20 points."},
+    {q:"Que signifie la consigne « please rephrase » ?", opts:["Reformuler avec ses propres mots, sans recopier le texte","Traduire le texte en français","Recopier la phrase la plus importante du texte"], correct:0, exp:"Recopier le texte source fait perdre des points même si le contenu de fond est juste."},
+    {q:"Où se trouvent les points de grammaire dans le barème ?", opts:["Sur chaque question, via une ligne dédiée « grammar and syntax »","Uniquement sur la dernière question","Il n'y a jamais de points de grammaire"], correct:0, exp:"Chaque question réserve une fraction de son barème à la grammaire et à la syntaxe, entre 0,5 et 2 points."}
+  ],
+  ch2: [
+    {q:"Pour résumer un article, quel temps utilise-t-on principalement ?", opts:["Le présent simple","Le prétérit","Le present perfect uniquement"], correct:0, exp:"Le résumé d'un article s'écrit au présent simple, même si l'article rapporte des faits passés."},
+    {q:"Quelle structure est correcte après une préposition ?", opts:["Preposition + V-ing","Preposition + to + verbe","Preposition + base verbale"], correct:0, exp:"Après une préposition (in order to mis à part), on utilise toujours le gérondif : 'by focusing on', 'without considering'."},
+    {q:"Quelle phrase est correcte ?", opts:["The SEC monitors securities exchanges.","The SEC monitor securities exchanges.","The SEC are monitoring securities exchange."], correct:0, exp:"The SEC est traité comme un sujet singulier : accord en -s à la 3e personne du singulier."},
+    {q:"Quel modal exprime une recommandation plutôt qu'une obligation stricte ?", opts:["Should","Must","Can"], correct:0, exp:"'Should' exprime une recommandation nuancée, adaptée aux réponses de type solution/commentaire ; 'must' exprime une obligation forte."}
+  ],
+  ch3: [
+    {q:"Quelle structure montre le mieux un niveau académique en Master ?", opts:["Constat → explication → conséquence","Une succession de phrases courtes sans lien logique","Uniquement des questions rhétoriques"], correct:0, exp:"Ce schéma en trois temps est la structure la plus utilisée dans les corrigés officiels pour développer une idée."},
+    {q:"Où se place l'adverbe de fréquence en anglais ?", opts:["Entre le sujet et le verbe","Entre le verbe et son complément direct","Toujours en fin de phrase"], correct:0, exp:"Contrairement au français, l'adverbe se place en anglais entre le sujet et le verbe : 'auditors often need to...'."},
+    {q:"Quel est le risque d'enchaîner trop de propositions relatives ?", opts:["La phrase devient illisible et pénalise la fluidité","Cela n'a aucun impact","Cela augmente automatiquement la note"], correct:0, exp:"Plus de deux relatives imbriquées nuisent à la clarté ; mieux vaut couper en deux phrases reliées par un connecteur."}
+  ],
+  ch4: [
+    {q:"Que signifie 'compliance' dans un contexte d'audit ?", opts:["Conformité aux normes/règles","Une plainte déposée","Un bénéfice financier"], correct:0, exp:"'Compliance' désigne le respect des normes réglementaires ou comptables, très fréquent dans les textes d'audit."},
+    {q:"Quel adjectif décrit un ton factuel, sans jugement ?", opts:["Neutral","Ironic","Biased"], correct:0, exp:"'Neutral' (ou 'descriptive'/'informative') qualifie un ton qui présente des faits sans prendre parti — le plus fréquent dans les 4 corrigés."},
+    {q:"Que désigne 'shareholder value' par opposition à 'stakeholder value' ?", opts:["La priorité donnée au profit des actionnaires à court terme","La priorité donnée à toutes les parties prenantes","Un synonyme exact de stakeholder value"], correct:0, exp:"'Shareholder value' privilégie la rentabilité pour les actionnaires ; 'stakeholder value' élargit aux employés, clients, communauté, etc."}
+  ],
+  ch5: [
+    {q:"Quel connecteur introduit le mieux une conséquence ?", opts:["As a result,","However,","For example,"], correct:0, exp:"'As a result' (ou 'therefore', 'consequently') introduit une conséquence logique — très fréquent dans les corrigés."},
+    {q:"Quel verbe est le plus utilisé pour introduire un résumé de texte ?", opts:["sheds light on","talks about","says"], correct:0, exp:"'Sheds light on' (ainsi que 'deals with', 'focuses on') est l'expression académique attendue en ouverture de résumé."},
+    {q:"Quel connecteur introduit une opposition ?", opts:["However,","In addition,","Therefore,"], correct:0, exp:"'However' (ou 'nevertheless', 'on the other hand') marque une opposition ou une nuance dans l'argumentation."}
+  ],
+  ch6: [
+    {q:"Quelle est la technique de reformulation la plus rapide et la plus sûre ?", opts:["Changer la voix active/passive","Traduire mot à mot en français puis retraduire","Ajouter des adjectifs"], correct:0, exp:"Passer de l'actif au passif (ou inversement) permet de reformuler une phrase sans en changer le sens, en évitant de recopier le texte."},
+    {q:"Que signifie la consigne « add your own knowledge » ?", opts:["Enrichir la réponse avec une connaissance de cours non explicitement donnée par le texte","Répéter deux fois la même idée","Ignorer le texte et écrire un essai personnel"], correct:0, exp:"Il faut aller au-delà du texte en apportant une définition ou un savoir personnel pertinent, en plus de la reformulation."},
+    {q:"Quelle transformation est un exemple de nominalisation ?", opts:["'because the regulator wants to avoid fraud' → 'in order to avoid the risk of fraud'","'the company grows' → 'the company is growing'","'auditors check' → 'auditors checked'"], correct:0, exp:"La nominalisation transforme une proposition verbale en groupe nominal, ce qui donne un ton plus académique."}
+  ],
+  ch7: [
+    {q:"Quelle structure convient à la question sur le ton du journaliste (Q1) ?", opts:["Affirmation du ton + justification appuyée sur le texte","Uniquement une liste d'adjectifs sans exemple","Une traduction du titre de l'article"], correct:0, exp:"Le barème exige toujours une justification du ton choisi, appuyée sur un exemple ou une citation du texte."},
+    {q:"Quelle structure convient à un commentaire de citation (Q4) ?", opts:["Reformulation → analyse → avis/solution","Recopier la citation trois fois","Résumer uniquement l'article dans son ensemble"], correct:0, exp:"Q4 attend une reformulation de la citation, une analyse de son sens, puis un avis ou une piste de solution."}
+  ],
+  ch8: [
+    {q:"Quelle phrase passe-partout convient pour ouvrir une réponse ?", opts:["'According to the article, [sujet] is a major concern for...'","'I think that...'","'The end.'"], correct:0, exp:"Les formules de cadrage ('According to the article...') sont plus académiques qu'une opinion personnelle non appuyée."},
+    {q:"Quelle phrase convient pour conclure sur un enjeu ouvert ?", opts:["'The real challenge lies in finding a balance between...'","'That's all I know.'","'The text is finished.'"], correct:0, exp:"Une conclusion ouverte sur un enjeu à double face est une formule appréciée dans les corrigés de niveau Master."},
+    {q:"Quelle formule introduit le mieux une statistique ?", opts:["'Statistics from [source] indicate that...'","'Someone said that...'","'Numbers are numbers.'"], correct:0, exp:"Citer la source des chiffres ('Statistics from...') donne plus de crédibilité et de précision académique à l'argument."},
+    {q:"Quelle formule permet de nuancer une affirmation sans la rendre trop absolue ?", opts:["'This seems to suggest that...'","'This is 100% true in every case.'","'Everyone agrees that...'"], correct:0, exp:"Le hedging ('seems to suggest', 'tends to indicate') évite les généralisations abusives, souvent pénalisées à l'écrit académique."},
+    {q:"Quelle formule convient pour présenter un contre-argument en Q4 ?", opts:["'One could argue, however, that...'","'This is obviously wrong.'","'No one thinks that.'"], correct:0, exp:"'One could argue, however, that...' introduit un contre-argument de façon nuancée et académique, adapté au commentaire de citation."}
+  ]
+};
+QUIZ.final = [].concat(
+  [QUIZ.ch1[0], QUIZ.ch1[1]],
+  [QUIZ.ch2[0], QUIZ.ch2[2], QUIZ.ch2[3]],
+  [QUIZ.ch3[1]],
+  [QUIZ.ch4[1], QUIZ.ch4[2]],
+  [QUIZ.ch5[0], QUIZ.ch5[1]],
+  [QUIZ.ch6[0], QUIZ.ch6[1]],
+  [QUIZ.ch7[0]],
+  [QUIZ.ch8[0]]
+);
+
+/* ============ QUIZ ENGINE ============ */
+var currentQuiz = [], currentIndex = 0, currentScore = 0, answered = false;
+
+function openQuiz(key){
+  currentQuiz = QUIZ[key];
+  currentIndex = 0;
+  currentScore = 0;
+  document.getElementById('quizModal').classList.add('open');
+  renderQuestion();
+}
+function closeQuiz(){
+  document.getElementById('quizModal').classList.remove('open');
+}
+function renderQuestion(){
+  answered = false;
+  var c = document.getElementById('quizContent');
+  if(currentIndex >= currentQuiz.length){
+    c.innerHTML =
+      '<div class="score-screen">' +
+      '<div class="score-num">'+currentScore+'/'+currentQuiz.length+'</div>' +
+      '<p style="color:var(--text-dim);margin-bottom:20px;">'+scoreMessage(currentScore, currentQuiz.length)+'</p>' +
+      '<button class="navbtn primary" onclick="closeQuiz()">Fermer</button>' +
+      '</div>';
+    return;
+  }
+  var item = currentQuiz[currentIndex];
+  var html = '<h3>Quiz</h3><div class="qcount">Question '+(currentIndex+1)+' / '+currentQuiz.length+'</div>';
+  html += '<div class="qtext">'+item.q+'</div>';
+  item.opts.forEach(function(opt, i){
+    html += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+opt+'</button>';
+  });
+  html += '<div class="explain" id="explainBox">'+item.exp+'</div>';
+  html += '<div class="modal-nav"><span></span><button class="navbtn primary" id="nextBtn" style="display:none" onclick="nextQuestion()">Suivant →</button></div>';
+  c.innerHTML = html;
+}
+function answer(i){
+  if(answered) return;
+  answered = true;
+  var item = currentQuiz[currentIndex];
+  var opts = document.querySelectorAll('.opt');
+  opts.forEach(function(o, idx){
+    o.disabled = true;
+    if(idx === item.correct) o.classList.add('correct');
+    else if(idx === i) o.classList.add('wrong');
+  });
+  if(i === item.correct) currentScore++;
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+function nextQuestion(){
+  currentIndex++;
+  renderQuestion();
+}
+function scoreMessage(score, total){
+  var pct = score/total;
+  if(pct === 1) return "Sans faute, cette partie est acquise.";
+  if(pct >= 0.7) return "Bon niveau, revoyez juste les points manqués.";
+  if(pct >= 0.4) return "Des bases correctes, mais retournez lire les fiches concernées.";
+  return "Cette partie mérite une relecture complète avant l'épreuve.";
+}
+
+/* ============ PDF EXPORT ============ */
+function exportPDF(){
+  var btn = document.getElementById('exportBtn');
+  btn.textContent = '⏳ Génération...';
+  var body = document.body;
+  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
+    var pdf = new window.jspdf.jsPDF('p','mm','a4');
+    var pageWidth = 210, pageHeight = 297;
+    var imgWidth = pageWidth;
+    var imgHeight = canvas.height * imgWidth / canvas.width;
+    var heightLeft = imgHeight, position = 0;
+    var imgData = canvas.toDataURL('image/jpeg', 0.92);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while(heightLeft > 0){
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save('UE536_Anglais.pdf');
+    btn.textContent = '⬇ Export PDF';
+  }).catch(function(err){
+    console.error(err);
+    btn.textContent = '⬇ Export PDF';
+  });
+}
+</script>
+</body>
+</html>
