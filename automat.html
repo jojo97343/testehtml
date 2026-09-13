@@ -2078,12 +2078,13 @@ async function insertSession(prenom, fiche = null) {
             'apikey': SB_KEY_ANON,
             'Authorization': `Bearer ${SB_KEY_ANON}`,
             'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
+            'Prefer': 'resolution=ignore-duplicates,return=minimal'
         },
         body: JSON.stringify({
             visitor_id: getVisitorId(),
             prenom,
             fiche,
+            fiche_date: fiche ? new Date().toISOString().split('T')[0] : null,
             connected_at: new Date().toISOString()
         })
     }).catch(() => {});
