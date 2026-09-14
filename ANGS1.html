@@ -1197,14 +1197,71 @@ window.addEventListener('message', function(e){
 
 /* ============ CHAPTER NAV ============ */
 var navBtns = document.querySelectorAll('.chnav-btn');
+var suppressScrollSpy = false;
 navBtns.forEach(function(btn){
   btn.addEventListener('click', function(){
     navBtns.forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
     var target = document.getElementById(btn.dataset.target);
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    if(target){
+      suppressScrollSpy = true;
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      // re-enable scroll-spy once the smooth scroll has settled
+      window.clearTimeout(window._scrollSpyResume);
+      window._scrollSpyResume = window.setTimeout(function(){ suppressScrollSpy = false; }, 700);
+    }
   });
 });
+
+/* ============ SCROLL-SPY — highlight the chapter currently in view ============ */
+(function(){
+  var chapterSections = Array.prototype.slice.call(document.querySelectorAll('.chapter[id]'));
+  var chnavEl = document.querySelector('.chnav');
+  if(chapterSections.length === 0 || !chnavEl) return;
+
+  function setActiveButton(targetId){
+    var changed = false;
+    navBtns.forEach(function(b){
+      var shouldBeActive = b.dataset.target === targetId;
+      if(shouldBeActive && !b.classList.contains('active')) changed = true;
+      b.classList.toggle('active', shouldBeActive);
+    });
+    if(changed){
+      var activeBtn = document.querySelector('.chnav-btn.active');
+      var scroller = document.getElementById('chnav');
+      if(activeBtn && scroller){
+        var btnLeft = activeBtn.offsetLeft;
+        var btnRight = btnLeft + activeBtn.offsetWidth;
+        if(btnLeft < scroller.scrollLeft + 10 || btnRight > scroller.scrollLeft + scroller.clientWidth - 10){
+          scroller.scrollTo({left: Math.max(0, btnLeft - 30), behavior:'smooth'});
+        }
+      }
+    }
+  }
+
+  function updateOnScroll(){
+    if(suppressScrollSpy) return;
+    var offset = chnavEl.offsetHeight + 12;
+    var current = chapterSections[0];
+    chapterSections.forEach(function(sec){
+      if(sec.getBoundingClientRect().top - offset <= 0) current = sec;
+    });
+    setActiveButton(current.id);
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      window.requestAnimationFrame(function(){
+        updateOnScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+
+  updateOnScroll();
+})();
 
 /* ============ CHAPTER NAV — SCROLL/DRAG/WHEEL SUPPORT ============ */
 (function(){
