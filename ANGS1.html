@@ -63,6 +63,18 @@ a{color:inherit;}
 .subnav-pill{background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);padding:6px 13px;border-radius:100px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s ease;}
 .subnav-pill:hover{color:var(--text);border-color:var(--violet-soft);}
 .subnav-pill.active{background:var(--grad);color:#fff;border-color:transparent;}
+.vocsearch{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:100px;padding:10px 18px;margin-bottom:18px;box-shadow:var(--shadow);}
+.vocsearch-icon{font-size:14px;opacity:.6;}
+.vocsearch input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14.5px;}
+.vocsearch input::placeholder{color:var(--text-faint);}
+.vocsearch-clear{background:var(--panel2);border:1px solid var(--border);color:var(--text-faint);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;font-family:inherit;flex:0 0 auto;}
+.vocsearch-clear:hover{color:var(--text);border-color:var(--violet-soft);}
+.vocsearch-count{font-size:12px;color:var(--text-faint);white-space:nowrap;flex:0 0 auto;}
+table.mini tr.no-match{display:none;}
+.card.no-results{display:none;}
+mark.vochit{background:rgba(250,204,21,.35);color:inherit;border-radius:3px;padding:0 2px;}
+.novoc-msg{text-align:center;color:var(--text-faint);font-size:14px;padding:30px 0;display:none;}
+.novoc-msg.show{display:block;}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
 .chapter{padding:44px 0 20px;scroll-margin-top:70px;}
@@ -740,6 +752,13 @@ table.mini td{color:var(--text-dim);}
 
   <div class="freqbar"><span class="flabel">Sources</span><div class="years"><span class="yr hit">Toolbox 1 & 2</span><span class="yr hit">Topic 1 · Finance</span><span class="yr hit">Topic 2 · Accounting & Auditing</span><span class="yr hit">Topic 3 · Governance & CSR</span></div></div>
 
+  <div class="vocsearch">
+    <span class="vocsearch-icon">🔍</span>
+    <input type="text" id="vocSearchInput" placeholder="Rechercher un mot (anglais ou français)…" autocomplete="off">
+    <button class="vocsearch-clear" id="vocSearchClear" title="Effacer" style="display:none;">×</button>
+    <span class="vocsearch-count" id="vocSearchCount"></span>
+  </div>
+
   <div class="subnav" id="subnav9">
     <button class="subnav-pill" data-jump="voc-theories">Théories économiques</button>
     <button class="subnav-pill" data-jump="voc-management">Management & innovation</button>
@@ -1076,6 +1095,7 @@ table.mini td{color:var(--text-dim);}
       </div>
     </div>
   </div>
+  <p class="novoc-msg" id="novocMsg">Aucun mot ne correspond à cette recherche.</p>
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch9')">Commencer le quiz du chapitre 9 →</button></div>
 </section>
 
@@ -1233,6 +1253,86 @@ navBtns.forEach(function(btn){
       var target = document.getElementById(pill.dataset.jump);
       if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
     });
+  });
+})();
+
+/* ============ VOCAB SEARCH (chapitre 9) ============ */
+(function(){
+  var input = document.getElementById('vocSearchInput');
+  var clearBtn = document.getElementById('vocSearchClear');
+  var countEl = document.getElementById('vocSearchCount');
+  var noResults = document.getElementById('novocMsg');
+  var subnav = document.getElementById('subnav9');
+  if(!input) return;
+
+  function normalize(str){
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
+
+  function highlight(cell, query){
+    var original = cell.dataset.orig || cell.textContent;
+    cell.dataset.orig = original;
+    if(!query){ cell.textContent = original; return; }
+    var normOrig = normalize(original);
+    var idx = normOrig.indexOf(query);
+    if(idx === -1){ cell.textContent = original; return; }
+    // map back to original string using same-length assumption (normalize keeps length for accented->base chars mostly)
+    var before = original.slice(0, idx);
+    var match = original.slice(idx, idx + query.length);
+    var after = original.slice(idx + query.length);
+    cell.innerHTML = '';
+    cell.appendChild(document.createTextNode(before));
+    var markEl = document.createElement('mark');
+    markEl.className = 'vochit';
+    markEl.textContent = match;
+    cell.appendChild(markEl);
+    cell.appendChild(document.createTextNode(after));
+  }
+
+  function runFilter(){
+    var raw = input.value;
+    var query = normalize(raw);
+    clearBtn.style.display = raw ? 'flex' : 'none';
+    var cards = document.querySelectorAll('#ch9 .notions > .card');
+    var totalMatches = 0;
+    var anyVisible = false;
+
+    cards.forEach(function(card){
+      var rows = card.querySelectorAll('table.mini tr');
+      var cardMatches = 0;
+      rows.forEach(function(row){
+        if(row.querySelector('th')){ return; } // header row always kept, not counted
+        var cells = row.querySelectorAll('td');
+        if(cells.length === 0) return;
+        var rowText = normalize(row.textContent);
+        var matches = !query || rowText.indexOf(query) !== -1;
+        row.classList.toggle('no-match', !matches);
+        if(matches){
+          cardMatches++;
+          totalMatches++;
+        }
+        cells.forEach(function(cell){ highlight(cell, matches ? query : ''); });
+      });
+      var cardHasResults = !query || cardMatches > 0;
+      card.classList.toggle('no-results', !cardHasResults);
+      if(cardHasResults) anyVisible = true;
+    });
+
+    if(!query){
+      countEl.textContent = '';
+      noResults.classList.remove('show');
+    } else {
+      countEl.textContent = totalMatches + (totalMatches > 1 ? ' résultats' : ' résultat');
+      noResults.classList.toggle('show', totalMatches === 0);
+    }
+    if(subnav) subnav.style.opacity = query ? '0.4' : '1';
+  }
+
+  input.addEventListener('input', runFilter);
+  clearBtn.addEventListener('click', function(){
+    input.value = '';
+    runFilter();
+    input.focus();
   });
 })();
 
