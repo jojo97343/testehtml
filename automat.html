@@ -2299,22 +2299,24 @@ function renderChart(mode, sessions) {
     if (mode === 'day') {
         for (let h = 0; h < 24; h++) {
             labels.push(h + 'h');
-            const count = src.filter(r => {
+            // Personnes uniques par heure
+            const unique = new Set(src.filter(r => {
                 const d = new Date(r.connected_at);
                 return d.getDate()===now.getDate() && d.getMonth()===now.getMonth() && d.getHours()===h;
-            }).length;
-            buckets.push(count);
+            }).map(r => r.visitor_id));
+            buckets.push(unique.size);
         }
     } else {
         for (let d = 6; d >= 0; d--) {
             const day = new Date(now); day.setDate(now.getDate() - d);
             const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
             labels.push(dayNames[day.getDay()]);
-            const count = src.filter(r => {
+            // Personnes uniques par jour
+            const unique = new Set(src.filter(r => {
                 const rd = new Date(r.connected_at);
                 return rd.getDate()===day.getDate() && rd.getMonth()===day.getMonth() && rd.getFullYear()===day.getFullYear();
-            }).length;
-            buckets.push(count);
+            }).map(r => r.visitor_id));
+            buckets.push(unique.size);
         }
     }
 
@@ -2397,11 +2399,17 @@ function renderMonthsChart(sessions) {
 
     schoolMonths.forEach(({month, year}) => {
         labels.push(monthNames[month]);
-        const count = src.filter(r => {
-            const rd = new Date(r.connected_at);
-            return rd.getMonth() === month && rd.getFullYear() === year;
-        }).length;
-        buckets.push(count);
+        // Personnes uniques par jour dans ce mois
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let totalUnique = 0;
+        for (let day = 1; day <= daysInMonth; day++) {
+            const unique = new Set(src.filter(r => {
+                const rd = new Date(r.connected_at);
+                return rd.getMonth()===month && rd.getFullYear()===year && rd.getDate()===day;
+            }).map(r => r.visitor_id));
+            totalUnique += unique.size;
+        }
+        buckets.push(totalUnique);
     });
 
     const max = Math.max(...buckets, 1);
