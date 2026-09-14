@@ -729,12 +729,18 @@
         /* ── NOTES PANEL ── */
         .notes-panel {
             display: none; flex-direction: column;
-            width: 360px; flex-shrink: 0;
+            width: 360px; min-width: 280px; max-width: 700px;
+            flex-shrink: 0;
             background: var(--bg2);
             border-left: 1px solid var(--border);
             position: relative;
         }
         .notes-panel.open { display: flex; }
+        .notes-panel::after {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+            cursor: col-resize; z-index: 10; transition: background .2s;
+        }
+        .notes-panel:hover::after { background: rgba(168,85,247,.25); }
         .notes-panel::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; height: 2px;
@@ -878,12 +884,18 @@
         @media (max-width: 768px) {
             .notes-panel {
                 position: fixed; right: 0; top: 0; bottom: 0; z-index: 150;
-                width: min(360px, 95vw);
+                width: 100vw;
                 transform: translateX(110%);
                 transition: transform .35s cubic-bezier(.4,0,.2,1);
                 box-shadow: -20px 0 60px rgba(0,0,0,.5);
             }
+            .notes-panel::after { display: none; }
             .notes-panel.open { display: flex; transform: translateX(0); }
+            .notes-toolbar { gap: 4px; padding: 8px 10px; }
+            .notes-btn { height: 34px; padding: 0 10px; font-size: .72rem; }
+            .notes-header { padding: 16px 16px 12px; }
+            .notes-editor { padding: 16px; font-size: .9rem; }
+            .notes-footer { padding: 10px 16px; }
         }
 
         
@@ -1657,6 +1669,55 @@ function closeNotes() {
     document.getElementById('notes-panel').classList.remove('open');
     currentMatiere = null;
 }
+
+// ── REDIMENSIONNEMENT DU PANNEAU NOTES ───────────────────────────────────
+(function() {
+    let isResizing = false;
+    let startX, startWidth;
+    const panel = document.getElementById('notes-panel');
+    if (!panel) return;
+
+    panel.addEventListener('mousedown', (e) => {
+        if (window.innerWidth <= 768) return;
+        // Détecter si le clic est dans les 6px du bord gauche
+        const rect = panel.getBoundingClientRect();
+        if (e.clientX > rect.left + 6) return;
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = panel.offsetWidth;
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const delta = startX - e.clientX;
+        const newWidth = Math.min(Math.max(startWidth + delta, 280), 700);
+        panel.style.width = newWidth + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        localStorage.setItem('hub_notes_width', panel.offsetWidth);
+    });
+
+    // Curseur col-resize au survol du bord gauche
+    panel.addEventListener('mousemove', (e) => {
+        if (window.innerWidth <= 768) return;
+        const rect = panel.getBoundingClientRect();
+        panel.style.cursor = e.clientX <= rect.left + 6 ? 'col-resize' : '';
+    });
+
+    // Restaurer la largeur sauvegardée
+    const savedWidth = localStorage.getItem('hub_notes_width');
+    if (savedWidth && window.innerWidth > 768) {
+        panel.style.width = savedWidth + 'px';
+    }
+})();
 
 function fmt(cmd) {
     document.getElementById('notes-editor').focus();
