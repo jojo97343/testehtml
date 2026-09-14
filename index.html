@@ -2884,18 +2884,21 @@ function checkPrenom() {
             <div class="ob-hero">
                 <div class="ob-icon-wrap teal">🧠</div>
                 <div class="ob-title">Les quiz interactifs</div>
-                <div class="ob-desc">Un quiz à la fin de chaque chapitre, puis un quiz final mode partiel pour tester l'ensemble de tes connaissances.</div>
+                <div class="ob-desc">Des quiz optionnels à chaque chapitre, plus un quiz final pour tester l'ensemble de tes connaissances — rien n'est obligatoire.</div>
             </div>
             <div class="ob-features">
                 <div class="ob-feat">
-                    <div class="ob-feat-icon teal">✅</div>
-                    <div><div class="ob-feat-title">Feedback immédiat</div><div class="ob-feat-sub">Chaque réponse expliquée en détail pour comprendre l'erreur</div></div>
+                    <div class="ob-feat-icon teal">📖</div>
+                    <div><div class="ob-feat-title">Quiz par chapitre</div><div class="ob-feat-sub">Un quiz skippable à la fin de chaque chapitre — clique sur "Commencer le quiz" si tu veux t'entraîner</div></div>
                 </div>
                 <div class="ob-feat">
                     <div class="ob-feat-icon purple">🏆</div>
-                    <div><div class="ob-feat-title">Score et progression</div><div class="ob-feat-sub">Vois ta progression sur chaque section et par matière</div></div>
+                    <div><div class="ob-feat-title">Quiz final</div><div class="ob-feat-sub">Un grand quiz en bas de chaque fiche qui mélange toutes les notions de la matière</div></div>
                 </div>
-
+                <div class="ob-feat">
+                    <div class="ob-feat-icon amber">✅</div>
+                    <div><div class="ob-feat-title">Feedback immédiat</div><div class="ob-feat-sub">Chaque réponse expliquée en détail pour comprendre l'erreur et progresser</div></div>
+                </div>
             </div>
         </div>
 
@@ -2915,10 +2918,6 @@ function checkPrenom() {
                     <div class="ob-feat-icon purple">✏️</div>
                     <div><div class="ob-feat-title">Éditeur riche</div><div class="ob-feat-sub">Gras, italique, titres, listes — formate tes notes comme tu veux</div></div>
                 </div>
-                <div class="ob-feat">
-                    <div class="ob-feat-icon blue">📱</div>
-                    <div><div class="ob-feat-title">Multi-appareil</div><div class="ob-feat-sub">Consulte tes notes depuis ton téléphone ou ton ordinateur</div></div>
-                </div>
             </div>
         </div>
 
@@ -2936,6 +2935,7 @@ function checkPrenom() {
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Le menu 📎 contient les PDF et ressources utiles</span></div>
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Les notions 🔥 sont les plus fréquentes aux partiels</span></div>
                 <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Bascule entre mode sombre 🌙 et clair ☀️ via le bouton en haut à droite</span></div>
+                <div class="ob-check-item"><div class="ob-check-icon">✓</div><span>Masque ou affiche le menu latéral avec le bouton ◀ pour agrandir la fiche</span></div>
             </div>
         </div>
 
