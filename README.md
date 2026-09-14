@@ -1336,7 +1336,14 @@
 
                 <!-- Graphique fiches les plus consultées -->
                 <div class="section-card">
-                    <div class="section-title" style="margin-bottom:16px">📚 Fiches les plus consultées</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+                        <div class="section-title" style="margin-bottom:0">📚 Fiches les plus consultées</div>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn-action" id="fiche-btn-day" onclick="switchFicheChart('day')" style="border-color:var(--violet);color:var(--violet);padding:4px 12px;font-size:.72rem">Aujourd'hui</button>
+                            <button class="btn-action" id="fiche-btn-week" onclick="switchFicheChart('week')" style="padding:4px 12px;font-size:.72rem">Semaine</button>
+                            <button class="btn-action" id="fiche-btn-all" onclick="switchFicheChart('all')" style="padding:4px 12px;font-size:.72rem">Tout</button>
+                        </div>
+                    </div>
                     <div id="chart-fiches"></div>
                 </div>
 
@@ -2332,11 +2339,35 @@ function renderChart(mode, sessions) {
     labelsEl.innerHTML = labels.map(l => `<div style="flex:1;text-align:center;font-size:.55rem">${l}</div>`).join('');
 }
 
+let currentFicheChart = 'day';
+
+function switchFicheChart(mode) {
+    currentFicheChart = mode;
+    ['day','week','all'].forEach(m => {
+        const btn = document.getElementById('fiche-btn-' + m);
+        if (btn) {
+            btn.style.borderColor = m === mode ? 'var(--violet)' : 'var(--border)';
+            btn.style.color = m === mode ? 'var(--violet)' : 'var(--muted)';
+        }
+    });
+    renderFichesChart(allSessions);
+}
+
 function renderFichesChart(sessions) {
     const el = document.getElementById('chart-fiches');
     if (!el) return;
 
-    const fichesMap = {};
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    let src = sessions.filter(r => r.fiche);
+    if (currentFicheChart === 'day') {
+        src = src.filter(r => r.fiche_date === todayStr);
+    } else if (currentFicheChart === 'week') {
+        src = src.filter(r => new Date(r.connected_at) >= weekAgo);
+    }
+
     const fichesLabels = {
         'FIS1.html': '💰 Finance S1',
         'CGS1.html': '📊 Contrôle de gestion S1',
@@ -2344,13 +2375,14 @@ function renderFichesChart(sessions) {
         'MSIS1.html': '💻 Management SI S1',
     };
 
-    sessions.filter(r => r.fiche).forEach(r => {
+    const fichesMap = {};
+    src.forEach(r => {
         const label = fichesLabels[r.fiche] || r.fiche;
         fichesMap[label] = (fichesMap[label] || 0) + 1;
     });
 
     if (!Object.keys(fichesMap).length) {
-        el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:20px 0">Aucune consultation de fiche encore.</div>';
+        el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:.8rem;padding:20px 0">Aucune consultation de fiche sur cette période.</div>';
         return;
     }
 
