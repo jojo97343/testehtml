@@ -2072,6 +2072,7 @@ async function pingVisitor(prenom) {
 }
 
 async function insertSession(prenom, fiche = null) {
+    const today = new Date().toISOString().split('T')[0];
     await fetch(`${SB_URL}/rest/v1/sessions`, {
         method: 'POST',
         headers: {
@@ -2083,8 +2084,8 @@ async function insertSession(prenom, fiche = null) {
         body: JSON.stringify({
             visitor_id: getVisitorId(),
             prenom,
-            fiche,
-            fiche_date: fiche ? new Date().toISOString().split('T')[0] : null,
+            fiche: fiche || null,
+            fiche_date: today,
             connected_at: new Date().toISOString()
         })
     }).catch(() => {});
@@ -2221,19 +2222,18 @@ async function loadVisitors() {
     const now = Date.now();
     const active1min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
     const connectionsOnly = allSessions.filter(r => !r.fiche);
-    const today = connectionsOnly.filter(r => {
-        const d = new Date(r.connected_at); const t = new Date();
-        return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
-    });
-    const week = connectionsOnly.filter(r => (now - new Date(r.connected_at).getTime()) < 7 * 24 * 60 * 60 * 1000);
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayUnique = [...new Set(connectionsOnly.filter(r => r.fiche_date === todayStr).map(r => r.visitor_id))].length;
+    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    const weekUnique = [...new Set(connectionsOnly.filter(r => new Date(r.connected_at) >= weekAgo).map(r => r.visitor_id))].length;
 
     const sNow = document.getElementById('stat-now');
     const sToday = document.getElementById('stat-today');
     const sWeek = document.getElementById('stat-week');
     const sTotal = document.getElementById('stat-total-v');
     if (sNow) sNow.textContent = active1min.length;
-    if (sToday) sToday.textContent = today.length;
-    if (sWeek) sWeek.textContent = week.length;
+    if (sToday) sToday.textContent = todayUnique;
+    if (sWeek) sWeek.textContent = weekUnique;
     if (sTotal) sTotal.textContent = rows.length;
 
     renderVisitors();
