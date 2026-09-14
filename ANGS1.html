@@ -75,6 +75,8 @@ table.mini tr.no-match{display:none;}
 mark.vochit{background:rgba(250,204,21,.35);color:inherit;border-radius:3px;padding:0 2px;}
 .novoc-msg{text-align:center;color:var(--text-faint);font-size:14px;padding:30px 0;display:none;}
 .novoc-msg.show{display:block;}
+.practice-btn{margin-top:14px;background:var(--panel2);border:1px solid var(--violet-soft);color:var(--violet-soft);padding:8px 16px;border-radius:100px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;gap:6px;}
+.practice-btn:hover{background:var(--grad);color:#fff;border-color:transparent;}
 
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
 .chapter{padding:44px 0 20px;scroll-margin-top:70px;}
@@ -139,6 +141,9 @@ table.mini td{color:var(--text-dim);}
 .opt.correct{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80;}
 .opt.wrong{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
 .opt:disabled{cursor:default;}
+.typed-input{width:100%;background:var(--panel2);border:2px solid var(--border);color:var(--text);padding:12px 14px;border-radius:11px;font-family:inherit;font-size:15px;outline:none;transition:border-color .15s ease;}
+.typed-input:focus{border-color:var(--violet-soft);}
+.typed-input:disabled{opacity:.8;}
 .explain{background:var(--panel2);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 14px;font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55;display:none;}
 .explain.show{display:block;}
 .modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
@@ -794,6 +799,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>social benefits</td><td>minima sociaux</td></tr>
       <tr><td>stocks</td><td>actions</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-theories','Théories économiques')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-management">
@@ -822,6 +828,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>to adopt and implement</td><td>mettre en place</td></tr>
       <tr><td>economies of scale</td><td>économies d'échelle</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-management','Management & innovation')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-media">
@@ -832,6 +839,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>biased</td><td>parti pris / partial / subjectif</td></tr>
       <tr><td>live coverage</td><td>informations en continu</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-media','Presse & médias')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-banking">
@@ -861,6 +869,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>mining</td><td>exploitation, exploration (crypto)</td></tr>
       <tr><td>futures contract</td><td>marché à terme</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-banking','Banque')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-markets">
@@ -895,6 +904,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>to repeal</td><td>abroger (une loi)</td></tr>
       <tr><td>the SEC (Securities and Exchange Commission)</td><td>l'équivalent américain de l'AMF (Autorité des marchés financiers)</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-markets','Marchés financiers')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-microfinance">
@@ -915,6 +925,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>sustainable</td><td>durable (respectueux de l'environnement, viable à long terme)</td></tr>
       <tr><td>go beyond</td><td>aller au-delà de</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-microfinance','Microfinance & ESG')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-accounting">
@@ -947,6 +958,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>cashflow statement</td><td>relevé/état de flux de trésorerie</td></tr>
       <tr><td>inflows</td><td>entrées (de trésorerie)</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-accounting','Normes comptables')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-assets">
@@ -982,6 +994,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>trade secret / know-how</td><td>secret industriel / savoir-faire</td></tr>
       <tr><td>impairment</td><td>dépréciation</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-assets','Actifs & passifs')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-audit">
@@ -1004,6 +1017,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>insurance claims</td><td>déclarations de sinistres</td></tr>
       <tr><td>lawsuit / litigation</td><td>procès / poursuites judiciaires</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-audit','Audit & Big Four')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-challenges">
@@ -1028,6 +1042,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>data privacy / cybersecurity</td><td>confidentialité des données / cybersécurité</td></tr>
       <tr><td>bookkeeping</td><td>la tenue de comptes</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-challenges','Défis comptabilité/IA')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-governance">
@@ -1060,6 +1075,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>to seek to / to prioritize</td><td>chercher à faire / donner la priorité à</td></tr>
       <tr><td>sustainability</td><td>durabilité</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-governance','Gouvernance')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-csr">
@@ -1089,6 +1105,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>purpose</td><td>objet, finalité (d'une entreprise)</td></tr>
       <tr><td>Third Sector</td><td>économie sociale et solidaire</td></tr>
       </table>
+      <button class="practice-btn" onclick="openVocabQuiz('voc-csr','Stakeholders & RSE')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
       <div class="recap">
         <summary>Voir le lien direct avec le corrigé Boeing (session 2025)</summary>
         <p style="margin-top:8px;">Les notions <strong>shareholder value / stakeholder value</strong>, <strong>C-suite</strong> et <strong>CSR</strong> vues ici sont exactement celles demandées en Q2 du corrigé 2025 sur Boeing — la Q2 y est notée sur la définition précise de ces deux termes et de leur différence.</p>
@@ -1402,10 +1419,11 @@ QUIZ.final = [].concat(
 );
 
 /* ============ QUIZ ENGINE ============ */
-var currentQuiz = [], currentIndex = 0, currentScore = 0, answered = false;
+var currentQuiz = [], currentIndex = 0, currentScore = 0, answered = false, currentQuizTitle = 'Quiz';
 
 function openQuiz(key){
   currentQuiz = QUIZ[key];
+  currentQuizTitle = 'Quiz';
   currentIndex = 0;
   currentScore = 0;
   document.getElementById('quizModal').classList.add('open');
@@ -1427,14 +1445,54 @@ function renderQuestion(){
     return;
   }
   var item = currentQuiz[currentIndex];
-  var html = '<h3>Quiz</h3><div class="qcount">Question '+(currentIndex+1)+' / '+currentQuiz.length+'</div>';
+  var badge = item.type === 'type' ? ' <span style="font-size:11px;font-weight:800;color:var(--cyan);border:1px solid var(--cyan);border-radius:100px;padding:2px 9px;vertical-align:middle;">✍️ à écrire</span>' : ' <span style="font-size:11px;font-weight:800;color:var(--violet-soft);border:1px solid var(--violet-soft);border-radius:100px;padding:2px 9px;vertical-align:middle;">QCM</span>';
+  var html = '<h3>'+currentQuizTitle+badge+'</h3><div class="qcount">Question '+(currentIndex+1)+' / '+currentQuiz.length+'</div>';
   html += '<div class="qtext">'+item.q+'</div>';
-  item.opts.forEach(function(opt, i){
-    html += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+opt+'</button>';
-  });
-  html += '<div class="explain" id="explainBox">'+item.exp+'</div>';
+  if(item.type === 'type'){
+    html += '<input type="text" id="typedAnswer" class="typed-input" placeholder="Tapez votre réponse…" autocomplete="off" autocapitalize="off" spellcheck="false">';
+    html += '<button class="navbtn primary" id="submitTypedBtn" style="margin-top:12px;" onclick="submitTyped()">Valider</button>';
+    html += '<div class="explain" id="explainBox"><p id="typedFeedback" style="font-weight:800;margin:0 0 8px;"></p>'+item.exp+'</div>';
+  } else {
+    item.opts.forEach(function(opt, i){
+      html += '<button class="opt" data-i="'+i+'" onclick="answer('+i+')">'+opt+'</button>';
+    });
+    html += '<div class="explain" id="explainBox">'+item.exp+'</div>';
+  }
   html += '<div class="modal-nav"><span></span><button class="navbtn primary" id="nextBtn" style="display:none" onclick="nextQuestion()">Suivant →</button></div>';
   c.innerHTML = html;
+  if(item.type === 'type'){
+    var inputEl = document.getElementById('typedAnswer');
+    inputEl.focus();
+    inputEl.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); submitTyped(); }
+    });
+  }
+}
+function normalizeTyped(s){
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+}
+function submitTyped(){
+  if(answered) return;
+  answered = true;
+  var item = currentQuiz[currentIndex];
+  var inputEl = document.getElementById('typedAnswer');
+  var userVal = inputEl.value;
+  var isCorrect = normalizeTyped(userVal) === normalizeTyped(item.answer);
+  inputEl.disabled = true;
+  document.getElementById('submitTypedBtn').disabled = true;
+  var feedbackEl = document.getElementById('typedFeedback');
+  if(isCorrect){
+    feedbackEl.textContent = '✓ Correct : ' + item.answer;
+    feedbackEl.style.color = '#4ade80';
+    inputEl.style.borderColor = '#4ade80';
+    currentScore++;
+  } else {
+    feedbackEl.textContent = '✗ Réponse attendue : ' + item.answer;
+    feedbackEl.style.color = '#f87171';
+    inputEl.style.borderColor = '#f87171';
+  }
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').style.display = 'inline-block';
 }
 function answer(i){
   if(answered) return;
@@ -1460,6 +1518,104 @@ function scoreMessage(score, total){
   if(pct >= 0.7) return "Bon niveau, revoyez juste les points manqués.";
   if(pct >= 0.4) return "Des bases correctes, mais retournez lire les fiches concernées.";
   return "Cette partie mérite une relecture complète avant l'épreuve.";
+}
+
+/* ============ PER-THEME VOCAB PRACTICE (QCM + traduction FR↔EN) ============ */
+function shuffleArr(arr){
+  var a = arr.slice();
+  for(var i = a.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function extractVocabPairs(cardId){
+  var card = document.getElementById(cardId);
+  if(!card) return [];
+  var rows = card.querySelectorAll('table.mini tr');
+  var pairs = [];
+  rows.forEach(function(row){
+    if(row.querySelector('th')) return;
+    var cells = row.querySelectorAll('td');
+    if(cells.length < 2) return;
+    pairs.push({en: cells[0].textContent.trim(), fr: cells[1].textContent.trim()});
+  });
+  return pairs;
+}
+function buildVocabQuiz(cardId){
+  var pairs = extractVocabPairs(cardId);
+  if(pairs.length === 0) return [];
+
+  // "clean" entries (no slash/parenthesis/comma) are reliable for typed spelling questions
+  var isClean = function(s){ return s.indexOf('/') === -1 && s.indexOf('(') === -1 && s.indexOf(',') === -1; };
+  var cleanPairs = pairs.filter(function(p){ return isClean(p.en) && isClean(p.fr); });
+
+  var shuffledClean = shuffleArr(cleanPairs);
+  var shuffledAll = shuffleArr(pairs);
+
+  var typedCount = Math.min(5, shuffledClean.length);
+  var typedPairs = shuffledClean.slice(0, typedCount);
+  var usedEn = {};
+  typedPairs.forEach(function(p){ usedEn[p.en] = true; });
+
+  var mcqPool = shuffledAll.filter(function(p){ return !usedEn[p.en]; });
+  var mcqCount = Math.min(5, mcqPool.length);
+  var mcqPairs = mcqPool.slice(0, mcqCount);
+
+  var mcqQuestions = mcqPairs.map(function(pair){
+    var toFrench = Math.random() < 0.5;
+    var field = toFrench ? 'fr' : 'en';
+    var correctAnswer = pair[field];
+    var promptText = toFrench
+      ? 'Traduisez en français : « ' + pair.en + ' »'
+      : 'Traduisez en anglais : « ' + pair.fr + ' »';
+    var distractorPool = pairs.filter(function(p){ return p[field] !== correctAnswer; });
+    var uniqueDistractors = [];
+    shuffleArr(distractorPool).forEach(function(p){
+      var candidate = p[field];
+      if(uniqueDistractors.indexOf(candidate) === -1 && candidate !== correctAnswer && uniqueDistractors.length < 3){
+        uniqueDistractors.push(candidate);
+      }
+    });
+    var opts = shuffleArr([correctAnswer].concat(uniqueDistractors));
+    return {
+      type: 'mcq',
+      q: promptText,
+      opts: opts,
+      correct: opts.indexOf(correctAnswer),
+      exp: '« ' + pair.en + ' » ↔ « ' + pair.fr + ' »'
+    };
+  });
+
+  var typedQuestions = typedPairs.map(function(pair){
+    var toEnglish = Math.random() < 0.5;
+    var promptText = toEnglish
+      ? 'Écrivez en anglais (orthographe exacte) : « ' + pair.fr + ' »'
+      : 'Écrivez en français (orthographe exacte) : « ' + pair.en + ' »';
+    return {
+      type: 'type',
+      q: promptText,
+      answer: toEnglish ? pair.en : pair.fr,
+      exp: '« ' + pair.en + ' » ↔ « ' + pair.fr + ' »'
+    };
+  });
+
+  return shuffleArr(mcqQuestions.concat(typedQuestions).map(function(q, i){ return q; }))
+    .sort(function(a, b){
+      // keep the 5 MCQ first, then the 5 typed — clearer for revision
+      if(a.type === b.type) return 0;
+      return a.type === 'mcq' ? -1 : 1;
+    });
+}
+function openVocabQuiz(cardId, themeLabel){
+  var qs = buildVocabQuiz(cardId);
+  if(qs.length === 0) return;
+  currentQuiz = qs;
+  currentQuizTitle = themeLabel + ' — vocabulaire';
+  currentIndex = 0;
+  currentScore = 0;
+  document.getElementById('quizModal').classList.add('open');
+  renderQuestion();
 }
 
 /* ============ PDF EXPORT ============ */
