@@ -18,9 +18,10 @@
   --shadow: 0 8px 30px rgba(0,0,0,.35);
   --radius: 16px;
 }
-[data-theme="light"]{
-  --bg:#f6f4fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1edfb;
-  --border:#e1d9f7; --text:#241b3d; --text-dim:#584c78; --text-faint:#8577a3;
+body.light-theme{
+  --bg:#f5f4fa; --bg2:#ffffff; --bg3:#f0eef8; --panel:#ffffff; --panel2:#f0eef8;
+  --border:rgba(15,14,23,.08); --text:#1a1825; --text-dim:#4a4760; --text-faint:#9b97b5;
+  --white:#1a1825; --muted:#9b97b5;
   --violet:#7c3aed; --violet-soft:#6d28d9; --cyan:#0891b2; --yellow:#b45309;
   --shadow: 0 8px 24px rgba(90,70,160,.12);
 }
@@ -892,16 +893,18 @@ table.mini td{color:var(--text-dim);}
 </div>
 
 <script>
-window.addEventListener('message', function(e){
-  var data = e.data;
-  if(!data) return;
-  var theme = null;
-  if (data.theme) theme = data.theme;
-  else if (data.type === 'theme-change' && data.value) theme = data.value;
-  else if (typeof data === 'string' && (data === 'dark' || data === 'light')) theme = data;
-  if(theme === 'light' || theme === 'dark'){
-    document.documentElement.setAttribute('data-theme', theme);
-  }
+// ── SYNC THÈME AVEC LE HUB ──
+(function() {
+    try {
+        const saved = window.parent.localStorage.getItem('hub_theme') || 'dark';
+        if (saved === 'light') document.body.classList.add('light-theme');
+    } catch(e) {}
+})();
+
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'theme') {
+        document.body.classList.toggle('light-theme', e.data.theme === 'light');
+    }
 });
 
 var navBtns = document.querySelectorAll('.chnav-btn');
@@ -934,6 +937,22 @@ function updateChnavArrows(){
 chnavEl.addEventListener('scroll', updateChnavArrows);
 window.addEventListener('resize', updateChnavArrows);
 updateChnavArrows();
+
+/* Scrollspy : met à jour l'onglet actif quand on scrolle dans la page */
+var chapterSections = document.querySelectorAll('.chapter');
+var sectionObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      var btn = document.querySelector('.chnav-btn[data-target="'+entry.target.id+'"]');
+      if(btn && !btn.classList.contains('active')){
+        navBtns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      }
+    }
+  });
+}, {root:null, rootMargin:'-15% 0px -70% 0px', threshold:0});
+chapterSections.forEach(function(sec){ sectionObserver.observe(sec); });
 
 var QUIZ = {
   ch1: [
@@ -1071,7 +1090,7 @@ function exportPDF(){
   var btn = document.getElementById('exportBtn');
   btn.textContent = '⏳ Génération...';
   var body = document.body;
-  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
+  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
     var pdf = new window.jspdf.jsPDF('p','mm','a4');
     var pageWidth = 210, pageHeight = 297;
     var imgWidth = pageWidth;
