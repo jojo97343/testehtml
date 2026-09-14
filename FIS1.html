@@ -109,22 +109,24 @@ table.mini td{color:var(--text-dim);}
 .recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
 .recap summary::before{content:"▸ ";color:var(--violet-soft);}
 .recap[open] summary::before{content:"▾ ";}
-.recap table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
-.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;}
+.recap table{width:100%;min-width:420px;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
+.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;white-space:nowrap;}
+.recap th:first-child,.recap td:first-child{white-space:normal;}
 .recap th{background:var(--panel2);color:var(--text-faint);}
 .recap td.yes{color:var(--yellow);font-weight:800;}
 .recap td.no{color:var(--text-faint);opacity:.4;}
 
 .chapter-recap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:28px;box-shadow:var(--shadow);}
 .chapter-recap-title{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:14px 20px 0;}
-.chapter-recap table{width:100%;border-collapse:collapse;}
-.chapter-recap th,.chapter-recap td{padding:14px 18px;text-align:center;border-bottom:1px solid var(--border);font-size:14px;}
+.chapter-recap table{width:100%;min-width:480px;border-collapse:collapse;}
+.chapter-recap th,.chapter-recap td{padding:14px 18px;text-align:center;border-bottom:1px solid var(--border);font-size:14px;white-space:nowrap;}
 .chapter-recap tr:last-child td{border-bottom:none;}
-.chapter-recap th:first-child,.chapter-recap td:first-child{text-align:left;}
+.chapter-recap th:first-child,.chapter-recap td:first-child{text-align:left;white-space:normal;}
 .chapter-recap th{background:var(--panel2);color:var(--text);font-weight:700;}
 .chapter-recap td:first-child{font-weight:700;color:var(--text);}
 .chapter-recap td.yes{color:#4ade80;font-weight:800;font-size:16px;}
 .chapter-recap td.no{color:var(--text-faint);font-weight:600;opacity:.5;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 
 .quizcta{margin-top:26px;display:flex;justify-content:center;}
 .quizbtn{background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;}
@@ -905,6 +907,14 @@ window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'theme') {
         document.body.classList.toggle('light-theme', e.data.theme === 'light');
     }
+});
+
+/* Rend les tableaux scrollables horizontalement sans casser l'alignement des colonnes */
+document.querySelectorAll('.recap table, .chapter-recap table').forEach(function(t){
+  var wrap = document.createElement('div');
+  wrap.className = 'table-scroll';
+  t.parentNode.insertBefore(wrap, t);
+  wrap.appendChild(t);
 });
 
 var navBtns = document.querySelectorAll('.chnav-btn');
