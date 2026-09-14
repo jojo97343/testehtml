@@ -110,10 +110,12 @@ mark.vochit{background:rgba(250,204,21,.35);color:inherit;border-radius:3px;padd
 .example b{color:var(--violet-soft);}
 ul.detail-list{margin:8px 0;padding-left:20px;}
 ul.detail-list li{font-size:14.5px;color:var(--text-dim);line-height:1.6;margin-bottom:4px;}
-table.mini{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
-table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;}
-table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:9px;}
+table.mini{width:100%;min-width:400px;border-collapse:collapse;margin:0;font-size:13.5px;}
+table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;word-wrap:break-word;}
+table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;white-space:nowrap;}
 table.mini td{color:var(--text-dim);}
+table.mini td:first-child{white-space:nowrap;font-weight:600;color:var(--text);}
 
 .recap{margin-top:14px;}
 .recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
@@ -161,6 +163,9 @@ table.mini td{color:var(--text-dim);}
   .badge{min-width:90px;padding:8px 12px;}
   .badge .num{font-size:18px;}
   .card{padding:18px;}
+  table.mini{min-width:340px;font-size:12.5px;}
+  table.mini th,table.mini td{padding:6px 8px;}
+  .wrap{padding:0 14px;}
 }
 </style>
 </head>
@@ -391,7 +396,7 @@ table.mini td{color:var(--text-dim);}
     <div class="card">
       <div class="card-head"><h3>4.1 · Champ lexical de l'audit et de la conformité</h3><span class="tag hot">🔥 Vu dans les annales</span></div>
       <p>Vocabulaire indispensable, quel que soit le sujet précis de l'article tombé à l'examen.</p>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>auditor / auditing</td><td>auditeur / audit</td></tr>
       <tr><td>independence / conflict of interest</td><td>indépendance / conflit d'intérêts</td></tr>
       <tr><td>compliance / to comply with</td><td>conformité / se conformer à</td></tr>
@@ -400,41 +405,41 @@ table.mini td{color:var(--text-dim);}
       <tr><td>stakeholders / shareholders</td><td>parties prenantes / actionnaires</td></tr>
       <tr><td>regulator / regulatory body</td><td>régulateur / organisme de régulation</td></tr>
       <tr><td>oversight</td><td>supervision, surveillance</td></tr>
-      </table>
+      </table></div>
     </div>
 
     <div class="card">
       <div class="card-head"><h3>4.2 · Champ lexical de la gouvernance et de la finance</h3><span class="tag hot">🔥 Vu dans les annales</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>shareholder value / stakeholder value</td><td>valeur actionnariale / valeur partenariale</td></tr>
       <tr><td>layoffs</td><td>licenciements</td></tr>
       <tr><td>mergers and acquisitions</td><td>fusions-acquisitions</td></tr>
       <tr><td>stock buybacks / dividends</td><td>rachats d'actions / dividendes</td></tr>
       <tr><td>CSR (Corporate Social Responsibility)</td><td>responsabilité sociétale des entreprises</td></tr>
       <tr><td>C-suite</td><td>dirigeants de haut niveau (CEO, CFO...)</td></tr>
-      </table>
+      </table></div>
     </div>
 
     <div class="card">
       <div class="card-head"><h3>4.3 · Champ lexical des ressources humaines et compétences</h3><span class="tag watch">⚡ Vu dans les annales</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>skill gap</td><td>écart/manque de compétences</td></tr>
       <tr><td>interpersonal / communication skills</td><td>compétences relationnelles / de communication</td></tr>
       <tr><td>coaching / training programs</td><td>coaching / programmes de formation</td></tr>
       <tr><td>recruits / junior staff</td><td>nouvelles recrues / jeunes collaborateurs</td></tr>
       <tr><td>critical thinking</td><td>esprit critique</td></tr>
-      </table>
+      </table></div>
     </div>
 
     <div class="card">
       <div class="card-head"><h3>4.4 · Le vocabulaire du ton et du registre journalistique</h3><span class="tag hot">🔥 Indispensable pour Q1</span></div>
       <p>Utilisé systématiquement pour qualifier le ton du journaliste — question posée dans les 4 sujets.</p>
-      <table class="mini"><tr><th>Adjectif</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Adjectif</th><th>Sens</th></tr>
       <tr><td>neutral / descriptive / informative</td><td>ton factuel, sans jugement</td></tr>
       <tr><td>critical</td><td>critique</td></tr>
       <tr><td>ironic / biased</td><td>ironique / partial</td></tr>
       <tr><td>thought-provoking</td><td>qui pousse à la réflexion</td></tr>
-      </table>
+      </table></div>
     </div>
   </div>
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
@@ -516,13 +521,13 @@ table.mini td{color:var(--text-dim);}
 
     <div class="card">
       <div class="card-head"><h3>6.2 · Remplacer par un synonyme de même registre</h3><span class="tag hot">🔥 Technique n°2</span></div>
-      <table class="mini"><tr><th>Mot du texte</th><th>Synonyme académique</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Mot du texte</th><th>Synonyme académique</th></tr>
       <tr><td>show / say</td><td>indicate / reveal / suggest / state</td></tr>
       <tr><td>big / important</td><td>significant / substantial / considerable</td></tr>
       <tr><td>help</td><td>enable / allow / contribute to</td></tr>
       <tr><td>because</td><td>since / as / given that</td></tr>
       <tr><td>a lot of</td><td>numerous / a considerable amount of</td></tr>
-      </table>
+      </table></div>
     </div>
 
     <div class="card">
@@ -737,14 +742,14 @@ table.mini td{color:var(--text-dim);}
 
     <div class="card">
       <div class="card-head"><h3>8.15 · Pour reformuler les verbes "de base" trop simples</h3><span class="tag hot">🔥 Utile pour éviter la répétition</span></div>
-      <table class="mini"><tr><th>Verbe simple</th><th>Alternatives plus riches</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Verbe simple</th><th>Alternatives plus riches</th></tr>
       <tr><td>show</td><td>demonstrate / reveal / highlight / illustrate</td></tr>
       <tr><td>think</td><td>believe / consider / argue</td></tr>
       <tr><td>make (a decision)</td><td>reach / adopt / implement (a decision/measure)</td></tr>
       <tr><td>give (information)</td><td>provide / supply / disclose</td></tr>
       <tr><td>use</td><td>rely on / make use of / resort to</td></tr>
       <tr><td>look at</td><td>examine / assess / analyze</td></tr>
-      </table>
+      </table></div>
     </div>
   </div>
   <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch8')">Commencer le quiz du chapitre 8 →</button></div>
@@ -783,7 +788,7 @@ table.mini td{color:var(--text-dim);}
     <div class="card" id="voc-theories">
       <div class="card-head"><h3>9.1 · Théories économiques fondamentales (libéralisme)</h3><span class="tag watch">📘 Toolbox 1 — Facts you should know</span></div>
       <p>Vocabulaire des « Word box » associées à Adam Smith, Friedrich Hayek et Milton Friedman — utile pour enrichir un commentaire avec des connaissances personnelles.</p>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>supply and demand</td><td>l'offre et la demande</td></tr>
       <tr><td>controversial</td><td>polémique</td></tr>
       <tr><td>taxes and tariffs</td><td>droits de douane</td></tr>
@@ -798,14 +803,14 @@ table.mini td{color:var(--text-dim);}
       <tr><td>purchasing power</td><td>pouvoir d'achat</td></tr>
       <tr><td>social benefits</td><td>minima sociaux</td></tr>
       <tr><td>stocks</td><td>actions</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-theories','Théories économiques')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-management">
       <div class="card-head"><h3>9.2 · Management, industrie et innovation</h3><span class="tag watch">📘 Toolbox 1 — Facts you should know</span></div>
       <p>Taylor, Ford, le lean manufacturing/toyotisme, la théorie HOS et Schumpeter (destruction créatrice, croissance endogène).</p>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>foremen</td><td>contremaîtres</td></tr>
       <tr><td>skilled / unskilled</td><td>spécialisé / non spécialisé</td></tr>
       <tr><td>assembly lines</td><td>travail à la chaîne</td></tr>
@@ -827,24 +832,24 @@ table.mini td{color:var(--text-dim);}
       <tr><td>intangible assets</td><td>actifs immatériels</td></tr>
       <tr><td>to adopt and implement</td><td>mettre en place</td></tr>
       <tr><td>economies of scale</td><td>économies d'échelle</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-management','Management & innovation')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-media">
       <div class="card-head"><h3>9.3 · Presse et médias</h3><span class="tag watch">📘 Toolbox 1 — The media</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>acumen</td><td>perspicacité</td></tr>
       <tr><td>arts</td><td>sciences humaines</td></tr>
       <tr><td>biased</td><td>parti pris / partial / subjectif</td></tr>
       <tr><td>live coverage</td><td>informations en continu</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-media','Presse & médias')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-banking">
       <div class="card-head"><h3>9.4 · Banque et modèle économique des banques</h3><span class="tag watch">📘 Topic 1 — Finance : Banking</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>retail bank(s)</td><td>banque(s) de détail / banque commerciale</td></tr>
       <tr><td>deposit bank</td><td>banque de dépôt</td></tr>
       <tr><td>mortgage</td><td>crédit immobilier</td></tr>
@@ -868,13 +873,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>public ledger</td><td>grand livre comptable</td></tr>
       <tr><td>mining</td><td>exploitation, exploration (crypto)</td></tr>
       <tr><td>futures contract</td><td>marché à terme</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-banking','Banque')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-markets">
       <div class="card-head"><h3>9.5 · Taux d'intérêt, change et marchés financiers</h3><span class="tag watch">📘 Topic 1 — Finance : Financial markets</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>cost-competitive</td><td>meilleur marché</td></tr>
       <tr><td>a base rate</td><td>taux directeur</td></tr>
       <tr><td>breakdown</td><td>rupture</td></tr>
@@ -903,13 +908,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>brokerage</td><td>courtage</td></tr>
       <tr><td>to repeal</td><td>abroger (une loi)</td></tr>
       <tr><td>the SEC (Securities and Exchange Commission)</td><td>l'équivalent américain de l'AMF (Autorité des marchés financiers)</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-markets','Marchés financiers')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-microfinance">
       <div class="card-head"><h3>9.6 · Microcrédit, microfinance et RSE financière (ESG)</h3><span class="tag watch">📘 Topic 1 — Finance : Micro-finance & ESG</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>empowerment</td><td>émancipation</td></tr>
       <tr><td>indebtedness</td><td>endettement</td></tr>
       <tr><td>embezzlement</td><td>détournement de fonds</td></tr>
@@ -924,13 +929,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>benchmark</td><td>taux/indice de référence</td></tr>
       <tr><td>sustainable</td><td>durable (respectueux de l'environnement, viable à long terme)</td></tr>
       <tr><td>go beyond</td><td>aller au-delà de</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-microfinance','Microfinance & ESG')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-accounting">
       <div class="card-head"><h3>9.7 · Normes comptables et états financiers</h3><span class="tag watch">📘 Topic 2 — Accounting : Standards & Statements</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>a framework</td><td>un cadre</td></tr>
       <tr><td>IPO (Initial Public Offering)</td><td>introduction en Bourse</td></tr>
       <tr><td>merger</td><td>fusion</td></tr>
@@ -957,13 +962,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>snapshot</td><td>instantané (photographie financière)</td></tr>
       <tr><td>cashflow statement</td><td>relevé/état de flux de trésorerie</td></tr>
       <tr><td>inflows</td><td>entrées (de trésorerie)</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-accounting','Normes comptables')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-assets">
       <div class="card-head"><h3>9.8 · Actifs, passifs, incorporels et indicateurs non-GAAP</h3><span class="tag watch">📘 Topic 2 — Accounting : Assets/liabilities & Non-GAAP</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>lawsuits</td><td>poursuites judiciaires</td></tr>
       <tr><td>inventory</td><td>stock</td></tr>
       <tr><td>write-down</td><td>la dépréciation</td></tr>
@@ -993,13 +998,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>backlog of orders</td><td>carnet de commandes</td></tr>
       <tr><td>trade secret / know-how</td><td>secret industriel / savoir-faire</td></tr>
       <tr><td>impairment</td><td>dépréciation</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-assets','Actifs & passifs')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-audit">
       <div class="card-head"><h3>9.9 · Audit interne/externe, Big Four et réforme du système</h3><span class="tag hot">🔥 Directement lié aux annales</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>public firms</td><td>sociétés anonymes (SA)</td></tr>
       <tr><td>external auditor</td><td>commissaire aux comptes</td></tr>
       <tr><td>Certified Public Accountant (CPA)</td><td>expert-comptable</td></tr>
@@ -1016,13 +1021,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>testimonies</td><td>témoignages</td></tr>
       <tr><td>insurance claims</td><td>déclarations de sinistres</td></tr>
       <tr><td>lawsuit / litigation</td><td>procès / poursuites judiciaires</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-audit','Audit & Big Four')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-challenges">
       <div class="card-head"><h3>9.10 · Défis de la comptabilité/audit : green accounting et IA</h3><span class="tag watch">📘 Topic 2 — Accounting and auditing challenges</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>green accounting</td><td>comptabilité verte / environnementale</td></tr>
       <tr><td>carbon emissions</td><td>émissions de carbone / CO₂</td></tr>
       <tr><td>waste management</td><td>gestion des déchets</td></tr>
@@ -1041,13 +1046,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>bank reconciliation</td><td>le rapprochement bancaire</td></tr>
       <tr><td>data privacy / cybersecurity</td><td>confidentialité des données / cybersécurité</td></tr>
       <tr><td>bookkeeping</td><td>la tenue de comptes</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-challenges','Défis comptabilité/IA')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-governance">
       <div class="card-head"><h3>9.11 · Gouvernance d'entreprise et conseil d'administration</h3><span class="tag watch">📘 Topic 3 — Governance</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>for-profit / non-profit</td><td>marchand / non marchand</td></tr>
       <tr><td>to thrive</td><td>se développer</td></tr>
       <tr><td>Board of Directors</td><td>conseil d'administration</td></tr>
@@ -1074,13 +1079,13 @@ table.mini td{color:var(--text-dim);}
       <tr><td>cooperatives</td><td>les entreprises coopératives</td></tr>
       <tr><td>to seek to / to prioritize</td><td>chercher à faire / donner la priorité à</td></tr>
       <tr><td>sustainability</td><td>durabilité</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-governance','Gouvernance')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
     </div>
 
     <div class="card" id="voc-csr">
       <div class="card-head"><h3>9.12 · Parties prenantes (stakeholders) et RSE (CSR)</h3><span class="tag hot">🔥 Lié au corrigé Boeing 2025</span></div>
-      <table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
+      <div class="table-scroll"><table class="mini"><tr><th>Terme</th><th>Sens</th></tr>
       <tr><td>stakeholders</td><td>parties prenantes, parties intéressées</td></tr>
       <tr><td>shareholders</td><td>actionnaires</td></tr>
       <tr><td>trade unions</td><td>les syndicats</td></tr>
@@ -1104,7 +1109,7 @@ table.mini td{color:var(--text-dim);}
       <tr><td>well-being</td><td>bien-être</td></tr>
       <tr><td>purpose</td><td>objet, finalité (d'une entreprise)</td></tr>
       <tr><td>Third Sector</td><td>économie sociale et solidaire</td></tr>
-      </table>
+      </table></div>
       <button class="practice-btn" onclick="openVocabQuiz('voc-csr','Stakeholders & RSE')">🎯 S'entraîner sur ce thème (QCM + traduction)</button>
       <div class="recap">
         <summary>Voir le lien direct avec le corrigé Boeing (session 2025)</summary>
