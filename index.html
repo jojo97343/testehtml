@@ -2399,17 +2399,15 @@ function renderMonthsChart(sessions) {
 
     schoolMonths.forEach(({month, year}) => {
         labels.push(monthNames[month]);
-        // Personnes uniques par jour dans ce mois
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        let totalUnique = 0;
-        for (let day = 1; day <= daysInMonth; day++) {
-            const unique = new Set(src.filter(r => {
-                const rd = new Date(r.connected_at);
-                return rd.getMonth()===month && rd.getFullYear()===year && rd.getDate()===day;
-            }).map(r => r.visitor_id));
-            totalUnique += unique.size;
-        }
-        buckets.push(totalUnique);
+        // Compter les jours de connexion uniques (visitor_id + jour)
+        const uniqueDays = new Set(src.filter(r => {
+            const rd = new Date(r.connected_at);
+            return rd.getMonth()===month && rd.getFullYear()===year;
+        }).map(r => {
+            const rd = new Date(r.connected_at);
+            return r.visitor_id + '_' + rd.getDate();
+        }));
+        buckets.push(uniqueDays.size);
     });
 
     const max = Math.max(...buckets, 1);
