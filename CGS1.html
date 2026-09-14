@@ -969,14 +969,52 @@ window.addEventListener('message', function(e){
 
 /* ================= CHAPTER NAV ================= */
 var navBtns = document.querySelectorAll('.chnav-btn');
+var navSections = Array.prototype.map.call(navBtns, function(btn){
+  return document.getElementById(btn.dataset.target);
+}).filter(Boolean);
+var navClickScroll = false;
+var navClickTimer = null;
+
 navBtns.forEach(function(btn){
   btn.addEventListener('click', function(){
     navBtns.forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
     var target = document.getElementById(btn.dataset.target);
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    if(target){
+      navClickScroll = true;
+      clearTimeout(navClickTimer);
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      // Ignore scroll-based updates for a moment while the smooth-scroll animates,
+      // so the click target doesn't get overridden mid-flight.
+      navClickTimer = setTimeout(function(){ navClickScroll = false; }, 700);
+    }
   });
 });
+
+function setActiveNav(id){
+  navBtns.forEach(function(b){
+    b.classList.toggle('active', b.dataset.target === id);
+  });
+}
+
+if('IntersectionObserver' in window && navSections.length){
+  var navObserver = new IntersectionObserver(function(entries){
+    if(navClickScroll) return;
+    // Pick the section with the largest visible portion near the top of the viewport.
+    var best = null, bestScore = -1;
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var score = entry.intersectionRatio;
+      if(score > bestScore){ bestScore = score; best = entry.target; }
+    });
+    if(best) setActiveNav(best.id);
+  }, {
+    root: null,
+    rootMargin: '-72px 0px -55% 0px',
+    threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
+  });
+  navSections.forEach(function(sec){ navObserver.observe(sec); });
+}
 
 /* ================= QUIZ DATA ================= */
 var QUIZ = {
