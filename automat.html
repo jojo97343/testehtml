@@ -1340,11 +1340,11 @@
                     <div id="chart-fiches"></div>
                 </div>
 
-                <!-- Graphique jours de la semaine -->
+                <!-- Graphique connexions par mois -->
                 <div class="section-card">
-                    <div class="section-title" style="margin-bottom:16px">📅 Activité par jour de la semaine</div>
-                    <div id="chart-days" style="height:120px;display:flex;align-items:flex-end;gap:8px;padding:8px 0 0"></div>
-                    <div id="chart-days-labels" style="display:flex;gap:8px;margin-top:4px;font-size:.7rem;color:var(--muted)"></div>
+                    <div class="section-title" style="margin-bottom:16px">📆 Connexions par mois</div>
+                    <div id="chart-months" style="height:140px;display:flex;align-items:flex-end;gap:8px;padding:8px 0 0"></div>
+                    <div id="chart-months-labels" style="display:flex;gap:8px;margin-top:4px;font-size:.7rem;color:var(--muted)"></div>
                 </div>
 
                 <!-- Changer code admin -->
@@ -2220,11 +2220,12 @@ async function loadVisitors() {
 
     const now = Date.now();
     const active1min = rows.filter(r => (now - new Date(r.last_seen).getTime()) < 1 * 60 * 1000);
-    const today = allSessions.filter(r => {
+    const connectionsOnly = allSessions.filter(r => !r.fiche);
+    const today = connectionsOnly.filter(r => {
         const d = new Date(r.connected_at); const t = new Date();
         return d.getDate()===t.getDate() && d.getMonth()===t.getMonth() && d.getFullYear()===t.getFullYear();
     });
-    const week = allSessions.filter(r => (now - new Date(r.connected_at).getTime()) < 7 * 24 * 60 * 60 * 1000);
+    const week = connectionsOnly.filter(r => (now - new Date(r.connected_at).getTime()) < 7 * 24 * 60 * 60 * 1000);
 
     const sNow = document.getElementById('stat-now');
     const sToday = document.getElementById('stat-today');
@@ -2238,7 +2239,7 @@ async function loadVisitors() {
     renderVisitors();
     renderChart(currentChart, allSessions);
     renderFichesChart(allSessions);
-    renderDaysChart(allSessions);
+    renderMonthsChart(allSessions);
 }
 
 function filterVisitors() { renderVisitors(); }
@@ -2368,31 +2369,60 @@ function renderFichesChart(sessions) {
     }).join('');
 }
 
-function renderDaysChart(sessions) {
-    const container = document.getElementById('chart-days');
-    const labelsEl = document.getElementById('chart-days-labels');
+function renderMonthsChart(sessions) {
+    const container = document.getElementById('chart-months');
+    const labelsEl = document.getElementById('chart-months-labels');
     if (!container || !labelsEl) return;
 
-    // Connexions au hub uniquement (fiche null)
     const src = sessions.filter(r => !r.fiche);
-    const dayNames = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    const buckets = Array(7).fill(0);
-    src.forEach(r => {
-        const d = new Date(r.connected_at);
-        buckets[d.getDay()]++;
+    const monthNames = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+
+    // Année scolaire : Sept 2026 → Juin 2027
+    const schoolMonths = [
+        {month: 8, year: 2026}, // Septembre
+        {month: 9, year: 2026}, // Octobre
+        {month: 10, year: 2026}, // Novembre
+        {month: 11, year: 2026}, // Décembre
+        {month: 0, year: 2027}, // Janvier
+        {month: 1, year: 2027}, // Février
+        {month: 2, year: 2027}, // Mars
+        {month: 3, year: 2027}, // Avril
+        {month: 4, year: 2027}, // Mai
+        {month: 5, year: 2027}, // Juin
+    ];
+
+    const now = new Date();
+    const buckets = [];
+    const labels = [];
+
+    schoolMonths.forEach(({month, year}) => {
+        labels.push(monthNames[month]);
+        const count = src.filter(r => {
+            const rd = new Date(r.connected_at);
+            return rd.getMonth() === month && rd.getFullYear() === year;
+        }).length;
+        buckets.push(count);
     });
 
     const max = Math.max(...buckets, 1);
     container.innerHTML = buckets.map((v, i) => {
-        const h = Math.round((v / max) * 100);
+        const {month, year} = schoolMonths[i];
+        const isCurrent = now.getMonth() === month && now.getFullYear() === year;
+        const isPast = new Date(year, month, 1) < new Date(now.getFullYear(), now.getMonth(), 1);
         const isActive = v > 0;
-        const isWeekend = i === 0 || i === 6;
+        const color = isCurrent ? 'rgba(168,85,247,.8)' : isPast ? 'rgba(168,85,247,.35)' : 'var(--bg3)';
+        const borderColor = isCurrent ? 'var(--violet)' : isPast && isActive ? 'rgba(168,85,247,.5)' : 'transparent';
+        const h = Math.round((v / max) * 130);
         return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
-            <span style="font-size:.65rem;color:${isActive ? 'var(--cyan)' : 'var(--muted)'}">${v > 0 ? v : ''}</span>
-            <div style="width:100%;height:${Math.max(h,2)}px;background:${isActive ? (isWeekend ? 'rgba(6,214,214,.5)' : 'rgba(168,85,247,.5)') : 'var(--bg3)'};border-radius:3px 3px 0 0;border-top:2px solid ${isActive ? (isWeekend ? 'var(--cyan)' : 'var(--violet)') : 'transparent'};transition:height .3s"></div>
+            <span style="font-size:.6rem;color:${isActive ? 'var(--violet)' : 'var(--muted)'}">${v > 0 ? v : ''}</span>
+            <div style="width:100%;height:${Math.max(h,2)}px;background:${color};border-radius:4px 4px 0 0;border-top:2px solid ${borderColor};transition:height .3s"></div>
         </div>`;
     }).join('');
-    labelsEl.innerHTML = dayNames.map((d, i) => `<div style="flex:1;text-align:center;color:${(i===0||i===6)?'var(--cyan)':'var(--muted)'}">${d}</div>`).join('');
+    labelsEl.innerHTML = labels.map((l, i) => {
+        const {month, year} = schoolMonths[i];
+        const isCurrent = now.getMonth() === month && now.getFullYear() === year;
+        return `<div style="flex:1;text-align:center;font-size:.6rem;color:${isCurrent ? 'var(--violet)' : 'var(--muted)'};font-weight:${isCurrent ? '700' : '400'}">${l}</div>`;
+    }).join('');
 }
 
 
