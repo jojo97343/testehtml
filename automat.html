@@ -1677,15 +1677,19 @@ function closeNotes() {
     const panel = document.getElementById('notes-panel');
     if (!panel) return;
 
+    // Overlay transparent pour bloquer l'iframe pendant le resize
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'display:none;position:fixed;inset:0;z-index:9998;cursor:col-resize;';
+    document.body.appendChild(overlay);
+
     panel.addEventListener('mousedown', (e) => {
         if (window.innerWidth <= 768) return;
-        // Détecter si le clic est dans les 6px du bord gauche
         const rect = panel.getBoundingClientRect();
         if (e.clientX > rect.left + 6) return;
         isResizing = true;
         startX = e.clientX;
         startWidth = panel.offsetWidth;
-        document.body.style.cursor = 'col-resize';
+        overlay.style.display = 'block';
         document.body.style.userSelect = 'none';
         e.preventDefault();
     });
@@ -1700,19 +1704,17 @@ function closeNotes() {
     document.addEventListener('mouseup', () => {
         if (!isResizing) return;
         isResizing = false;
-        document.body.style.cursor = '';
+        overlay.style.display = 'none';
         document.body.style.userSelect = '';
         localStorage.setItem('hub_notes_width', panel.offsetWidth);
     });
 
-    // Curseur col-resize au survol du bord gauche
     panel.addEventListener('mousemove', (e) => {
         if (window.innerWidth <= 768) return;
         const rect = panel.getBoundingClientRect();
         panel.style.cursor = e.clientX <= rect.left + 6 ? 'col-resize' : '';
     });
 
-    // Restaurer la largeur sauvegardée
     const savedWidth = localStorage.getItem('hub_notes_width');
     if (savedWidth && window.innerWidth > 768) {
         panel.style.width = savedWidth + 'px';
