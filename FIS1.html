@@ -128,6 +128,15 @@ table.mini td{color:var(--text-dim);}
 .chapter-recap td.no{color:var(--text-faint);font-weight:600;opacity:.5;}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 
+.licence-link{
+  display:flex; align-items:center; gap:10px; margin-top:10px;
+  background:rgba(250,204,21,.08); border:1px dashed rgba(250,204,21,.4);
+  border-radius:9px; padding:9px 13px; font-size:12.5px; color:var(--text-dim);
+}
+.licence-link a{color:var(--yellow); font-weight:700; text-decoration:none;}
+.licence-link a:hover{text-decoration:underline;}
+.licence-link .cap{font-size:15px;}
+
 .quizcta{margin-top:26px;display:flex;justify-content:center;}
 .quizbtn{background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;}
 .quizbtn:hover{transform:translateY(-2px);}
@@ -156,6 +165,23 @@ table.mini td{color:var(--text-dim);}
 
 .toolbar{position:fixed;bottom:18px;right:18px;display:flex;gap:10px;z-index:60;}
 .tbtn{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;}
+
+/* Pendant la capture pour l'export PDF : neutralise ce qu'html2canvas rend mal */
+body.pdf-export .title-block h1,
+body.pdf-export .score-num{
+  background:none !important;
+  -webkit-text-fill-color: var(--violet-soft) !important;
+  color: var(--violet-soft) !important;
+}
+body.pdf-export .badge,
+body.pdf-export .card,
+body.pdf-export .freqbar,
+body.pdf-export .chapter-recap,
+body.pdf-export .quizbtn,
+body.pdf-export .tbtn{
+  box-shadow:none !important;
+}
+body.pdf-export .chnav{ backdrop-filter:none !important; }
 
 @media(max-width:640px){
   .badge{min-width:90px;padding:8px 12px;}
@@ -232,6 +258,7 @@ table.mini td{color:var(--text-dim);}
       <p><strong>Pièges classiques</strong> : le taux utilisé doit être cohérent avec la durée (un taux trimestriel s'applique à un nombre de trimestres, pas d'années) ; l'exposant d'une capitalisation doit toujours être un nombre entier de périodes ; pour un taux équivalent semestriel à partir d'un taux annuel, on élève à la puissance 0,5 (jamais 0,25, qui donnerait un taux trimestriel).</p>
       <div class="example"><b>Exemple corrigé (2025, Q1.1a)</b> : trois versements de 1 000 € réalisés en fin d'année N+1, N+2 et N+3, rémunérés au taux annuel de 2 %. On demande la valeur acquise au 31/12/N+6, soit 3 ans après le dernier versement. Chaque versement est capitalisé séparément jusqu'à cette date (5, 4 puis 3 années de capitalisation) : VA = 1 000 × 1,02⁵ + 1 000 × 1,02⁴ + 1 000 × 1,02³, ce qui équivaut à la formule groupée VA = 1 000 × [(1,02³−1)/0,02] × 1,02³ (le facteur entre crochets capitalise les 3 versements à la date du dernier versement, puis ×1,02³ les projette 3 années plus loin).</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Versements semestriels 15 000 €</td><td class="yes">4 versements semestriels</td><td class="yes">Valeur acquise 31/12/N+6</td><td class="yes">3 erreurs à repérer</td></tr></table></details>
+      <div class="licence-link" data-licence="s1"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 1) — <a href="#" data-licence-a>voir la fiche Valeur &amp; Temps →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>1.2 · Valeur actuelle et taux de rentabilité actuariel</h3><span class="tag hot">🔥 1/4 ans, pilier théorique</span></div>
@@ -247,6 +274,7 @@ table.mini td{color:var(--text-dim);}
       <p>Règle de bon sens à toujours vérifier : si le prix payé est <strong>inférieur</strong> à la valorisation théorique calculée à un taux donné, le taux de rentabilité réel est nécessairement <strong>supérieur</strong> à ce taux — et inversement.</p>
       <div class="example"><b>Exemple corrigé (2023, Q2b-c)</b> : un actif procure 5 versements annuels de 5 000 € (le premier un an et demi après la date de valorisation). Le prix posé est 20 000 = 5 000 × [1−(1+Tr)⁻⁵]/Tr × (1+Tr)⁻⁰,⁵. Une valorisation antérieure de ce même actif, à 5 %, donnait 21 125,68 K€. Puisque le prix effectivement payé (20 000) est inférieur à cette valorisation à 5 %, la rentabilité réelle Tr est nécessairement supérieure à 5 %.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Actif à 21 125,68 K€ acquis à 20 000 K€ → Tr &gt; 5 %</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table></details>
+      <div class="licence-link" data-licence="s1"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 1) — <a href="#" data-licence-a>voir la fiche Valeur &amp; Temps →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>1.3 · Rémunération du temps et du risque</h3><span class="tag watch">⚡ 1/4 ans, cours pur</span></div>
@@ -287,6 +315,7 @@ table.mini td{color:var(--text-dim);}
       <p>Si les taux de marché montent après l'émission, la valeur de l'obligation baisse nécessairement, et inversement : pour offrir une rentabilité plus élevée, le prix d'un actif à revenu fixe doit être plus faible.</p>
       <div class="example"><b>Exemple corrigé (2024, Q2e)</b> : l'obligation O₄ a un taux nominal de 3 %, un remboursement au pair (100, soit 103 avec le dernier coupon) et une maturité résiduelle de 4 ans un an après l'émission. Sa valeur se pose : V = 3 × [1−1,04⁻³]/0,04 + 103 × 1,04⁻⁴ (Tin=3, Trm=4 %, n=4, Pr=100). On peut aussi l'écrire coupon par coupon : 3×1,04⁻¹ + 3×1,04⁻² + 3×1,04⁻³ + 103×1,04⁻⁴.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Valeur 2 ans après émission</td><td class="yes">Valeur 1 an après émission</td><td class="yes">Trab à l'émission (durée 7 ans)</td><td class="yes">Valeur 3 ans après émission</td></tr></table></details>
+      <div class="licence-link" data-licence="s7"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 7) — <a href="#" data-licence-a>voir la fiche Actions &amp; Marchés →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>2.2 · Prix d'émission, prime de risque et Trab</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -327,6 +356,7 @@ table.mini td{color:var(--text-dim);}
       </ul>
       <div class="example"><b>Exemple corrigé (2023, Q3c)</b> : la sensibilité de l'obligation O est de S = −4. Le taux de rendement du marché augmente soudainement de 100 points de base (+1 %). La variation relative de la valeur est alors : ΔValeur/Valeur = S × ΔTrm = −4 × 100 = −400 points de base, soit −4 %.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">S=−4, variation −4 %</td><td class="yes">S=−3, variation +1,5 %</td><td class="yes">Incohérence signe</td><td class="yes">Donnée manquante via signe négatif</td></tr></table></details>
+      <div class="licence-link" data-licence="s7"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 7) — <a href="#" data-licence-a>voir la fiche Actions &amp; Marchés →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>2.5 · Risque de taux, risque de défaut, duration, notation</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -368,6 +398,7 @@ table.mini td{color:var(--text-dim);}
       <p>Piège récurrent : il faut <strong>déduire</strong> la rentabilité moyenne dans chaque parenthèse (jamais l'ajouter), et diviser par (n−1), pas n.</p>
       <div class="example"><b>Exemple corrigé (2023, Q4a)</b> : le calcul de l'écart-type de l'action A₂ tel qu'il avait été posé contenait deux erreurs : dans chaque parenthèse, la rentabilité moyenne (12 %) avait été <em>ajoutée</em> au lieu d'être <em>déduite</em> ; et le dénominateur utilisé était n (=3) au lieu de n−1 (=2), l'échantillon comportant 3 observations.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">2 erreurs (signe, n−1)</td><td class="yes">Coefficient de variation portefeuille</td><td class="yes">Coefficient de variation A1/A2</td><td class="yes">Donnée manquante à retrouver</td></tr></table></details>
+      <div class="licence-link" data-licence="s7"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 7) — <a href="#" data-licence-a>voir la fiche Actions &amp; Marchés →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>3.2 · Diversification et coefficient de corrélation</h3><span class="tag hot">🔥 3/4 ans</span></div>
@@ -493,6 +524,7 @@ table.mini td{color:var(--text-dim);}
       </ul>
       <div class="example"><b>Exemple corrigé (2025, Q2.1)</b> : l'accroissement du BFRE en fin de première année représente 5 % du chiffre d'affaires généré cette même année. Si cet accroissement (récupéré en fin de 3ᵉ année) est de 1 000 K€, alors : 1 000 = 0,05 × CA → CA = 1 000/0,05 = 20 000 K€.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">CA retrouvé via ΔBFRE</td><td class="yes">CA retrouvé via ΔBFRE</td><td class="yes">CA via BFRE 5 %</td><td class="yes">Tableau des flux complet</td></tr></table></details>
+      <div class="licence-link" data-licence="s5"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 5) — <a href="#" data-licence-a>voir la fiche BFRE Normatif →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>5.2 · CAF d'exploitation</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -508,6 +540,7 @@ table.mini td{color:var(--text-dim);}
       <p>Le raisonnement : (CA×taux d'EBE − DADP) donne le résultat avant impôt, qu'on impose au taux tis pour obtenir le résultat net ; on <em>rajoute</em> ensuite les DADP puisqu'elles n'ont jamais été décaissées. C'est la question la plus systématique de tout l'examen : retrouver le CA, le taux d'EBE ou la CAF à partir des autres éléments.</p>
       <div class="example"><b>Exemple corrigé (2026, Q2.1b)</b> : CA = 12 000, DADP = 6 000/3 = 2 000 par an, tis = 0,25. La CAF d'exploitation posée = (12 000 × taux d'EBE − 2 000) × (1−0,25) + 2 000 = 2 750, ce qui permet de retrouver le taux d'EBE recherché (25 % dans ce dossier).</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Taux d'EBE = 25 %</td><td class="yes">Taux d'EBE = 25 %</td><td class="yes">CA via 2 méthodes</td><td class="yes">CAF d'exploitation complète</td></tr></table></details>
+      <div class="licence-link" data-licence="s2"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 2) — <a href="#" data-licence-a>voir la fiche Choix d'investissement →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>5.3 · Coût du capital, coût des capitaux propres, coût de la dette</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -524,6 +557,7 @@ table.mini td{color:var(--text-dim);}
       <p>Conditions pour l'utiliser comme taux d'actualisation d'un projet : même risque d'exploitation <strong>et</strong> même risque financier que les autres actifs de l'entreprise.</p>
       <div class="example"><b>Exemple corrigé (2026, Q2.1c)</b> : R<sub>cp</sub> = R₀ + β<sub>cp</sub>×prime = 0,02 + 2×0,05 = 0,12 ; VCP/(VCP+VDF) = 1/3 ; R<sub>d</sub> = 0,04, tis = 0,25, VDF/(VCP+VDF) = 2/3. D'où R<sub>c</sub> = 0,12 × 1/3 + 0,04 × 0,75 × 2/3.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">Conditions d'utilisation</td><td class="yes">Prime d'illiquidité</td><td class="yes">Rcp retrouvé</td><td class="yes">Coût du capital complet</td></tr></table></details>
+      <div class="licence-link" data-licence="s8"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 8, définition CMPC) — <a href="#" data-licence-a>voir la fiche Définitions →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>5.4 · Désendettement / réendettement du bêta (formule de Hamada)</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -552,6 +586,7 @@ table.mini td{color:var(--text-dim);}
       <p>Un projet est accepté si sa VAN est positive au taux d'actualisation retenu.</p>
       <div class="example"><b>Exemple corrigé (2023, Q7)</b> : le projet P1 dégage des flux de −1 500 en 0, puis 600, 600 et 1 300 sur 3 ans. Au taux de 10 % : VAN = −1 500 + 600×1,1⁻¹ + 600×1,1⁻² + 1 300×1,1⁻³, que l'on peut regrouper en −1 500 + 600×[1−1,1⁻²]/0,1 + 1 300×1,1⁻³ pour les deux premiers flux identiques.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">VAN au taux de 10 %</td><td class="yes">VAN du projet P</td><td class="yes">VAN du projet P1</td><td class="yes">VAN du projet P1</td></tr></table></details>
+      <div class="licence-link" data-licence="s2"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 2) — <a href="#" data-licence-a>voir la fiche Choix d'investissement →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>5.6 · TIR, hypothèse de réinvestissement, TIR global</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -567,6 +602,7 @@ table.mini td{color:var(--text-dim);}
       </ul>
       <div class="example"><b>Exemple corrigé (2026, Q2.1e)</b> : les flux 2 750, 2 750 et 4 250 sont réinvestis à 10 % jusqu'en fin de projet (année 3) : 7 000 = [2 750×1,1² + 2 750×1,1 + 4 250] × (1+TIRG)⁻³. Les deux premiers flux sont capitalisés (portés dans le futur) au taux réaliste de 10 %, puis l'ensemble est actualisé au TIRG recherché.</div>
       <details class="recap"><summary>Voir aux annales</summary><table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr><tr><td class="yes">TIR 26 % non réaliste</td><td class="no">—</td><td class="yes">TIR global n'apporte rien</td><td class="yes">TIR global posé</td></tr></table></details>
+      <div class="licence-link" data-licence="s2"><span class="cap">🎓</span> Vu en Licence (UE 445, dossier 2) — <a href="#" data-licence-a>voir la fiche Choix d'investissement →</a></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>5.7 · Choix entre projets, rationnement en capital, indice de rentabilité</h3><span class="tag hot">🔥 4/4 ans</span></div>
@@ -918,10 +954,22 @@ document.querySelectorAll('.recap table, .chapter-recap table').forEach(function
 });
 
 var navBtns = document.querySelectorAll('.chnav-btn');
+
+/* ⚠️ À VÉRIFIER : adapte ce chemin si le nom du fichier Licence diffère sur ton hub */
+var LICENCE_BASE_URL = 'https://jojo97343.github.io/fiche-partiel2/UE445.html';
+document.querySelectorAll('.licence-link[data-licence]').forEach(function(box){
+  var a = box.querySelector('[data-licence-a]');
+  if(a) a.href = LICENCE_BASE_URL + '#' + box.dataset.licence;
+});
+var navClickLock = false;
+var navClickLockTimer = null;
 navBtns.forEach(function(btn){
   btn.addEventListener('click', function(){
     navBtns.forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
+    navClickLock = true;
+    clearTimeout(navClickLockTimer);
+    navClickLockTimer = setTimeout(function(){ navClickLock = false; }, 1000);
     var target = document.getElementById(btn.dataset.target);
     if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
   });
@@ -951,7 +999,9 @@ updateChnavArrows();
 /* Scrollspy : met à jour l'onglet actif quand on scrolle dans la page */
 var chapterSections = document.querySelectorAll('.chapter');
 var sectionObserver = new IntersectionObserver(function(entries){
+  if(navClickLock) return;
   entries.forEach(function(entry){
+    if(navClickLock) return;
     if(entry.isIntersecting){
       var btn = document.querySelector('.chnav-btn[data-target="'+entry.target.id+'"]');
       if(btn && !btn.classList.contains('active')){
@@ -1096,31 +1146,90 @@ function scoreMessage(score, total){
   return "Cette partie mérite une relecture complète avant l'épreuve.";
 }
 
-function exportPDF(){
+async function exportPDF(){
   var btn = document.getElementById('exportBtn');
   btn.textContent = '⏳ Génération...';
-  var body = document.body;
-  html2canvas(body, {scale:2, backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg') || '#0f0b1e', useCORS:true, ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }}).then(function(canvas){
+  document.body.classList.add('pdf-export');
+
+  /* Les <details> "Voir aux annales" sont fermés par défaut : html2canvas ne gère pas
+     bien cet état et peint leur contenu au mauvais endroit (chevauchements/coupures).
+     On les ouvre de force pour la capture, puis on les referme après. */
+  var detailsEls = document.querySelectorAll('details.recap');
+  var wasOpen = [];
+  detailsEls.forEach(function(d){ wasOpen.push(d.open); d.open = true; });
+
+  try{
+    if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+    await new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
+    await new Promise(function(r){ setTimeout(r, 80); });
+
+    var SCALE = 2;
+    var canvas = await html2canvas(document.body, {
+      scale: SCALE,
+      backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg') || '#0f0b1e',
+      useCORS: true,
+      ignoreElements: function(el){ return el.classList && (el.classList.contains('toolbar') || el.classList.contains('modal-overlay') || el.classList.contains('chnav')); }
+    });
+
+    document.body.classList.remove('pdf-export');
+
     var pdf = new window.jspdf.jsPDF('p','mm','a4');
-    var pageWidth = 210, pageHeight = 297;
-    var imgWidth = pageWidth;
-    var imgHeight = canvas.height * imgWidth / canvas.width;
-    var heightLeft = imgHeight, position = 0;
-    var imgData = canvas.toDataURL('image/jpeg', 0.92);
-    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-    while(heightLeft > 0){
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    var pageWidthMm = 210, pageHeightMm = 297;
+    var pxPerMm = canvas.width / pageWidthMm;
+    var pageHeightPx = pageHeightMm * pxPerMm;
+    var totalHeightPx = canvas.height;
+
+    /* Points de coupure "sûrs" : jamais au milieu d'une carte, d'un tableau ou d'un titre */
+    var breakSelectors = '.card, .chapter-recap, .freqbar, .chapter-head, .partie-label, .quizcta, .top, .chnav';
+    var breakEls = document.querySelectorAll(breakSelectors);
+    var breakpoints = [0, totalHeightPx];
+    breakEls.forEach(function(el){
+      var rect = el.getBoundingClientRect();
+      var topAbs = rect.top + window.scrollY;
+      breakpoints.push(Math.round(topAbs * SCALE));
+    });
+    breakpoints = breakpoints.filter(function(y){ return y >= 0 && y <= totalHeightPx; });
+    breakpoints = Array.from(new Set(breakpoints)).sort(function(a,b){ return a-b; });
+
+    var currentY = 0;
+    var firstPage = true;
+    var minSlice = pageHeightPx * 0.35; /* évite des pages ridiculement courtes */
+
+    while(currentY < totalHeightPx - 2){
+      var idealEnd = currentY + pageHeightPx;
+      var sliceEnd;
+      if(idealEnd >= totalHeightPx){
+        sliceEnd = totalHeightPx;
+      } else {
+        var candidates = breakpoints.filter(function(y){ return y > currentY + minSlice && y <= idealEnd; });
+        sliceEnd = candidates.length ? candidates[candidates.length-1] : idealEnd;
+      }
+      var sliceHeight = Math.max(1, Math.round(sliceEnd - currentY));
+
+      var pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sliceHeight;
+      var ctx = pageCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, currentY, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
+
+      var pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+      var pageImgHeightMm = sliceHeight / pxPerMm;
+      if(!firstPage) pdf.addPage();
+      pdf.addImage(pageImgData, 'JPEG', 0, 0, pageWidthMm, pageImgHeightMm);
+      firstPage = false;
+
+      currentY = sliceEnd;
     }
+
     pdf.save('UE532_Finance.pdf');
+    detailsEls.forEach(function(d, i){ d.open = wasOpen[i]; });
     btn.textContent = '⬇ Export PDF';
-  }).catch(function(err){
+  } catch(err){
+    document.body.classList.remove('pdf-export');
+    detailsEls.forEach(function(d, i){ d.open = wasOpen[i]; });
     console.error(err);
     btn.textContent = '⬇ Export PDF';
-  });
+  }
 }
 </script>
 </body>
