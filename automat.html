@@ -404,6 +404,7 @@
 
         .sri-notion { font-size: .8rem; font-weight: 600; color: var(--white); }
         .sri-mat { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+        .sri-extrait { font-size: .68rem; color: var(--muted); margin-top: 3px; line-height: 1.4; opacity: .8; }
         .sri-mark { color: var(--pink); }
         .search-empty { padding: 20px; text-align: center; font-size: .78rem; color: var(--muted); }
 
@@ -1144,7 +1145,7 @@
                 <li class="menu-item" onclick="loadPage('FIS1.html',this,'Finance')"><div class="item-icon">💰</div><span class="item-label">Finance</span><button class="notes-toggle-btn" id="ntb-m1" onclick="openNotes(event,'Finance')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m2" onclick="openNotes(event,'Management des SI')" title="Mes notes">📝</button></li>
                 <li class="menu-item" onclick="loadPage('CGS1.html',this,'Contrôle de gestion')"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><button class="notes-toggle-btn" id="ntb-m3" onclick="openNotes(event,'Contrôle de gestion')" title="Mes notes">📝</button></li>
-                <li class="menu-item" onclick="loadPage('ANGS1.html',this,'Anglais des affaires')"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
+                <li class="menu-item" onclick="loadPage('ANGS1.html',this,'Anglais des affaires')"><div class="item-icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;overflow:hidden;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="22" height="22"><clipPath id="a"><path d="M0 0v30h60V0z"/></clipPath><clipPath id="b"><path d="M30 15h30v15zv15H0zM0 0h30z"/></clipPath><g clip-path="url(#a)"><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#b)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg></span></div><span class="item-label">Anglais des affaires</span><button class="notes-toggle-btn" id="ntb-m4" onclick="openNotes(event,'Anglais des affaires')" title="Mes notes">📝</button></li>
             </div>
 
             <div class="menu-semester" onclick="toggleSem('s2')">
@@ -1154,7 +1155,7 @@
                 <li class="menu-item"><div class="item-icon">💰</div><span class="item-label">Finance</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m5" onclick="openNotes(event,'Finance S2')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">💻</div><span class="item-label">Management des SI</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m6" onclick="openNotes(event,'Management des SI S2')" title="Mes notes">📝</button></li>
                 <li class="menu-item"><div class="item-icon">📊</div><span class="item-label">Contrôle de gestion</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m7" onclick="openNotes(event,'Contrôle de gestion S2')" title="Mes notes">📝</button></li>
-                <li class="menu-item"><div class="item-icon">🇬🇧</div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m8" onclick="openNotes(event,'Anglais des affaires S2')" title="Mes notes">📝</button></li>
+                <li class="menu-item"><div class="item-icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;overflow:hidden;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="22" height="22"><clipPath id="a"><path d="M0 0v30h60V0z"/></clipPath><clipPath id="b"><path d="M30 15h30v15zv15H0zM0 0h30z"/></clipPath><g clip-path="url(#a)"><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#b)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg></span></div><span class="item-label">Anglais des affaires</span><span class="soon-badge">Bientôt</span><button class="notes-toggle-btn" id="ntb-m8" onclick="openNotes(event,'Anglais des affaires S2')" title="Mes notes">📝</button></li>
             </div>
 
             <!-- ── INFORMATIONS COMPLÉMENTAIRES ── -->
@@ -1203,19 +1204,8 @@
                 <span id="current-page">Accueil</span>
             </div>
 
-            <div class="search-wrap">
-                <span class="search-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                    </svg>
-                </span>
-                <input type="text" id="search-input" class="search-input"
-                    placeholder="Rechercher une notion, une formule…"
-                    autocomplete="off" autocorrect="off" spellcheck="false"
-                    oninput="handleSearch(this.value)" onfocus="showResults()">
-                <span class="search-kbd">⌘K</span>
-                <div class="search-results" id="search-results"></div>
-            </div>
+            <!-- Barre de recherche désactivée temporairement -->
+
 
             <div class="topbar-actions">
                 <button class="btn-topbar" id="btn-home" onclick="goHome()" style="display:none" title="Accueil">
@@ -1284,7 +1274,7 @@
                     <div class="welcome-card-sub">Fiches & exercices</div>
                 </div>
                 <div class="welcome-card" onclick="loadPage('ANGS1.html',null,'Anglais des affaires')">
-                    <div class="welcome-card-icon">🇬🇧</div>
+                    <div class="welcome-card-icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;overflow:hidden;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="22" height="22"><clipPath id="a"><path d="M0 0v30h60V0z"/></clipPath><clipPath id="b"><path d="M30 15h30v15zv15H0zM0 0h30z"/></clipPath><g clip-path="url(#a)"><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#b)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg></span></div>
                     <div class="welcome-card-label">Anglais des affaires</div>
                     <div class="welcome-card-sub">Fiches & exercices</div>
                 </div>
@@ -2738,43 +2728,100 @@ async function moveResource(id,dir){
 
 // ── SEARCH ─────────────────────────────────────────────────────────────────
 
-const SEARCH_INDEX=[
-    {notion:'Seuil de rentabilité',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
-    {notion:'Marge sur coût variable',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
-    {notion:'Analyse des écarts',matiere:'Contrôle de Gestion',fichier:'CG.html',ancre:'',icon:'📊'},
-    {notion:'Bilan financier',matiere:'Finance',fichier:'FIS1.html',ancre:'',icon:'💰'},
-    {notion:"Capacité d'autofinancement",matiere:'Finance',fichier:'FIS1.html',ancre:'',icon:'💰'},
-    {notion:'Management participatif',matiere:'Management',fichier:'mana.html',ancre:'',icon:'👔'},
-    {notion:'Capital social',matiere:'Droit des Sociétés',fichier:'SO.html',ancre:'',icon:'⚖️'},
-    {notion:'Contrat de travail',matiere:'Droit du Travail',fichier:'DT.html',ancre:'',icon:'👷'},
-    {notion:'TVA déductible',matiere:'Droit Fiscal',fichier:'fisca.html',ancre:'',icon:'🧾'},
-    {notion:'Amortissement linéaire',matiere:'Comptabilité',fichier:'compta.html',ancre:'',icon:'📑'},
-];
+// ── RECHERCHE DYNAMIQUE ────────────────────────────────────────────────────
+let dynamicSearchIndex = {}; // { 'FIN1.html': [{id, titre, chapitre, extrait, chapterId}, ...] }
 
-function highlight(text,query){if(!query)return text;const e=query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return text.replace(new RegExp('('+e+')','gi'),'<span class="sri-mark">$1</span>');}
+// Recevoir l'index depuis les fiches via postMessage
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'search-index') {
+        dynamicSearchIndex[e.data.fiche] = {
+            label: e.data.label,
+            notions: e.data.notions
+        };
+    }
+    if (e.data && e.data.type === 'theme') {
+        // déjà géré ailleurs
+    }
+});
 
-function handleSearch(val){
-    const q=val.trim().toLowerCase();const box=document.getElementById('search-results');
-    if(!q){box.innerHTML='';box.classList.remove('visible');return;}
-    const results=SEARCH_INDEX.filter(item=>item.notion.toLowerCase().includes(q)||item.matiere.toLowerCase().includes(q)).slice(0,8);
-    if(results.length===0){box.innerHTML='<div class="search-empty">Aucun résultat pour "'+val+'"</div>';box.classList.add('visible');return;}
-    box.innerHTML=results.map(r=>'<div class="search-result-item" onclick="goToNotion(\''+r.fichier+'\',\''+r.ancre+'\',\''+r.matiere+'\')">'+'<div class="sri-icon">'+r.icon+'</div>'+'<div><div class="sri-notion">'+highlight(r.notion,val)+'</div>'+'<div class="sri-mat">'+r.matiere+'</div></div></div>').join('');
+function highlight(text, query) {
+    if (!query) return text;
+    const e = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp('(' + e + ')', 'gi'), '<span class="sri-mark">$1</span>');
+}
+
+function handleSearch(val) {
+    const q = val.trim().toLowerCase();
+    const box = document.getElementById('search-results');
+    if (!q) { box.innerHTML = ''; box.classList.remove('visible'); return; }
+
+    const results = [];
+
+    // Chercher dans l'index dynamique des fiches
+    Object.entries(dynamicSearchIndex).forEach(([fiche, data]) => {
+        data.notions.forEach(n => {
+            if (
+                n.titre.toLowerCase().includes(q) ||
+                n.chapitre.toLowerCase().includes(q) ||
+                (n.extrait && n.extrait.toLowerCase().includes(q))
+            ) {
+                results.push({ ...n, fiche, label: data.label });
+            }
+        });
+    });
+
+    if (results.length === 0) {
+        box.innerHTML = '<div class="search-empty">Aucun résultat pour "' + val + '"<br><span style="font-size:.7rem;color:var(--muted)">Ouvre une fiche pour indexer ses notions</span></div>';
+        box.classList.add('visible');
+        return;
+    }
+
+    box.innerHTML = results.slice(0, 10).map(r =>
+        `<div class="search-result-item" onclick="goToNotion('${r.fiche}','${r.id}','${r.label || r.fiche}','${r.chapterId}')">
+            <div class="sri-icon">${r.label?.split(' ')[0] || '📄'}</div>
+            <div>
+                <div class="sri-notion">${highlight(r.titre, val)}</div>
+                <div class="sri-mat">${r.label || r.fiche} · ${highlight(r.chapitre, val)}</div>
+                ${r.extrait ? `<div class="sri-extrait">${highlight(r.extrait.slice(0, 80), val)}…</div>` : ''}
+            </div>
+        </div>`
+    ).join('');
     box.classList.add('visible');
 }
 
-function showResults(){const val=document.getElementById('search-input').value.trim();if(val)handleSearch(val);}
-function goToNotion(fichier,ancre,matiere){closeSearch();loadPage(fichier,null,matiere);if(ancre)setTimeout(function(){try{document.getElementById('content-frame').contentWindow.location.hash=ancre;}catch(e){}},800);}
-function closeSearch(){document.getElementById('search-input').value='';const box=document.getElementById('search-results');box.innerHTML='';box.classList.remove('visible');}
+function showResults() { const val = document.getElementById('search-input').value.trim(); if (val) handleSearch(val); }
 
-document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('search-results').classList.remove('visible');});
-document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){closeSearch();return;}
-    if((e.metaKey||e.ctrlKey)&&e.key==='k'){
+function goToNotion(fichier, notionId, matiere, chapterId) {
+    closeSearch();
+    loadPage(fichier, null, matiere);
+    setTimeout(() => {
+        try {
+            const frame = document.getElementById('content-frame');
+            // Scroller vers la notion via postMessage
+            frame.contentWindow.postMessage({ type: 'scroll-to', id: notionId }, '*');
+            // Fallback via hash
+            if (chapterId) frame.contentWindow.location.hash = chapterId;
+        } catch(e) {}
+    }, 900);
+}
+
+function closeSearch() {
+    document.getElementById('search-input').value = '';
+    const box = document.getElementById('search-results');
+    box.innerHTML = '';
+    box.classList.remove('visible');
+}
+
+document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) document.getElementById('search-results').classList.remove('visible'); });
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeSearch(); return; }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        const inp=document.getElementById('search-input');
+        const inp = document.getElementById('search-input');
         inp.focus(); inp.select();
     }
 });
+
 
 function toggleSem(id){
     const items=document.getElementById('sem-'+id);
