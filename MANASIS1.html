@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UE 535 — Management des systèmes d'information</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#0f0b1e; --bg2:#161028; --panel:#1c1533; --panel2:#221a3d;
+  --border:#332a54; --text:#f1edfb; --text-dim:#b3a9d1; --text-faint:#8479a3;
+  --violet:#8b5cf6; --violet-soft:#a78bfa; --cyan:#22d3ee; --yellow:#facc15;
+  --grad: linear-gradient(135deg,#8b5cf6 0%,#22d3ee 100%);
+  --shadow: 0 8px 30px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+[data-theme="light"]{
+  --bg:#f6f4fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f1edfb;
+  --border:#e1d9f7; --text:#241b3d; --text-dim:#584c78; --text-faint:#8577a3;
+  --violet:#7c3aed; --violet-soft:#6d28d9; --cyan:#0891b2; --yellow:#b45309;
+  --shadow: 0 8px 24px rgba(90,70,160,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:transparent;}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg); color:var(--text);
+  transition:background .3s ease,color .3s ease;
+  padding-bottom:80px;
+}
+h1,h2,h3,h4,.disp{font-family:'Clash Display',sans-serif;}
+a{color:inherit;}
+::selection{background:var(--violet);color:#fff;}
+
+/* ---------- HEADER ---------- */
+.top{padding:28px 20px 20px;max-width:1100px;margin:0 auto;}
+.eyebrow-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--panel2);border:1px solid var(--border);
+  padding:5px 12px;border-radius:100px;font-size:12.5px;color:var(--text-dim);
+  font-weight:600;
+}
+.pill b{color:var(--text);}
+.title-block h1{
+  font-size:clamp(28px,4vw,40px);font-weight:600;margin:6px 0 6px;line-height:1.1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.title-block p{color:var(--text-dim);font-size:15px;max-width:640px;line-height:1.55;margin:0 0 18px;}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.badge{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:10px 16px;min-width:118px;box-shadow:var(--shadow);
+}
+.badge .num{font-family:'Clash Display',sans-serif;font-size:22px;color:var(--cyan);font-weight:600;}
+.badge .lbl{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+
+/* ---------- NAV ---------- */
+.chnav{
+  position:sticky;top:0;z-index:40;background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:10px 20px;backdrop-filter:blur(8px);
+}
+.chnav-wrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:6px;}
+.chnav-inner{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;flex:1;min-width:0;}
+.chnav-inner::-webkit-scrollbar{display:none;}
+.chnav-arrow{
+  flex:0 0 auto;width:30px;height:30px;border-radius:50%;
+  background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);
+  cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;
+  transition:all .15s ease;
+}
+.chnav-arrow:hover{color:var(--text);border-color:var(--violet-soft);}
+.chnav-arrow:disabled{opacity:.3;cursor:default;}
+.chnav-arrow:disabled:hover{color:var(--text-dim);border-color:var(--border);}
+.chnav-btn{
+  flex:0 0 auto;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);
+  padding:9px 16px;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:all .18s ease;font-family:inherit;
+}
+.chnav-btn:hover{color:var(--text);border-color:var(--violet-soft);}
+.chnav-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+.chapter{padding:44px 0 20px;scroll-margin-top:70px;}
+.chapter-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap;}
+.chapter-head h2{font-size:26px;font-weight:600;margin:0;}
+.chapter-num{
+  font-family:'Clash Display',sans-serif;color:var(--violet-soft);font-size:14px;
+  border:1px solid var(--border);padding:3px 10px;border-radius:8px;
+}
+.chapter-sub{color:var(--text-faint);font-size:14px;margin:0 0 18px;max-width:720px;line-height:1.5;}
+.freqbar{
+  display:flex;align-items:center;gap:14px;background:var(--panel);
+  border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:26px;
+  box-shadow:var(--shadow);flex-wrap:wrap;
+}
+.freqbar .flabel{font-size:12.5px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.freqbar .years{display:flex;gap:8px;flex-wrap:wrap;}
+.yr{
+  font-size:12.5px;padding:4px 10px;border-radius:8px;font-weight:700;
+  background:var(--panel2);border:1px solid var(--border);color:var(--text-faint);
+}
+.yr.hit{background:rgba(139,92,246,.18);color:var(--violet-soft);border-color:var(--violet);}
+
+/* ---------- NOTION CARDS ---------- */
+.notions{display:flex;flex-direction:column;gap:16px;}
+.card{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 24px;box-shadow:var(--shadow);
+}
+.card.potentiel{border-color:var(--cyan);background:linear-gradient(180deg,var(--panel),rgba(34,211,238,.05));}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.card-head h3{font-size:18px;margin:0;font-weight:600;}
+.tag{
+  font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:100px;white-space:nowrap;
+}
+.tag.hot{background:rgba(250,204,21,.16);color:var(--yellow);border:1px solid rgba(250,204,21,.4);}
+.tag.watch{background:rgba(167,139,250,.16);color:var(--violet-soft);border:1px solid rgba(167,139,250,.4);}
+.tag.potentiel{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.4);}
+.card p{font-size:14.5px;line-height:1.62;color:var(--text-dim);margin:0 0 10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text);}
+.formula{
+  background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--cyan);
+  border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;line-height:1.7;
+  font-family:'Clash Display',sans-serif;color:var(--cyan);overflow-x:auto;
+}
+.formula small{display:block;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-faint);font-size:12px;margin-top:4px;font-weight:600;}
+.example{
+  background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;
+  color:var(--text-dim);border-left:3px solid var(--violet-soft);
+}
+.example b{color:var(--violet-soft);}
+.annale-ex{
+  background:var(--panel2);border-radius:9px;padding:12px 15px;margin:10px 0;font-size:14px;
+  color:var(--text-dim);border-left:3px solid var(--yellow);
+}
+.annale-ex .src{display:block;font-size:11.5px;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.annale-ex code, .annale-ex .calc{font-family:'Clash Display',sans-serif;color:var(--text);}
+ul.detail-list{margin:8px 0;padding-left:20px;}
+ul.detail-list li{font-size:14.5px;color:var(--text-dim);line-height:1.6;margin-bottom:4px;}
+table.mini{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;}
+table.mini th,table.mini td{border:1px solid var(--border);padding:7px 10px;text-align:left;}
+table.mini th{background:var(--panel2);color:var(--text-faint);font-weight:700;font-size:12px;text-transform:uppercase;}
+table.mini td{color:var(--text-dim);}
+.recap{margin-top:14px;}
+.recap summary{cursor:pointer;font-size:12.5px;color:var(--text-faint);font-weight:700;list-style:none;user-select:none;}
+.recap summary::before{content:"▸ ";color:var(--violet-soft);}
+.recap[open] summary::before{content:"▾ ";}
+.recap table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
+.recap th,.recap td{border:1px solid var(--border);padding:6px 9px;text-align:center;}
+.recap th{background:var(--panel2);color:var(--text-faint);}
+.recap td.yes{color:var(--yellow);font-weight:800;}
+.recap td.no{color:var(--text-faint);opacity:.4;}
+
+/* ---------- CHAPTER RECAP TABLE ---------- */
+.chrecap{margin-top:34px;}
+.chrecap-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.chrecap-head h4{font-size:15px;font-weight:700;margin:0;color:var(--text);}
+.chrecap-head .chrecap-sub{font-size:12.5px;color:var(--text-faint);}
+.chrecap-table-wrap{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);
+}
+table.chrecap-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+table.chrecap-table th{
+  background:var(--panel2);color:var(--text);font-weight:700;
+  padding:14px 18px;text-align:left;font-size:13.5px;
+}
+table.chrecap-table th.yr-col{text-align:center;}
+table.chrecap-table td{
+  padding:13px 18px;border-top:1px solid var(--border);color:var(--text);font-weight:600;
+}
+table.chrecap-table td.yr-col{text-align:center;font-weight:700;}
+table.chrecap-table td.yr-col.yes{color:#4ade80;}
+table.chrecap-table td.yr-col.no{color:var(--text-faint);opacity:.35;}
+table.chrecap-table tr:last-child td{border-bottom:none;}
+
+/* ---------- QUIZ BUTTON ---------- */
+.quizcta{
+  margin-top:26px;display:flex;justify-content:center;
+}
+.quizbtn{
+  background:var(--grad);border:none;color:#fff;font-family:inherit;font-weight:700;
+  font-size:14.5px;padding:13px 26px;border-radius:100px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(139,92,246,.35);transition:transform .15s ease;
+}
+.quizbtn:hover{transform:translateY(-2px);}
+.quizbtn.final{background:linear-gradient(135deg,var(--yellow),var(--cyan));color:#1a1428;}
+
+/* ---------- MODAL QUIZ ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(8,5,18,.72);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;z-index:200;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+  width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.5);
+  position:relative;
+}
+.modal h3{margin:0 0 4px;font-size:20px;}
+.modal .qcount{color:var(--text-faint);font-size:12.5px;margin-bottom:18px;}
+.qtext{font-size:15.5px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+.opt{
+  display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--border);
+  color:var(--text);padding:12px 14px;border-radius:11px;margin-bottom:9px;cursor:pointer;
+  font-family:inherit;font-size:14px;transition:all .15s ease;
+}
+.opt:hover{border-color:var(--violet-soft);}
+.opt.correct{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80;}
+.opt.wrong{background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;}
+.opt:disabled{cursor:default;}
+.explain{
+  background:var(--panel2);border-left:3px solid var(--cyan);border-radius:9px;padding:12px 14px;
+  font-size:13.5px;color:var(--text-dim);margin-top:6px;line-height:1.55;display:none;
+}
+.explain.show{display:block;}
+.modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.navbtn{
+  background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 18px;
+  border-radius:100px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;
+}
+.navbtn:disabled{opacity:.35;cursor:not-allowed;}
+.navbtn.primary{background:var(--grad);color:#fff;border:none;}
+.closex{
+  position:absolute;top:20px;right:24px;background:none;border:none;color:var(--text-faint);
+  font-size:22px;cursor:pointer;line-height:1;
+}
+.score-screen{text-align:center;padding:20px 0;}
+.score-num{font-family:'Clash Display',sans-serif;font-size:52px;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;}
+
+/* ---------- FOOTER TOOLBAR ---------- */
+.toolbar{
+  position:fixed;bottom:18px;right:18px;display:flex;gap:10px;z-index:60;
+}
+.tbtn{
+  background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:11px 18px;border-radius:100px;font-family:inherit;font-weight:700;font-size:13px;
+  cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;
+}
+@media(max-width:640px){
+  .badge{min-width:90px;padding:8px 12px;}
+  .badge .num{font-size:18px;}
+  .card{padding:18px;}
+  table.mini, .recap table, table.chrecap-table{
+    min-width:480px;
+  }
+  .card, .annale-ex, .recap, .formula{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chrecap-table-wrap{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+  }
+}
+</style>
+</head>
+<body id="fiche-body">
+
+<div class="top">
+  <div class="eyebrow-row">
+    <span class="pill">Master CCA</span>
+    <span class="pill">UE 535</span>
+    <span class="pill">Semestres 1 &amp; 2</span>
+  </div>
+  <div class="title-block">
+    <h1>Management des systèmes d'information</h1>
+    <p>Gouvernance SI, alignement stratégique, urbanisation, projet SI et logiciels métiers — construite à partir des cours 1 et 2 de l'UE et des sujets corrigés 2023 à 2026.</p>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="num">44</div><div class="lbl">Notions</div></div>
+    <div class="badge"><div class="num">4</div><div class="lbl">Années d'annales</div></div>
+    <div class="badge"><div class="num">15</div><div class="lbl">Chapitres</div></div>
+    <div class="badge"><div class="num">16</div><div class="lbl">Quiz disponibles</div></div>
+  </div>
+</div>
+
+<div class="chnav">
+  <div class="chnav-wrap">
+  <button class="chnav-arrow" id="chnavLeft" onclick="scrollNav(-1)" aria-label="Chapitres précédents">‹</button>
+  <div class="chnav-inner" id="chnav">
+    <button class="chnav-btn active" data-target="ch1">1 · Introduction MSI</button>
+    <button class="chnav-btn" data-target="ch2">2 · Maturité numérique</button>
+    <button class="chnav-btn" data-target="ch3">3 · Gouvernance SI</button>
+    <button class="chnav-btn" data-target="ch4">4 · Processus &amp; BPMN</button>
+    <button class="chnav-btn" data-target="ch5">5 · SI &amp; stratégie</button>
+    <button class="chnav-btn" data-target="ch6">6 · Alignement (SAM)</button>
+    <button class="chnav-btn" data-target="ch7">7 · Urbanisation</button>
+    <button class="chnav-btn" data-target="ch8">8 · Schéma directeur</button>
+    <button class="chnav-btn" data-target="ch9">9 · Mise en place projet</button>
+    <button class="chnav-btn" data-target="ch10">10 · Suivi de projet</button>
+    <button class="chnav-btn" data-target="ch11">11 · Logiciels métiers</button>
+    <button class="chnav-btn" data-target="auteurs">👤 Auteurs</button>
+    <button class="chnav-btn" data-target="potentiel">🎯 À surveiller</button>
+    <button class="chnav-btn" data-target="methodo">✍️ Méthode</button>
+    <button class="chnav-btn" data-target="finalquiz">Quiz final</button>
+  </div>
+  <button class="chnav-arrow" id="chnavRight" onclick="scrollNav(1)" aria-label="Chapitres suivants">›</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ================= CHAPITRE 1 ================= -->
+<section class="chapter" id="ch1">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 1</span>
+    <h2>Introduction à la MSI</h2>
+  </div>
+  <p class="chapter-sub">Le vocabulaire fondamental du management des systèmes d'information : origine de la discipline, définition du SI et notion de système.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— jamais interrogé isolément, mais ce vocabulaire structure toutes les autres réponses.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>1.1 · Le MSI et la notion de système</h3><span class="tag watch">Vocabulaire de base</span></div>
+      <p>Le MSI (Management Information System) désigne un <strong>système intégré homme-machine</strong> qui fournit de l'information pour assister les fonctions opérationnelles de management et de prise de décision au sein d'une organisation. Le premier ordinateur de gestion date de 1954 (General Electric, EDP — Electronic Data Processing), mais le MSI marque un basculement : on passe d'une simple automatisation des calculs à une logique de finalité — fournir la bonne information, à la bonne personne, au bon moment.</p>
+      <p>Un <strong>système</strong> est un ensemble de composants dotés d'une certaine autonomie, décomposable en sous-systèmes liés par des interfaces, délimité par une frontière, et régulé par des mécanismes de rétroaction qui ramènent le système à l'équilibre.</p>
+      <div class="example"><b>Utilité pour l'examen :</b> ce vocabulaire (système, sous-système, interface, frontière, rétroaction) sert de socle à toutes les questions de gouvernance et d'urbanisation.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>1.2 · Repères historiques de la discipline</h3><span class="tag watch">Culture générale</span></div>
+      <p>1954 : premier ordinateur de gestion (comptabilité chez General Electric). Années 1960 : apparition progressive du terme « système d'information ». Années 1970 : deux approches concurrentes se développent pour organiser la fonction informatique dans l'entreprise (centralisée vs décentralisée), préfigurant les débats actuels sur la gouvernance du SI.</p>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Le MSI et la notion de système</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Repères historiques de la discipline</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch1')">Commencer le quiz du chapitre 1 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 2 ================= -->
+<section class="chapter" id="ch2">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 2</span>
+    <h2>La maturité numérique</h2>
+  </div>
+  <p class="chapter-sub">Diagnostic de la transformation numérique d'une organisation : environnement VICA et modèle DMM.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— tombé en 2026 (Dossier 2, Q3).</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>2.1 · Environnement VICA et transformation numérique</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Toute organisation évolue dans un environnement <strong>VICA</strong> : Volatile, Incertain, Complexe, Ambigu. 52 % des entreprises du classement Fortune 500 de l'an 2000 en avaient disparu en 2020 — la capacité à se transformer numériquement est devenue une condition de survie, pas seulement de rentabilité.</p>
+      <p>La <strong>transformation numérique</strong> consiste à utiliser les technologies numériques pour reconfigurer fondamentalement l'offre, la relation client et les processus internes. Elle porte sur trois aspects : le business model, les interfaces/processus de relation client, les processus internes de production.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.2 · Le modèle DMM (Digital Maturity Model)</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Le diagnostic de maturité numérique consiste à situer l'entreprise sur une échelle, selon l'intensité d'usage des technologies et leur poids dans la prise de décision. Le modèle DMM identifie <strong>six dimensions</strong> :</p>
+      <ul class="detail-list">
+        <li><strong>Client</strong> : expérience où le client perçoit l'organisation comme un partenaire digital</li>
+        <li><strong>Stratégie</strong> : intégration du numérique dans la stratégie globale pour créer un avantage concurrentiel</li>
+        <li><strong>Technologie</strong> : capacité à créer, traiter, stocker, sécuriser et échanger les données</li>
+        <li><strong>Opérations</strong> : exécution et évolution des processus grâce au numérique</li>
+        <li><strong>Culture, personnes et organisation</strong> : gouvernance et développement des talents</li>
+        <li><strong>Données</strong> : capacité à exploiter les données de façon éthique et efficace</li>
+      </ul>
+      <p>Le Cnam propose son propre modèle en six thèmes : le personnel, la communauté (présence Internet), le cadre juridique/veille, les ressources (équipements), les activités, la stratégie.</p>
+      <p><strong>En clair :</strong> le DMM sert de grille de contrôle — plus une entreprise coche de cases (client connecté, stratégie numérique claire, outils modernes…), plus elle est « mature ». Une entreprise peu mature a par exemple encore beaucoup de papier, peu d'outils numériques et une direction qui ne pense pas encore « digital ».</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026 (Dossier 2, Q3)</span>« La connaissance de la maturité numérique permet d'envisager les progrès restant à accomplir. Lorsque la maturité est forte, les solutions SI deviennent indissociables des réflexions métiers et l'usage du SI devient un atout concurrentiel. »</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">Maturité numérique (D2 Q3)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>2.3 · Les ruptures technologiques et leurs opportunités</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>Quatre capacités informatiques en croissance exponentielle (+vitesse de calcul, +autonomie, +données, +automatisation) génèrent des opportunités portées par des ruptures technologiques :</p>
+      <table class="mini">
+        <tr><th>Rupture</th><th>Principe</th></tr>
+        <tr><td>Big Data</td><td>Collecte et traitement de données massives pour créer de la valeur exploitable</td></tr>
+        <tr><td>Cloud computing</td><td>Services à la demande : SaaS, PaaS, IaaS</td></tr>
+        <tr><td>Intelligence artificielle</td><td>Algorithmes simulant l'intelligence humaine</td></tr>
+        <tr><td>Blockchain</td><td>Stockage/transmission sécurisé sans organe de contrôle central</td></tr>
+        <tr><td>Objets connectés, réseaux sociaux, plateformes</td><td>Nouveaux canaux de captation et d'échange d'information</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Environnement VICA / transformation numérique</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Modèle DMM / diagnostic de maturité</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Ruptures technologiques</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch2')">Commencer le quiz du chapitre 2 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 3 ================= -->
+<section class="chapter" id="ch3">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 3</span>
+    <h2>La gouvernance SI</h2>
+  </div>
+  <p class="chapter-sub">Le chapitre le plus systématiquement interrogé : place de la DSI dans l'organigramme, missions RUN/BUILD/VISION, centralisation.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent les 4 années. Chapitre le plus rentable de l'UE.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>3.1 · La gouvernance du SI : définition</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>La gouvernance désigne « l'art ou la manière de gouverner » un système : les moyens de gestion et de régulation du SI mis en place pour atteindre les objectifs stratégiques. Elle précise les rôles et responsabilités des acteurs, apporte une connaissance approfondie du SI pour le rendre moins complexe, et aide à la prise de décision. Elle doit être redéfinie à chaque transformation ou changement organisationnel qui impacte le SI (fusion, rapprochement, changement d'actionnariat…).</p>
+      <p>Dans ce chapitre et dans toute l'UE, la <strong>DSI</strong> (Direction des Systèmes d'Information) désigne le service — ou la personne — chargé de piloter le SI de l'entreprise ; le <strong>DSI</strong> (sans article féminin) désigne son responsable.</p>
+      <p><strong>En clair :</strong> gouverner le SI, c'est décider qui a le droit de faire quoi avec l'informatique de l'entreprise (qui valide un nouveau logiciel, qui gère le budget, qui répond en cas de panne…), pour éviter que chaque service fasse ses propres choix dans son coin.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q1) &amp; 2026 (D2 Q1)</span>Question de cours quasi identique à réciter — la gouvernance est indissociable de l'alignement stratégique et donc de la performance de la firme.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Def. gouvernance (Q1)</td><td class="no">—</td><td class="yes">Def. gouvernance (D2 Q1)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.2 · La place de la fonction SI dans l'organigramme</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Trois positionnements possibles pour la DSI :</p>
+      <ul class="detail-list">
+        <li><strong>Rattachée à une autre fonction métier</strong> (souvent la direction financière) : traduit une vision purement technique du SI, « au service des fonctions du chiffre » — à éviter</li>
+        <li><strong>Au même niveau que les autres fonctions métiers</strong> : positionnement intermédiaire</li>
+        <li><strong>En soutien direct de la direction générale, au-dessus des autres fonctions métiers</strong> : positionnement recommandé, pour garantir la vision transversale nécessaire aux décisions stratégiques du SI</li>
+      </ul>
+      <p>En aucun cas la DSI ne doit être placée sous l'autorité d'une autre fonction métier, ce qui nuirait à son besoin de transversalité.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (Q1-2)</span>Absence de fonction SI formalisée chez Adalbert → recommandation de rattachement direct aux dirigeants.<br><span class="src" style="margin-top:8px">2024 (Q5) &amp; 2026 (D2 Q4)</span>Même recommandation reformulée — situer la DSI en contact direct de la direction générale.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Adalbert, rattachement direct (Q1-2)</td><td class="yes">Emplacement DSI (Q5)</td><td class="no">—</td><td class="yes">Adalnum, DG directe (D2 Q4)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.3 · Les missions de la DSI : RUN / BUILD / VISION (CIGREF)</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le CIGREF distingue trois axes de missions pour la DSI :</p>
+      <div class="formula">RUN = exploitation de l'existant<small>BUILD = développement/construction de nouvelles applications · VISION = prise en compte des éléments stratégiques (veille, alignement)</small></div>
+      <p>Autres missions classiques : la maintenance, la relation utilisateur, la gestion des infrastructures, la sécurité des SI, le choix et déploiement des logiciels, le support technique, la formation des utilisateurs, la gestion des contrats fournisseurs, l'externalisation. La priorité va généralement à l'exploitation de l'existant (RUN), puis au développement progressif (BUILD).</p>
+      <p><strong>En clair :</strong> RUN, c'est faire tourner ce qui existe déjà sans casse (dépannage, sauvegardes, mises à jour) ; BUILD, c'est construire de nouvelles applications pour répondre à de nouveaux besoins ; VISION, c'est anticiper — surveiller les technologies à venir et vérifier que le SI colle toujours à la stratégie de l'entreprise.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q4) &amp; 2025 (Q8)</span>Lister les missions attribuées à la DSI, avec la trilogie RUN/BUILD/VISION comme fil conducteur attendu.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Missions DSI (Q4)</td><td class="yes">Missions DSI (Q8)</td><td class="yes">Missions DSI (D2 Q4)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.4 · Conséquences d'un SI désaligné / de l'absence de DSI</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Conséquences d'un <strong>SI désaligné</strong> : problème de surcoût, problème de retard, problème de qualité/fiabilité, impact sur l'image de marque en cas de déception client.</p>
+      <p>Conséquences de l'<strong>absence de DSI</strong> formalisée : pas de politique d'ensemble, structure hétérogène sans schéma directeur ni plan d'ensemble, surcoût par absence d'économies d'échelle, dépendance envers des tiers/sous-traitants.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q2-3)</span>Questions de cours directes sur ces deux listes de conséquences — à mémoriser telles quelles.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Conséquences (Q2-3)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.5 · DSI centralisée vs décentralisée</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p><strong>Avantages d'une DSI centralisée</strong> : économies d'échelle sur achats et usages, uniformité des pratiques, effet d'expérience et diffusion des bonnes pratiques.<br><strong>Limites</strong> : solutions pas toujours adaptées aux besoins locaux, lourdeur/bureaucratie, manque d'innovation.</p>
+      <p>À l'inverse, laisser chaque <strong>responsable métier gérer ses propres éléments SI</strong> rapproche l'IT des besoins réels mais engendre des effets pervers : absence de vision d'ensemble, redondances et effets silos, pas d'économies d'échelle sur les achats, pas de mutualisation des bonnes pratiques.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q7)</span>Avantages/limites d'une DSI centralisée.<br><span class="src" style="margin-top:8px">2026 (D2 Q2)</span>Limites de la solution « chaque responsable métier gère son SI » — quasi symétrique de la question 2025.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Avantages/limites DSI centralisée (Q7)</td><td class="yes">Limites décentralisation (D2 Q2)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>3.6 · Liens entre direction générale, DSI et directions métiers</h3><span class="tag watch">⚡ Fréquent</span></div>
+      <p>Le bon positionnement place la DSI comme <strong>fonction transversale</strong>, en soutien de la direction générale, influençant les directions métiers pour une politique uniforme. Idéalement, DSI et directions métiers travaillent en autonomie et en confiance ; la DSI accompagne les changements attendus par les métiers, avec l'arbitrage possible de la direction générale en cas de désaccord.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q9)</span>« Quels sont les liens efficaces à créer entre direction générale, DSI et direction métier ? »</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Liens DG-DSI-métier (Q9)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Définition / enjeux de la gouvernance SI</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Place de la DSI dans l'organigramme</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Missions DSI (RUN/BUILD/VISION)</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Conséquences désalignement / absence DSI</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>DSI centralisée vs décentralisée</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Liens DG / DSI / métiers</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch3')">Commencer le quiz du chapitre 3 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 4 ================= -->
+<section class="chapter" id="ch4">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 4</span>
+    <h2>Les processus et le SI (dont BPMN)</h2>
+  </div>
+  <p class="chapter-sub">Le lien processus/SI, la digitalisation, et le langage de modélisation BPMN.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— tombé en 2023 (Dossier 3 complet). BPMN jamais redemandé graphiquement depuis.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>4.1 · Le lien entre processus et SI</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Un <strong>processus</strong> est un ensemble de tâches coordonnées qui répondent à un besoin. Le SI est intimement lié aux processus de l'entreprise pour plusieurs raisons :</p>
+      <ul class="detail-list">
+        <li>le processus repose sur des informations qui permettent la coordination des tâches</li>
+        <li>le SI est souvent le support du processus au travers de l'infrastructure technologique</li>
+        <li>le SI fournit l'information permettant de contrôler et de piloter le processus</li>
+        <li>le SI fournit les informations permettant un suivi en temps réel</li>
+      </ul>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (D3 Q1)</span>Question de cours directe, quasi verbatim.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Processus et SI (D3 Q1)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.2 · La digitalisation des processus</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>La digitalisation transforme des processus physiques en processus numériques, via des documents dématérialisés et des procédures automatisées grâce à des <strong>workflows</strong> (mécanismes de transfert automatisés).</p>
+      <div class="formula">Avantages attendus<small>Économies de coûts · Accélération des délais · Hausse de la fiabilité · Hausse de la valeur pour les utilisateurs</small></div>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (D3 Q2)</span>Les 4 avantages à citer systématiquement.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">4 avantages digitalisation (D3 Q2)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>4.3 · Jugement critique d'un processus existant</h3><span class="tag hot">Fréquent</span></div>
+      <p>Analyser un processus consiste à repérer les <strong>incohérences de coordination des ressources</strong> : par exemple, un service qui engage du temps et des moyens sur un dossier avant qu'un contrôle de solvabilité (comptable) n'ait eu lieu en amont — mauvaise séquence. Une base de données commune permet de <strong>centraliser l'information</strong> tout en <strong>décentralisant la prise de décision</strong> : les opérationnels disposent d'une information fiable pour décider localement.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (D3 Q3-4)</span>Processus de devis jugé incohérent (contrôle de solvabilité trop tardif) ; apport d'une BDD commune pour les opérationnels.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Processus devis + BDD commune (D3 Q3-4)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>4.4 · BPMN : notion et connecteurs logiques</h3><span class="tag potentiel">🎯 Potentiel</span></div>
+      <p>Le BPMN (Business Process Model and Notation) modélise graphiquement les processus métiers pour faciliter la <strong>communication</strong> entre acteurs — à la différence de Merise/UML qui modélisent le SI sous un angle technique en vue d'une réalisation.</p>
+      <table class="mini">
+        <tr><th>Connecteur</th><th>Signification</th></tr>
+        <tr><td>ET (+)</td><td>Toutes les conditions doivent être réunies simultanément (ex. carte de crédit ET solvabilité)</td></tr>
+        <tr><td>OU inclusif</td><td>Plusieurs conditions possibles, sans obligation de simultanéité (achat en ligne OU en magasin)</td></tr>
+        <tr><td>OU exclusif (X / XOR)</td><td>Conditions qui s'excluent mutuellement (paiement à la commande OU contre remboursement)</td></tr>
+      </table>
+      <p>Une <strong>activité</strong> (rectangle à coins arrondis) est consommatrice de temps et de ressources, avec objets en entrée/sortie ; elle peut se décomposer en tâches.</p>
+      <div class="example"><b>Jamais redemandé sous forme graphique dans les 4 dernières années,</b> mais un schéma BPMN à compléter ou à interpréter reste un classique possible du programme.</div>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Lien processus / SI</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Digitalisation / workflow</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Jugement critique / BDD commune</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>BPMN (connecteurs, symboles)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch4')">Commencer le quiz du chapitre 4 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 5 ================= -->
+<section class="chapter" id="ch5">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 5</span>
+    <h2>Le système d'information et la stratégie</h2>
+  </div>
+  <p class="chapter-sub">Repérer le désalignement d'un SI et comprendre en quoi le SI peut devenir une ressource stratégique.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— tombé en 2023 (Q3 et Q5) et 2026.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>5.1 · Repérer le désalignement d'un SI</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le désalignement correspond à une situation où le SI est <strong>incapable d'aider la firme à réaliser ses choix stratégiques</strong>. L'incapacité à répondre à la demande d'une partie prenante en est la preuve concrète. Symptômes classiques : doubles saisies entre applications non intégrées, incapacité d'accès à distance, absence de mise en commun de l'information entre services, SI « en silo » qui prive chaque acteur d'une information partagée.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (Q3)</span>4 symptômes de désalignement identifiés chez Adalbert (on en valorise 3).<br><span class="src" style="margin-top:8px">2026 (D1 Q4)</span>Nuance importante — l'hétérogénéité du SI peut aussi apporter de la souplesse dans certains cas (facilite l'adhésion de nouveaux membres), même si le SI reste globalement désaligné vis-à-vis du client.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">4 symptômes Adalbert (Q3)</td><td class="no">—</td><td class="no">—</td><td class="yes">Nuance souplesse/désalignement (D1 Q4)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.2 · Le SI comme ressource stratégique</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Pour procurer un avantage concurrentiel durable, une ressource doit être <strong>rare, non imitable et non substituable</strong> (approche par les ressources). Or les technologies et applications sont facilement accessibles et se diffusent très vite : la seule maîtrise technologique ne peut donc pas être suffisamment discriminante. En revanche, le SI est plus complexe qu'une simple technologie : il comprend des aspects humains, informationnels et organisationnels, ce qui rend un avantage durable beaucoup plus envisageable.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (Q5)</span>« Une firme peut-elle faire de son SI une ressource stratégique ? » — la qualité de l'argumentation est valorisée au-delà d'un simple oui/non.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">SI ressource stratégique (Q5)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>5.3 · La veille stratégique</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>La <strong>veille stratégique</strong> est la recherche, le traitement et la diffusion de renseignements susceptibles d'orienter les décisions stratégiques de l'entreprise. Elle a un caractère <strong>anticipatif</strong> : elle surveille l'environnement pour prédire les menaces et opportunités à court et long terme.</p>
+      <p>Cinq types de veille sont à connaître :</p>
+      <ul class="detail-list">
+        <li><strong>concurrentielle</strong> : surveiller les concurrents</li>
+        <li><strong>technologique</strong> : suivre les innovations du secteur</li>
+        <li><strong>commerciale/marketing</strong> : suivre les attentes clients et le marché</li>
+        <li><strong>juridique</strong> : suivre les évolutions réglementaires</li>
+        <li><strong>e-réputation</strong> : surveiller l'image de l'entreprise en ligne</li>
+      </ul>
+      <p>La veille s'organise en un <strong>processus permanent</strong> (pas une recherche ponctuelle) : définir les axes de surveillance → identifier les sources d'information → collecter et traiter les données → synthétiser → communiquer les résultats → valider et réajuster.</p>
+      <p><strong>En clair :</strong> la veille, c'est comme une vigie sur un bateau — elle ne regarde pas une seule fois l'horizon, elle scrute en continu pour prévenir l'équipage avant que le danger (ou l'opportunité) n'arrive.</p>
+      <p>À ne pas confondre avec l'<strong>intelligence économique</strong>, notion plus large : la veille stratégique n'en est qu'une composante. L'intelligence économique vise l'entreprise (ou même un État) dans sa globalité, inclut aussi les données internes, et débouche sur des recommandations concrètes aux décideurs.</p>
+      <div class="annale-ex"><span class="src">Jamais tombé aux annales 2023-2026</span>Ce sous-thème du chapitre « SI et stratégie » (lui-même bien testé) n'a jamais été isolé dans un corrigé, mais reste au programme du cours 1.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Repérer le désalignement d'un SI</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>SI ressource stratégique</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Veille stratégique (types, processus)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch5')">Commencer le quiz du chapitre 5 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 6 ================= -->
+<section class="chapter" id="ch6">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 6</span>
+    <h2>L'alignement stratégique</h2>
+  </div>
+  <p class="chapter-sub">Le modèle SAM de Venkatraman/Henderson : le cœur théorique de toute l'UE.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent les 4 années. Le modèle SAM est LE modèle central de l'UE.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>6.1 · Le modèle SAM de Venkatraman/Henderson</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le <strong>Strategic Alignment Model (SAM)</strong> identifie 4 composantes fondamentales à mettre en relation pour aligner le SI sur la firme :</p>
+      <ul class="detail-list">
+        <li>la stratégie de la firme (domaine d'ancrage, origine du changement)</li>
+        <li>les structures de la firme</li>
+        <li>la stratégie SI</li>
+        <li>les infrastructures technologiques du SI</li>
+      </ul>
+      <div class="formula">Exécution de la stratégie d'affaire<small>Stratégie d'affaire (1) → équipe projet / structures (2) → évolution de l'IT (3)</small></div>
+      <div class="formula">Développement technologique<small>Stratégie d'affaire (1) → redéfinition de la stratégie SI (2) → infrastructures technologiques (3)</small></div>
+      <p>Le correcteur attend la compréhension des principes de la démarche, <strong>sans exiger le formalisme exact</strong> ni tous les termes techniques du modèle (domaines d'ancrage/impact/pivot).</p>
+      <p><strong>En clair :</strong> le modèle SAM dit simplement que 4 éléments doivent avancer ensemble — ce que l'entreprise veut faire (stratégie), comment elle s'organise (structures), ce que le SI doit permettre (stratégie SI), et le matériel/logiciel réellement installé (infrastructures). Si un de ces 4 éléments change (ex. : nouvelle stratégie commerciale) sans que les autres suivent, le SI se désaligne.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (Q4) &amp; 2026 (D1 Q5)</span>« Proposez une démarche de réalignement en explicitant les étapes » → toujours structurer la réponse autour des 4 composantes SAM et du mode « exécution de la stratégie d'affaire ».</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Démarche réalignement (Q4)</td><td class="no">—</td><td class="no">—</td><td class="yes">Démarche SAM Adalnum (D1 Q5)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>6.2 · Repérer et démontrer un désalignement</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Démarche méthodologique : confronter les <strong>attentes exprimées</strong> (souvent via une interview du DSI ou du dirigeant) aux <strong>limites constatées</strong> du SI actuel. Les limites les plus citées : SI hétérogènes non unifiés, difficultés de transfert d'information, mauvaise prise en compte des contraintes internationales/multi-sites.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q1)</span>« Il est difficile d'affirmer que le SI est aligné ou désaligné » — nuance à adopter quand l'énoncé ne donne pas de symptôme tranché, en s'appuyant sur les limites en miroir des attentes.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Repérage désalignement (Q2)</td><td class="yes">SI aligné ou désaligné ? (Q1)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Modèle SAM / démarche de réalignement</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Repérer/démontrer un désalignement</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch6')">Commencer le quiz du chapitre 6 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 7 ================= -->
+<section class="chapter" id="ch7">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 7</span>
+    <h2>L'urbanisation du SI</h2>
+  </div>
+  <p class="chapter-sub">Les 4 strates du SI et la mesure de son hétérogénéité — un classique récurrent.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— tombé 3 sessions sur 4.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>7.1 · Les 4 strates de l'urbanisation</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>L'urbanisation identifie quatre strates dans un SI, par analogie avec l'urbanisme d'une ville :</p>
+      <table class="mini">
+        <tr><th>Strate</th><th>Contenu</th></tr>
+        <tr><td>Métiers</td><td>Tâches informationnelles (collecte, stockage), organisées en processus</td></tr>
+        <tr><td>Fonctionnelle</td><td>Fonctions assurées par le SI</td></tr>
+        <tr><td>Applicative</td><td>Logiciels utilisés pour exécuter les tâches informationnelles</td></tr>
+        <tr><td>Technique</td><td>Matériels, logiciels de base, protocoles</td></tr>
+      </table>
+      <p>La mise en place d'un PGI concerne principalement la <strong>couche applicative</strong>, mais peut entraîner la refonte d'éléments fonctionnels et nécessiter une évolution des éléments matériels.</p>
+      <p><strong>En clair :</strong> comme dans une ville, on distingue ce que font les gens (strate métiers), les services rendus (strate fonctionnelle), les logiciels utilisés pour rendre ce service (strate applicative), et enfin les câbles, serveurs et ordinateurs qui font tourner le tout (strate technique). Changer une strate n'oblige pas forcément à tout casser sur les autres.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q3)</span>Quelles strates sont touchées par la mise en place d'un PGI ? → couche applicative en priorité.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Strates touchées par le PGI (Q3)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>7.2 · Mesurer l'hétérogénéité d'un SI</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>L'hétérogénéité se mesure à la diversité des composantes technologiques :</p>
+      <ul class="detail-list">
+        <li>nombre d'applications (avec leur type : sur mesure ou propriétaire)</li>
+        <li>nombre de protocoles / standards utilisés</li>
+        <li>nombre d'environnements (Linux, Windows…)</li>
+        <li>nombre de modalités d'accès (résident, à distance)</li>
+        <li>différentes sources de données, différents choix réseau (cloud ou on premise)</li>
+      </ul>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q4) &amp; 2026 (D1 Q1)</span>Questions quasiment identiques d'une session à l'autre — à réciter sans hésitation.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Mesurer l'hétérogénéité (Q4)</td><td class="yes">Critères hétérogénéité (D1 Q1)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>7.3 · Pourquoi et comment urbaniser</h3><span class="tag watch">Fréquent</span></div>
+      <p>L'urbanisation vise à faciliter l'évolution du SI en s'appuyant sur une <strong>cartographie</strong> des fonctions, applications et éléments matériels. Elle permet de valoriser l'existant tout en développant une approche <strong>modulaire</strong>, condition nécessaire à une évolutivité maîtrisée du SI.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (D3, tâche 11)</span>La mise en place d'un ERP est jugée être une opportunité d'urbanisation, pour remodeler en profondeur le SI et l'aligner durablement.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Urbanisation via ERP (D3, tâche 11)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Les 4 strates du SI</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Mesurer l'hétérogénéité</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Pourquoi/comment urbaniser</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch7')">Commencer le quiz du chapitre 7 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 8 ================= -->
+<section class="chapter" id="ch8">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 8</span>
+    <h2>Le schéma directeur</h2>
+  </div>
+  <p class="chapter-sub">Le plan pluriannuel qui relie la stratégie de la firme au SI cible.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr">2024</span><span class="yr">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— tombé en 2023 (Q6) et 2026 (D1 Q6-7).</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>8.1 · Définition et rôle du schéma directeur</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le schéma directeur est un <strong>document pluriannuel</strong>, établi par la DSI et adopté par la direction, qui définit le <strong>SI cible</strong> (vers quoi doit tendre le SI) et les <strong>projets</strong> nécessaires pour l'atteindre. Il est la preuve du lien étroit entre les réflexions stratégiques de la firme et son SI, et permet de planifier les évolutions tout en préservant les solutions actuelles.</p>
+      <div class="formula">SI cible = état futur souhaité du SI (BDD commune, PGI, middleware…)<small>Schéma directeur = plan pluriannuel des projets permettant d'atteindre le SI cible</small></div>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (Q6)</span>SI cible = BDD commune/PGI face à l'absence d'échange de données ; schéma directeur = plan des projets (BDD, interfaçage, PGI) pour y parvenir.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">SI cible + schéma directeur (Q6)</td><td class="no">—</td><td class="no">—</td><td class="yes">Absence schéma directeur (D1 Q6)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>8.2 · Construire les axes d'un schéma directeur</h3><span class="tag watch">Fréquent</span></div>
+      <p>Les axes correspondent aux objectifs fixés à un <strong>horizon de 3 à 5 ans</strong>, cohérents avec les besoins de la firme et les grandes évolutions attendues d'un SI aligné. Exemples d'axes actuels valorisés : mise en place d'une solution unifiée (PGI), digitalisation, sécurité et cybersécurité, dimension extra-financière (contraintes RSE/CSRD).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026 (D1 Q7)</span>Axes proposés pour ADALNUM incluant explicitement la RSE/CSRD — signe que les enjeux extra-financiers entrent désormais dans le programme d'examen.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">Axes schéma directeur RSE/CSRD (D1 Q7)</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Définition / rôle du schéma directeur</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Construire les axes d'un schéma directeur</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch8')">Commencer le quiz du chapitre 8 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 9 ================= -->
+<section class="chapter" id="ch9">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 9</span>
+    <h2>La mise en place d'un projet SI</h2>
+  </div>
+  <p class="chapter-sub">Le sujet le plus dense de l'UE : acteurs MOA/MOE/AMOA/PMO, étapes d'un projet ERP, résistance au changement.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent les 4 années.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>9.1 · Les acteurs d'un projet SI : MOA, MOE, chef de projet</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Deux notions à connaître par cœur pour tout ce chapitre : la <strong>MOA</strong> (maîtrise d'ouvrage) est le client — celui qui exprime le besoin et paie le projet ; la <strong>MOE</strong> (maîtrise d'œuvre) est le prestataire technique — celui qui réalise concrètement la solution.</p>
+      <p><strong>Directeur de projet (MOA)</strong> : responsable du projet, chargé de définir les besoins et le cahier des charges, de recruter la MOE, et de contrôler la bonne marche du projet (qualité, délai, coût).<br><strong>Chef de projet (MOE)</strong> : représentant en charge du développement, missions essentiellement techniques.<br><strong>Comité de pilotage</strong> : met en place et suit le projet au nom de la MOA ; y siège en particulier le directeur de projet.</p>
+      <p><strong>En clair :</strong> la MOA (maîtrise d'ouvrage), c'est le client qui sait ce qu'il veut (le « quoi » et le « pourquoi ») ; la MOE (maîtrise d'œuvre), c'est l'équipe technique qui construit la solution (le « comment »). C'est le même principe que pour une maison : le propriétaire (MOA) dit ce qu'il veut, l'architecte et les ouvriers (MOE) le construisent.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (D2 Q1)</span>Explicitation complète des rôles de ces trois acteurs — question quasi systématique.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Structures MOA/MOE projet (D2 Q3)</td><td class="no">—</td><td class="yes">Rôles comité pilotage/MOA/MOE (D2 Q1)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.2 · AMOA (Assistance à Maîtrise d'Ouvrage)</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>L'AMOA sert d'interface entre les besoins métiers (MOA) et les solutions techniques (MOE). Missions : comprendre et formaliser les besoins, rédiger le cahier des charges, assurer la coordination entre acteurs, suivre l'avancement (délais, budget, risques), organiser les recettes.</p>
+      <p>L'AMOA est particulièrement utile quand la firme <strong>ne dispose pas d'une équipe interne suffisamment étoffée</strong> pour suivre le projet — donc moins nécessaire si une DSI avec un service MOA existe déjà en interne.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (D2 Q2) &amp; 2026 (D3 Q6)</span>Présenter les fonctions de l'AMOA, puis juger de sa pertinence selon que la firme dispose ou non déjà d'une DSI/MOA.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Fonctions de l'AMOA (D2 Q2)</td><td class="yes">Pertinence de l'AMOA (D3 Q6)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.3 · Le PMO (Project Management Office)</h3><span class="tag watch">Fréquent</span></div>
+      <p>Le PMO se focalise sur le <strong>processus du projet</strong> (méthodes, outils, indicateurs, retours d'expérience, axes d'amélioration) — contrairement au chef de projet et à l'AMOA qui se focalisent sur les besoins fonctionnels. Le PMO fournit des méthodes plus efficaces/efficientes et intervient souvent sur plusieurs projets en parallèle.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (D2 Q3)</span>Situer le PMO par rapport aux acteurs traditionnels du projet.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">PMO vs acteurs traditionnels (D2 Q3)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.4 · Les grandes étapes de mise en place d'un ERP/PGI</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <ul class="detail-list">
+        <li>analyser les besoins spécifiques (processus, données, fonctionnalités)</li>
+        <li>élaborer un cahier des charges</li>
+        <li>étudier les offres des principaux éditeurs (appel d'offres)</li>
+        <li>choisir l'éditeur et la solution appropriée</li>
+        <li>négocier le contrat, puis donner la main à l'intégrateur pour l'alignement du PGI avec les processus</li>
+        <li>préparer les données, configurer/paramétrer, définir les droits d'accès</li>
+        <li>tester, qualifier, recetter, déployer et former les utilisateurs</li>
+      </ul>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (Q6) &amp; 2026 (D3 Q5)</span>Lister ces étapes est une question quasi systématique dès qu'un dossier porte sur un choix d'ERP.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Étapes mise en place ERP (Q13)</td><td class="yes">Étapes implémentation PGI (Q6)</td><td class="yes">Étapes changement de PGI (D3 Q5)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.5 · Méthode agile : pertinence pour un projet PGI</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Le développement <strong>itératif</strong> découpe le projet en itérations de quelques semaines, chacune livrant un sous-ensemble opérationnel, jusqu'à la version finale. Les itérations sont séquentielles (jamais parallélisées) et reposent sur une discussion permanente avec le client.</p>
+      <p><strong>Conclusion attendue pour un projet PGI</strong> : l'agile est généralement <strong>peu pertinent</strong>, car les fonctionnalités d'un PGI sont déjà standardisées (bonnes pratiques sectorielles, exigences réglementaires) — le recours à l'agile serait coûteux sans réelle marge de personnalisation.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q14) &amp; 2026 (D3 Q4)</span>Même conclusion attendue les deux années — non pertinent pour un PGI, à la différence d'un développement sur-mesure.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Pertinence agile pour l'ERP (Q14)</td><td class="no">—</td><td class="yes">Agile pour le PGI (D3 Q4)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.6 · Résistance au changement et actions pour la limiter</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Raisons de la résistance : évolution des routines ancrées, zone d'incertitude perçue par les utilisateurs, perte d'autonomie (sentiment de contrôle accru), déficience réelle de l'outil (fonctionnel/ergonomique), difficultés personnelles à se former.</p>
+      <p>4 actions concrètes classiques : <strong>implication des utilisateurs</strong> dès les prémices du projet, <strong>soutien de la direction</strong> (légitimité du changement), <strong>communication</strong> permanente et transparente, <strong>formation</strong> pratique des collaborateurs.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q12)</span>Question complète sur les causes puis les actions correctives — à structurer en deux temps.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Causes + actions résistance (Q12)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>9.7 · Causes classiques d'échec d'un projet ERP</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>Mauvaise écoute des utilisateurs (analyse des besoins déficiente), rejet de la solution par les utilisateurs, dépassement des délais prévisionnels d'implémentation, mauvaise prise en compte de l'existant.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q11)</span>Question de cours directe sur les causes d'échec.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Causes d'échec ERP (Q11)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Structures/acteurs MOA-MOE</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>AMOA</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>PMO</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Étapes de mise en place d'un ERP</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Pertinence de la méthode agile</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Résistance au changement</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Causes d'échec d'un projet ERP</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch9')">Commencer le quiz du chapitre 9 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 10 ================= -->
+<section class="chapter" id="ch10">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 10</span>
+    <h2>Le suivi d'un projet SI</h2>
+  </div>
+  <p class="chapter-sub">La partie calculatoire du projet SI : ordonnancement MPM/GANTT, chemin critique, écarts coûts/délais.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr hit">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent les 4 années, souvent noté lourd.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>10.1 · Ordonnancement : diagramme MPM/PERT, chemin critique</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Le diagramme MPM (Méthode des Potentiels Metra) permet de représenter les tâches d'un projet, leurs enchaînements, leurs durées, et de calculer les dates au plus tôt / au plus tard de chaque tâche. Le <strong>chemin critique</strong> est la succession de tâches dont le retard entraînerait directement un retard du projet global : ces tâches ont une <strong>marge totale nulle</strong>.</p>
+      <div class="formula">Durée totale du projet = date de fin de la tâche FIN (au plus tôt)<small>Marge totale d'une tâche = date au plus tard − date au plus tôt</small></div>
+      <p><strong>En clair :</strong> sur le chemin critique, aucune tâche ne peut prendre de retard sans retarder tout le projet (marge = 0). Sur les autres tâches, il y a un peu de mou : elles peuvent glisser un peu sans conséquence, tant qu'elles restent dans leur marge.</p>
+      <div class="annale-ex"><span class="src">Présent dans les 4 années</span>Calcul complet d'un diagramme MPM ou GANTT, identification du chemin critique et de la durée totale.<br><span class="src" style="margin-top:8px">2023 (D2 Q4)</span>Durée totale 41, chemin critique D-E-G-H-J-K.<br><span class="src" style="margin-top:8px">2024 (D3 Q16)</span>Durée totale 39 semaines, délai de 9 mois jugé extrêmement serré.<br><span class="src" style="margin-top:8px">2025 (D2 Q6)</span>Temps restant à partir du chemin critique F-J-L + anticipation d'un décalage de 4 semaines.<br><span class="src" style="margin-top:8px">2026 (D3 Q7)</span>Durée totale 57, chemin critique A-B-E-G-I.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">MPM, durée 41, chemin D-E-G-H-J-K (D2 Q4)</td><td class="yes">GANTT/MPM, durée 39 sem. (D3 Q16)</td><td class="yes">Chemin critique F-J-L (D2 Q6)</td><td class="yes">MPM, durée 57, chemin A-B-E-G-I (D3 Q7)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>10.2 · Suivi de l'avancement : écarts coûts/délais (EVM)</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>La méthode de la valeur acquise (<strong>EVM</strong> — Earned Value Management) compare trois montants à une date donnée :</p>
+      <div class="formula">CRTE = coût réel du travail effectué<small>CPTE = % d'avancement réel × budget total · CPTP = % d'avancement prévu × budget total</small></div>
+      <div class="formula">Écart sur coût = CRTE − CPTE (gaspillage si positif)<small>Écart sur délai = CPTE − CPTP (retard si négatif)</small></div>
+      <p>Un correctif budgétaire réaliste doit anticiper que les dérapages déjà constatés sur la première moitié du projet se reproduiront probablement sur la seconde moitié, plutôt que de supposer une économie miraculeuse.</p>
+      <div class="annale-ex"><span class="src">Exemple chiffré annale — 2025 (D2 Q7-8)</span>CRTE 590 000 € vs CPTE 500 000 € → gaspillage de 90 000 € (18 %) ; écart sur délai de −100 000 € ; correctif budgétaire réaliste à 1 200 000 € (anticipation d'un nouveau dérapage sur la 2ᵉ moitié).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Écarts coûts/délais, correctif budgétaire (D2 Q7-8)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>10.3 · Profil de risque d'un projet</h3><span class="tag watch">Fréquent</span></div>
+      <p>Le profil de risque d'un projet s'évalue selon plusieurs critères types : la <strong>taille</strong> du projet (périmètre fonctionnel), la <strong>durée</strong>, les <strong>délais</strong> imposés, la <strong>technicité</strong> requise, et la <strong>stabilité des équipes</strong>. Un projet imposé par une obligation légale et technologiquement banalisé est généralement peu risqué.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (D2 Q1)</span>Projet de facture électronique jugé peu risqué (obligation légale, technologies banalisées).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Risque facture électronique (D2 Q1)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>10.4 · La recette : dernière phase du projet</h3><span class="tag watch">Fréquent</span></div>
+      <p>La recette est la <strong>prise de possession formelle</strong> du projet par le maître d'ouvrage, en particulier sur ses aspects logiciels. Elle comporte des tests permettant de vérifier la conformité avec le cahier des charges.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2023 (D2 Q5)</span>Question de cours directe.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="yes">Dernière phase du projet (D2 Q5)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Ordonnancement MPM/GANTT + chemin critique</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>Suivi de l'avancement (écarts coûts/délais)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>Profil de risque d'un projet</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>La recette</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch10')">Commencer le quiz du chapitre 10 →</button></div>
+</section>
+
+<!-- ================= CHAPITRE 11 ================= -->
+<section class="chapter" id="ch11">
+  <div class="chapter-head">
+    <span class="chapter-num">Chapitre 11</span>
+    <h2>Les logiciels métiers (ERP/PGI, CRM, SIRH)</h2>
+  </div>
+  <p class="chapter-sub">Le dossier « produit » le plus récurrent : critères de choix d'un ERP, éditeur, intégrateur, CRM, SIRH.</p>
+  <div class="freqbar">
+    <span class="flabel">Fréquence aux annales</span>
+    <div class="years"><span class="yr">2023</span><span class="yr hit">2024</span><span class="yr hit">2025</span><span class="yr hit">2026</span></div>
+    <span style="color:var(--text-faint);font-size:13px;">— présent 3 années sur 4.</span>
+  </div>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>11.0 · Les logiciels mono-fonction (avant l'ERP)</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>Avant de couvrir toutes les fonctions de l'entreprise avec un ERP, les entreprises utilisaient des logiciels spécialisés sur <strong>une seule fonction</strong> — d'où le terme « mono-fonction ». Deux exemples classiques du cours :</p>
+      <ul class="detail-list">
+        <li><strong>Le CRM</strong> : apparu fin des années 1990, c'est une sorte de « mini-ERP » spécialisé dans la relation client, avec 4 modules possibles — SFA (force de vente), EMA (automatisation marketing), canaux de vente automatisés, CRM analytique. Comme un ERP, il repose sur une base de données unique, mais uniquement pour la fonction commerciale.</li>
+        <li><strong>Le SCM</strong> (logiciels de gestion de la chaîne logistique) : supportent la coordination des flux physiques et d'informations avec les fournisseurs et les clients. On y distingue les <strong>APS</strong> (Advanced Planning and Scheduling — aide à la décision et prévisions, mais sans base de données propre : ils doivent être connectés à l'ERP) et les <strong>SCE</strong> (Supply Chain Execution).</li>
+      </ul>
+      <p><strong>En clair :</strong> un logiciel mono-fonction, c'est un ERP en modèle réduit, limité à un seul métier (vente, logistique…) — utile quand on n'a pas besoin ou pas les moyens d'un ERP complet, mais qui recrée le problème de communication entre logiciels que l'ERP est justement censé résoudre.</p>
+      <div class="annale-ex"><span class="src">Jamais tombé aux annales 2023-2026</span>Utile en complément de 11.1 (ERP/PGI) : un dossier pourrait demander de comparer un choix « CRM seul » à un ERP complet.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.1 · Caractéristiques d'un ERP/PGI</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>Un ERP (Enterprise Resource Planning) / PGI (progiciel de gestion intégré) est un logiciel qui :</p>
+      <ul class="detail-list">
+        <li>prend en charge plusieurs fonctions de l'entreprise via différents modules</li>
+        <li>assure l'uniformité des informations via une <strong>base de données unique</strong></li>
+        <li>est un outil standard conçu, développé et commercialisé par un éditeur</li>
+        <li>garantit la traçabilité des opérations de gestion</li>
+      </ul>
+      <p>Le premier ERP date de 1992 (SAP) ; le terme apparaît en 1990 dans une étude Gartner. Avant les ERP, l'intégration se faisait en « point à point » (plat de spaghettis), remplacé par des <strong>mécanismes intégrateurs</strong> ou des <strong>EAI</strong> (Enterprise Application Integration) <strong>/middleware</strong> — une couche logicielle qui fait le lien entre plusieurs applications.</p>
+      <p><strong>En clair :</strong> avant l'ERP, chaque service avait son propre logiciel (compta, stock, ventes…) et il fallait ressaisir les données d'un logiciel à l'autre à la main — source d'erreurs et de pertes de temps. L'ERP met tout le monde dans le même logiciel avec une seule base de données : ce qui est saisi dans un service est immédiatement visible par les autres.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q6)</span>Caractéristiques rappelées puis bénéfices pour Atelier des Rêves (multisite France/Allemagne, standardisation, recrutement facilité).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Caractéristiques ERP, bénéfices (Q6)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.2 · Critères de sélection d'un outil ERP et de son éditeur</h3><span class="tag hot">🔥 Très fréquent</span></div>
+      <p>4 critères de sélection de l'outil : <strong>adéquation avec la stratégie</strong> (multisite/multilingue), <strong>réponse aux besoins fonctionnels</strong>, <strong>budget</strong>, <strong>intégration technique</strong>, <strong>ergonomie</strong>.</p>
+      <p>Critères de choix de l'<strong>éditeur</strong> : <strong>pérennité</strong> (mise à jour, continuité du support, surface financière) et <strong>notoriété</strong> (réputation, retours d'expérience des clients actuels).</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q7-8)</span>4 critères outil + critères éditeur, quasi systématiques dès qu'un dossier ERP est proposé.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">4 critères outil + éditeur (Q7-8)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.3 · Open source vs solution propriétaire</h3><span class="tag watch">Fréquent</span></div>
+      <p>Un logiciel open source distribue son code source sous licence libre, souvent développé de façon collaborative. Avantages : coût réduit, ouverture/modifiable, bénéfice des évolutions d'une communauté. <strong>Mais</strong> : en cas de manque de compétences informatiques internes et de fort besoin de sécurisation, une <strong>solution propriétaire</strong> reste généralement préconisée.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q9)</span>Conclusion attendue — solution propriétaire à privilégier pour Atelier des Rêves (manque de compétences IT internes, besoin de sécurisation).</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Open source vs propriétaire (Q9)</td><td class="no">—</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.4 · Le rôle de l'intégrateur</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>L'intégrateur accompagne l'entreprise cliente dans le déploiement et la personnalisation d'un logiciel conçu par un éditeur. Compétences mobilisées : maîtrise du logiciel, conseil stratégique, paramétrage du système, développement/personnalisation, migration et intégration des données, formation des utilisateurs.</p>
+      <p><strong>Avantages</strong> : bonne connaissance technique/fonctionnelle, relations avec l'éditeur, expertise en gestion de projets SI.<br><strong>Risques</strong> : dépendance vis-à-vis de l'intégrateur, risque sur la confidentialité des données, nécessité de bien identifier ses besoins en amont.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2024 (Q10) &amp; 2026 (D3 Q8)</span>Avantages/risques du recours à un intégrateur, questions très proches d'une session à l'autre.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="yes">Avantages/risques intégrateur (Q10)</td><td class="no">—</td><td class="yes">Importance de l'intégrateur (D3 Q8)</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.5 · Le CRM (Customer Relationship Management)</h3><span class="tag watch">Fréquent</span></div>
+      <p>Le CRM centralise les données clients et optimise les processus de vente, marketing et service client : centralisation des informations, requêtes ciblées, enrichissement automatique des fiches, campagnes marketing personnalisées, tableaux de bord de performance commerciale, prévisions de ventes, collaboration/partage d'information.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2025 (D2 Q5)</span>Lister les fonctionnalités les plus utiles d'un CRM.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="yes">Fonctionnalités du CRM (D2 Q5)</td><td class="no">—</td></tr></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>11.6 · Le SIRH (Système d'Information de Ressources Humaines)</h3><span class="tag hot">🔥 Fréquent</span></div>
+      <p>Le SIRH centralise, automatise et gère l'ensemble des processus RH : gestion administrative (dossiers salariés, <strong>DSN</strong> — Déclaration Sociale Nominative), gestion de la paie, gestion des temps et activités, gestion du recrutement, <strong>GPEC</strong> (Gestion Prévisionnelle des Emplois et des Compétences), tableaux de bord/reporting RH, communication interne.</p>
+      <p>Défauts graves possibles : obsolescence du logiciel, manque d'intégration avec les autres systèmes (paie, comptabilité, CRM), problèmes de fiabilité des données, risques de sécurité/conformité <strong>RGPD</strong> (Règlement Général sur la Protection des Données), interface non intuitive, SIRH perçu comme un simple outil administratif plutôt qu'un levier stratégique RH.</p>
+      <div class="annale-ex"><span class="src">Exemple annale — 2026 (D3 Q1-3)</span>Difficultés techniques des fiches de paie (contraintes temporelles de fin de mois → BDD centralisée), fonctionnalités du SIRH, défauts graves d'une solution SIRH.</div>
+      <details class="recap">
+        <summary>Voir aux annales</summary>
+        <table><tr><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr>
+        <tr><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">Difficultés, fonctionnalités, défauts SIRH (D3 Q1-3)</td></tr></table>
+      </details>
+    </div>
+  </div>
+
+  <div class="chrecap">
+    <div class="chrecap-head"><h4>📋 Récapitulatif — notions du chapitre aux annales</h4></div>
+    <div class="chrecap-table-wrap">
+      <table class="chrecap-table">
+        <tr><th>Notion</th><th class="yr-col">2023</th><th class="yr-col">2024</th><th class="yr-col">2025</th><th class="yr-col">2026</th></tr>
+        <tr><td>Logiciels mono-fonction (CRM, SCM)</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Caractéristiques d'un ERP/PGI</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Critères de sélection outil / éditeur</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Open source vs propriétaire</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col no">—</td></tr>
+        <tr><td>Rôle de l'intégrateur</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+        <tr><td>CRM</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td><td class="yr-col no">—</td></tr>
+        <tr><td>SIRH</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col no">—</td><td class="yr-col yes">✓</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="quizcta"><button class="quizbtn" onclick="openQuiz('ch11')">Commencer le quiz du chapitre 11 →</button></div>
+</section>
+
+<!-- ================= AUTEURS ================= -->
+<section class="chapter" id="auteurs">
+  <div class="chapter-head">
+    <span class="chapter-num">👤</span>
+    <h2>Auteurs et modèles à connaître</h2>
+  </div>
+  <p class="chapter-sub">Les noms propres et sources cités dans le cours — savoir associer un nom à son apport, même sans en réciter la théorie complète, rassure le correcteur.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>👤 Venkatraman &amp; Henderson</h3><span class="tag hot">🔥 À connaître absolument</span></div>
+      <p>Chercheurs à l'origine du <strong>modèle SAM</strong> (Strategic Alignment Model), le modèle central de l'alignement stratégique du SI (voir chapitre 6). Ils montrent que 4 éléments — stratégie de la firme, structures, stratégie SI, infrastructures technologiques — doivent être mis en cohérence pour que le SI serve efficacement l'entreprise.</p>
+      <p><strong>En clair :</strong> si l'examen vous demande de « proposer une démarche de réalignement », citez leurs noms et reprenez les 4 composantes du modèle — c'est ce que les corrigés valorisent.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>👤 Le CIGREF</h3><span class="tag hot">🔥 À connaître absolument</span></div>
+      <p>Le CIGREF (Club Informatique des Grandes Entreprises Françaises) est une association professionnelle de DSI qui a popularisé la typologie <strong>RUN / BUILD / VISION</strong> pour décrire les missions d'une DSI (voir chapitre 3).</p>
+      <p><strong>En clair :</strong> ce n'est pas une personne mais une organisation professionnelle — vous pouvez citer « le CIGREF » comme source dès qu'on vous demande les missions ou l'organisation d'une DSI.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>👤 Gartner</h3><span class="tag watch">Repère historique</span></div>
+      <p>Cabinet d'analystes américain qui a inventé le terme <strong>« ERP »</strong> dans une étude publiée en 1990, deux ans avant le premier ERP commercialisé (SAP, 1992). Gartner reste aujourd'hui une référence pour évaluer les éditeurs de logiciels et les tendances technologiques.</p>
+      <p><strong>En clair :</strong> un repère de date utile si on vous demande l'origine du terme ERP/PGI (voir chapitre 11).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>👤 Peter Drucker</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>Auteur de l'ouvrage <em>Au-delà du capitalisme</em>, il défend l'idée que dans la société « post-capitaliste », la <strong>connaissance</strong> est devenue la ressource la plus importante pour une entreprise — plus que le travail ou le capital financier. C'est le point de départ du chapitre sur la gestion des connaissances (voir section « À surveiller »).</p>
+      <p><strong>En clair :</strong> appliquée aux tâches du quotidien, la connaissance crée de la productivité ; tournée vers l'avenir, elle devient de l'innovation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>👤 Legrenzi</h3><span class="tag watch">⚡ À surveiller</span></div>
+      <p>Auteur de l'ouvrage de référence <em>Les tableaux de bord de la DSI</em>, cité dans le cours pour les 10 propriétés d'un bon indicateur et les exemples de tableaux de bord standards d'une direction informatique (voir section « À surveiller »).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= POTENTIEL ================= -->
+<section class="chapter" id="potentiel">
+  <div class="chapter-head">
+    <span class="chapter-num">🎯</span>
+    <h2>Notions à surveiller</h2>
+  </div>
+  <p class="chapter-sub">Présentes dans les cours 1 et 2 mais jamais testées (ou testées rarement) dans les 4 derniers corrigés — relations contractuelles ESN, gestion des connaissances, mesure de la performance et démarche d'audit.</p>
+
+  <div class="notions">
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Typologie des prestations d'une ESN</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Une ESN (Entreprise de Services du Numérique) propose plusieurs types de prestations : <strong>conseil informatique</strong> (accompagnement technologique), <strong>ingénierie et intégration</strong> (conception, réalisation), <strong>infogérance</strong> (prise en charge totale/partielle du SI du client, souvent pluriannuelle et forfaitaire), <strong>maintenance/assistance</strong> — TMM (tierce maintenance matérielle) et TMA (tierce maintenance applicative), assurées par un prestataire indépendant de l'éditeur/constructeur.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Les obligations contractuelles des parties</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Le client a une <strong>obligation de collaborer</strong> (désignation d'interlocuteurs) et une <strong>obligation de payer</strong>, selon trois modalités :</p>
+      <div class="formula">Forfait = montant convenu à l'avance, indépendamment des interventions<small>Régie = montant dépendant des interventions réalisées (ex. : à la journée) · Combinaison = forfait d'appel + interventions à l'acte (risque de dépassement)</small></div>
+      <p>Le prestataire est tenu à une <strong>obligation de résultat</strong> pour les prestations correctives, alors que l'assistance technique relève traditionnellement d'une <strong>obligation de moyens</strong>. L'indexation d'un contrat pluriannuel se fait via l'<strong>indice Syntec</strong>.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Le modèle DIK (Data-Information-Knowledge)</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>La connaissance s'inscrit dans un processus cumulatif en trois étapes :</p>
+      <div class="formula">Data (donnée) → Information → Knowledge (connaissance)</div>
+      <p>La <strong>donnée</strong> est un fait isolé, trop parcellaire pour traduire quoi que ce soit. L'<strong>information</strong> est un ensemble de données interprétées qui a pris du sens, mais reste statique. La <strong>connaissance</strong> naît de la compréhension des relations entre plusieurs données/informations.</p>
+      <p>Peter Drucker considère la connaissance comme la ressource fondamentale de l'entreprise post-capitaliste : appliquée aux tâches, elle génère la productivité ; tournée vers l'avenir, elle devient l'innovation.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Les trois types de connaissances en entreprise</h3><span class="tag potentiel">Jamais testé</span></div>
+      <ul class="detail-list">
+        <li><strong>Connaissances techniques</strong> : nécessaires pour réaliser des tâches précises</li>
+        <li><strong>Connaissances sur les produits/services</strong> : documentation, savoir-faire, retours d'expérience</li>
+        <li><strong>Connaissances sur l'entreprise</strong> : organisation, modes de fonctionnement</li>
+      </ul>
+      <p>Problèmes que le knowledge management permet d'affronter : perte de savoirs lors des départs, difficulté à retrouver la bonne information, répétition d'erreurs déjà commises faute de retours d'expérience formalisés.</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Les tableaux de bord et leurs 10 propriétés</h3><span class="tag potentiel">Jamais testé isolément</span></div>
+      <p>Un indicateur pertinent doit respecter <strong>10 propriétés</strong> : nom, définition sans ambiguïté, objectif assigné, mode de calcul transparent, précision, fiabilité, source précisée, fréquence de mise à jour, évolutivité, présentation neutre.</p>
+      <p>Trois types d'indicateurs (<strong>KPI</strong> — Key Performance Indicator, indicateur clé de performance) : <strong>de performance</strong> (aptitude à atteindre un objectif), <strong>de qualité</strong> (aptitude à apporter satisfaction), <strong>de moyen</strong> (indirects, censés produire performance/qualité).</p>
+    </div>
+
+    <div class="card potentiel">
+      <div class="card-head"><h3>🎯 Référentiels d'audit : COBIT, ITIL, RACI</h3><span class="tag potentiel">Jamais testé</span></div>
+      <p>Le guide de contrôle interne de l'<strong>AMF</strong> (Autorité des Marchés Financiers) distingue six fonctions clés du SI à auditer : compétences du personnel, projets/développements, maintenance, incidents, sécurité, sous-traitance. La décomposition en processus s'appuie sur <strong>COBIT</strong> (Control Objectives for Information and related Technology — référentiel de bonnes pratiques de gouvernance et de contrôle du SI) ou <strong>ITIL</strong> (Information Technology Infrastructure Library — référentiel de bonnes pratiques pour la gestion des services informatiques). Les rôles des acteurs sont identifiés via la classification <strong>RACI</strong> :</p>
+      <div class="formula">R = Responsible (réalisateur) · A = Accountable (approbateur)<small>C = Consulted (consulté) · I = Informed (informé)</small></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<div class="toolbar">
+  <button class="tbtn" id="exportBtn" onclick="exportPDF()">⬇ Export PDF</button>
+</div>
+
+<!-- ================= METHODOLOGIE ================= -->
+<section class="chapter" id="methodo">
+  <div class="chapter-head">
+    <span class="chapter-num">✍️</span>
+    <h2>Méthode de rédaction à l'épreuve</h2>
+  </div>
+  <p class="chapter-sub">Ce que le support de cours dit noir sur blanc sur la façon de traiter l'épreuve — à lire une fois, ça évite des erreurs bêtes le jour J.</p>
+
+  <div class="notions">
+    <div class="card">
+      <div class="card-head"><h3>📋 La nature de l'épreuve</h3><span class="tag hot">À savoir</span></div>
+      <p>C'est une <strong>épreuve écrite de 3 heures</strong> (coefficient 1), qui porte sur l'étude d'un cas ou de situations pratiques, avec commentaire de document(s) et/ou des questions. Ce qui est évalué : votre <strong>esprit d'analyse, de réflexion et de synthèse</strong> — mais aussi, explicitement, votre <strong>capacité à rédiger</strong>. Le contenu ET le style rédactionnel de la copie comptent tous les deux dans la note.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>⏱️ Le jour de l'épreuve : par où commencer</h3><span class="tag hot">🔥 Conseil clé</span></div>
+      <ul class="detail-list">
+        <li><strong>Lisez tout le sujet avant d'écrire</strong> — comptez environ 15 minutes. Ce n'est pas du temps perdu : ça vous permet de repérer les questions que vous maîtrisez, celles qui demandent plus de réflexion, et le barème (nombre de points) de chacune.</li>
+        <li><strong>Traitez d'abord ce que vous maîtrisez le mieux</strong>, pour garder le temps restant sur les questions plus difficiles.</li>
+        <li>Les questions sont généralement <strong>indépendantes les unes des autres</strong> : rien n'oblige à les traiter dans l'ordre du sujet, du moment qu'elles sont clairement repérées dans la copie.</li>
+      </ul>
+      <p><strong>En clair (citation du cours) :</strong> « Mieux vaut rendre une copie dans laquelle vous aurez traité cinq questions à 2 points chacune que d'avoir passé votre temps à traiter à moitié une question à 10 points. »</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>✂️ Qualité plutôt que quantité</h3><span class="tag hot">🔥 Conseil clé</span></div>
+      <p>N'écrivez pas des pages hors-sujet. <strong>Ne retranscrivez pas le cours</strong> si cela n'apporte rien à la question posée — la quantité d'écrit n'est pas déterminante, seules la <strong>qualité et la justesse</strong> des réponses comptent. C'est exactement l'esprit des exemples d'annales de cette fiche : une réponse courte mais collée précisément au cas vaut mieux qu'un déballage de cours généraliste.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>🖋️ Le soin de la copie</h3><span class="tag watch">À savoir</span></div>
+      <ul class="detail-list">
+        <li>Écriture lisible — évitez les « pattes de mouche »</li>
+        <li>En cas d'erreur, <strong>rayez proprement à la règle</strong> la partie à ne pas prendre en compte ; évitez les ratures ambiguës</li>
+        <li>Attention à l'orthographe</li>
+        <li>Rendez un travail <strong>soigné, structuré, propre</strong> — facile et agréable à corriger</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>📚 Comment se préparer en amont</h3><span class="tag watch">À savoir</span></div>
+      <p>Le cours est direct sur ce point : <strong>« Il n'y a ni secret ni miracle. »</strong> Un travail régulier tout au long de l'année est nécessaire ; s'y mettre quelques semaines avant l'épreuve ne suffit pas.</p>
+      <p>Méthode recommandée par le cours : après chaque lecture, faire un <strong>travail de synthèse personnel</strong> — mettre par écrit les notions principales pour se constituer ses propres fiches de révision. Le cours précise que des fiches faites soi-même sont plus efficaces que des fiches obtenues ailleurs, car leur structure correspond à votre propre logique et leur relecture réactive vos souvenirs plus facilement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL QUIZ SECTION ================= -->
+<div class="wrap">
+<section class="chapter" id="finalquiz">
+  <div class="chapter-head">
+    <span class="chapter-num">Bilan</span>
+    <h2>Quiz final — toute l'UE</h2>
+  </div>
+  <p class="chapter-sub">Un mélange de questions issues des 11 chapitres pour vérifier une compréhension d'ensemble avant l'épreuve.</p>
+  <div class="quizcta"><button class="quizbtn final" onclick="openQuiz('final')">Lancer le quiz final →</button></div>
+</section>
+</div>
+
+<!-- ================= QUIZ MODAL ================= -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal">
+    <button class="closex" onclick="closeQuiz()">×</button>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+/* ================= THEME SYNC (postMessage from hub) ================= */
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(!data) return;
+  var theme = null;
+  if (data.theme) theme = data.theme;
+  else if (data.type === 'theme-change' && data.value) theme = data.value;
+  else if (typeof data === 'string' && (data === 'dark' || data === 'light')) theme = data;
+  if(theme === 'light' || theme === 'dark'){
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+});
+
+/* ================= CHAPTER NAV ================= */
+var navBtns = Array.prototype.slice.call(document.querySelectorAll('.chnav-btn'));
+var navInner = document.getElementById('chnav');
+var navSections = navBtns.map(function(btn){
+  return document.getElementById(btn.dataset.target);
+}).filter(Boolean);
+var navClickScroll = false;
+var navClickTimer = null;
+
+navBtns.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    setActiveNav(btn.dataset.target, true);
+    var target = document.getElementById(btn.dataset.target);
+    if(target){
+      navClickScroll = true;
+      clearTimeout(navClickTimer);
+      var y = target.getBoundingClientRect().top + window.pageYOffset - 72;
+      window.scrollTo({top: y, behavior:'smooth'});
+      navClickTimer = setTimeout(function(){ navClickScroll = false; }, 800);
+    }
+  });
+});
+
+function setActiveNav(id, centerIt){
+  navBtns.forEach(function(b){
+    b.classList.toggle('active', b.dataset.target === id);
+  });
+  if(centerIt){
+    var activeBtn = navBtns.filter(function(b){ return b.dataset.target === id; })[0];
+    if(activeBtn) activeBtn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }
+  updateArrows();
+}
+
+/* Scroll-position based tracking — robust for chapters of very different
+   heights, unlike IntersectionObserver which under/over-fires on long
+   sections. We find the last section whose top has scrolled above a
+   reference line near the top of the viewport. */
+var scrollTicking = false;
+function updateActiveOnScroll(){
+  if(navClickScroll){ scrollTicking = false; return; }
+  var refLine = 110;
+  var current = navSections[0];
+  for(var i = 0; i < navSections.length; i++){
+    var rect = navSections[i].getBoundingClientRect();
+    if(rect.top <= refLine){
+      current = navSections[i];
+    } else {
+      break;
+    }
+  }
+  if(current) setActiveNav(current.id, true);
+  scrollTicking = false;
+}
+window.addEventListener('scroll', function(){
+  if(!scrollTicking){
+    window.requestAnimationFrame(updateActiveOnScroll);
+    scrollTicking = true;
+  }
+}, {passive:true});
+
+/* ================= NAV ARROWS ================= */
+function scrollNav(dir){
+  if(!navInner) return;
+  navInner.scrollBy({left: dir * 220, behavior:'smooth'});
+}
+function updateArrows(){
+  if(!navInner) return;
+  var left = document.getElementById('chnavLeft');
+  var right = document.getElementById('chnavRight');
+  if(left) left.disabled = navInner.scrollLeft <= 2;
+  if(right) right.disabled = navInner.scrollLeft >= (navInner.scrollWidth - navInner.clientWidth - 2);
+}
+if(navInner){
+  navInner.addEventListener('scroll', updateArrows, {passive:true});
+  window.addEventListener('resize', updateArrows);
+  updateArrows();
+}
+updateActiveOnScroll();
+
+/* ================= PDF EXPORT ================= */
+function exportPDF(){
+  var btn = document.getElementById('exportBtn');
+  var original = btn.innerHTML;
+  btn.innerHTML = '⏳ Génération...';
+  var target = document.body;
+  html2canvas(target, {scale:2, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f0b1e'}).then(function(canvas){
+    var jsPDF = window.jspdf.jsPDF;
+    var pdf = new jsPDF('p','mm','a4');
+    var imgWidth = 210;
+    var pageHeight = 297;
+    var imgHeight = canvas.height * imgWidth / canvas.width;
+    var heightLeft = imgHeight;
+    var position = 0;
+    var imgData = canvas.toDataURL('image/jpeg', 0.92);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while(heightLeft > 0){
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save('UE535_MSI_fiche.pdf');
+    btn.innerHTML = original;
+  }).catch(function(){ btn.innerHTML = original; });
+}
+
+/* ================= QUIZ DATA ================= */
+const QUIZ_DATA = {
+  ch1: [
+    {q:"Le MSI désigne :", opts:["Un système intégré homme-machine assistant le management et la décision","Un simple logiciel de comptabilité","Un ordinateur central unique"], correct:0, exp:"Le MSI fournit de l'information pour assister les fonctions opérationnelles de management et de prise de décision."},
+    {q:"Le premier ordinateur utilisé en contexte de gestion d'entreprise date de :", opts:["1954","1990","1960"], correct:0, exp:"1954 : General Electric utilise l'EDP (Electronic Data Processing) pour automatiser les calculs comptables."}
+  ],
+  ch2: [
+    {q:"L'environnement VICA désigne un contexte :", opts:["Volatile, Incertain, Complexe, Ambigu","Virtuel, Intégré, Connecté, Automatisé","Vertical, Interne, Contrôlé, Agile"], correct:0, exp:"VICA est l'acronyme classique décrivant l'environnement actuel des organisations."},
+    {q:"Le modèle DMM identifie combien de dimensions de maturité numérique ?", opts:["Six","Trois","Dix"], correct:0, exp:"Client, stratégie, technologie, opérations, culture/personnes/organisation, données."}
+  ],
+  ch3: [
+    {q:"La DSI ne doit jamais être positionnée :", opts:["Sous l'autorité d'une autre fonction métier","En soutien direct de la direction générale","Au même niveau que les autres fonctions"], correct:0, exp:"Cela nuirait au besoin de transversalité de la fonction SI."},
+    {q:"Dans la trilogie CIGREF, le BUILD désigne :", opts:["Le développement de nouvelles applications","L'exploitation de l'existant","La veille stratégique"], correct:0, exp:"RUN = exploitation, BUILD = construction, VISION = stratégie."},
+    {q:"Une DSI centralisée procure notamment :", opts:["Des économies d'échelle et une uniformité des pratiques","Une parfaite adaptation aux besoins locaux","Une innovation systématiquement plus forte"], correct:0, exp:"En contrepartie, elle peut manquer d'adaptation locale et d'innovation (lourdeur, bureaucratie)."}
+  ],
+  ch4: [
+    {q:"Le SI est lié aux processus car il :", opts:["Fournit l'information permettant de piloter et suivre le processus","Remplace entièrement le processus","N'a aucun lien direct avec les processus"], correct:0, exp:"Le SI est le support technologique et informationnel des processus."},
+    {q:"Le connecteur BPMN « OU exclusif » signifie que les conditions :", opts:["S'excluent mutuellement","Doivent toutes être réunies","Peuvent être réunies simultanément"], correct:0, exp:"Le OU exclusif (XOR) empêche que deux conditions soient vraies en même temps."}
+  ],
+  ch5: [
+    {q:"Pour procurer un avantage concurrentiel durable, une ressource doit être :", opts:["Rare, non imitable et non substituable","Facilement accessible sur le marché","Uniquement technologique"], correct:0, exp:"C'est la seule combinaison qui empêche les concurrents de reproduire l'avantage."},
+    {q:"Un SI « en silo » signifie que :", opts:["Chaque acteur est privé d'une information partagée","Toutes les données sont centralisées","Le SI est parfaitement intégré"], correct:0, exp:"C'est un symptôme classique de désalignement du SI."}
+  ],
+  ch6: [
+    {q:"Le modèle SAM identifie quatre composantes, dont :", opts:["La stratégie de la firme et la stratégie SI","Uniquement les coûts informatiques","Le seul chiffre d'affaires"], correct:0, exp:"Stratégie de la firme, structures de la firme, stratégie SI, infrastructures technologiques."},
+    {q:"Dans le mode « exécution de la stratégie d'affaire », le point de départ est :", opts:["La stratégie d'affaire","L'infrastructure technologique","La stratégie SI"], correct:0, exp:"La stratégie d'affaire entraîne la création d'une équipe projet, qui fait évoluer l'IT."}
+  ],
+  ch7: [
+    {q:"La mise en place d'un PGI concerne principalement la strate :", opts:["Applicative","Technique uniquement","Métiers uniquement"], correct:0, exp:"Le PGI change les logiciels utilisés, donc la couche applicative en priorité."},
+    {q:"L'hétérogénéité d'un SI se mesure notamment par :", opts:["Le nombre d'environnements et de protocoles utilisés","Le seul budget informatique","Le nombre d'employés de la DSI"], correct:0, exp:"Diversité des applications, protocoles, environnements et modalités d'accès."}
+  ],
+  ch8: [
+    {q:"Le schéma directeur est :", opts:["Un document pluriannuel définissant le SI cible et les projets pour l'atteindre","Un simple cahier des charges technique","Un audit ponctuel du SI"], correct:0, exp:"Il planifie les évolutions du SI sur un horizon de 3 à 5 ans."}
+  ],
+  ch9: [
+    {q:"Le directeur de projet (MOA) est notamment chargé de :", opts:["Définir les besoins et le cahier des charges","Coder la solution technique","Réaliser uniquement les tests"], correct:0, exp:"C'est la MOE (chef de projet) qui a les missions techniques."},
+    {q:"L'AMOA est surtout utile quand :", opts:["La firme n'a pas d'équipe interne étoffée pour suivre le projet","La firme dispose déjà d'une DSI avec un service MOA","Le projet est très simple"], correct:0, exp:"L'AMOA comble un manque de ressources internes pour piloter le projet."},
+    {q:"Pour un projet PGI standardisé, la méthode agile est généralement :", opts:["Peu pertinente, car les fonctionnalités sont déjà standardisées","Toujours indispensable","Obligatoire réglementairement"], correct:0, exp:"L'agile est coûteux sans réelle marge de personnalisation sur un PGI standard."}
+  ],
+  ch10: [
+    {q:"Sur un diagramme MPM, le chemin critique regroupe les tâches dont :", opts:["La marge totale est nulle","La durée est la plus courte","Elles sont toutes en fin de projet"], correct:0, exp:"Tout retard sur une tâche du chemin critique retarde directement le projet."},
+    {q:"Un écart sur coût positif (CRTE > CPTE) traduit :", opts:["Un gaspillage de moyens","Une avance sur le planning","Une économie budgétaire"], correct:0, exp:"On a dépensé plus que ce que l'avancement réel ne justifiait."},
+    {q:"La recette d'un projet correspond à :", opts:["La prise de possession formelle par le maître d'ouvrage, avec tests de conformité","La signature initiale du contrat","Le recrutement de l'équipe projet"], correct:0, exp:"C'est la toute dernière phase, qui vérifie la conformité au cahier des charges."}
+  ],
+  ch11: [
+    {q:"Un ERP/PGI repose sur :", opts:["Une base de données unique partagée par tous les modules","Autant de bases de données que de modules","Aucune base de données centralisée"], correct:0, exp:"C'est ce qui garantit l'uniformité de l'information."},
+    {q:"Face à un manque de compétences IT internes, on privilégie généralement :", opts:["Une solution propriétaire plutôt qu'open source","Un développement 100% interne open source","L'absence de tout éditeur"], correct:0, exp:"La solution propriétaire offre plus de sécurisation et de support."},
+    {q:"Le SIRH regroupe notamment :", opts:["La gestion de la paie, du recrutement et de la GPEC","Uniquement la comptabilité générale","Uniquement la gestion des stocks"], correct:0, exp:"Le SIRH couvre l'ensemble des processus RH de l'entreprise."}
+  ],
+  final: [
+    {q:"La DSI ne doit jamais être placée :", opts:["Sous l'autorité d'une autre fonction métier","En soutien direct de la direction générale","Au même niveau que les autres fonctions métiers"], correct:0, exp:"Cela nuirait à sa transversalité indispensable."},
+    {q:"Le modèle SAM de Venkatraman repose sur :", opts:["4 composantes à mettre en relation (stratégie firme, structures, stratégie SI, infrastructures)","2 composantes uniquement","Un unique indicateur financier"], correct:0, exp:"C'est le modèle central de l'alignement stratégique du SI."},
+    {q:"Sur un diagramme MPM, la marge totale du chemin critique est :", opts:["Nulle","Maximale","Toujours égale à 1 semaine"], correct:0, exp:"C'est la définition même du chemin critique."},
+    {q:"Un ERP repose sur :", opts:["Une base de données unique et des modules intégrés","Des applications totalement indépendantes","Aucune traçabilité des opérations"], correct:0, exp:"C'est ce qui distingue un PGI d'un ensemble d'applications point à point."},
+    {q:"Pour un projet PGI standard, la méthode agile est :", opts:["Généralement peu pertinente","Toujours la meilleure option","Interdite par la réglementation"], correct:0, exp:"Les fonctionnalités déjà standardisées rendent l'agile coûteux sans réel gain de personnalisation."},
+    {q:"L'AMOA sert d'interface entre :", opts:["Les besoins métiers (MOA) et les solutions techniques (MOE)","Deux éditeurs concurrents","Le client final et la banque"], correct:0, exp:"C'est sa fonction centrale de traduction des besoins en spécifications."},
+    {q:"Les 4 strates de l'urbanisation du SI sont :", opts:["Métiers, fonctionnelle, applicative, technique","Achat, vente, production, RH","Stratégique, tactique, opérationnelle, financière"], correct:0, exp:"C'est la grille de lecture classique de l'urbanisation du SI."},
+    {q:"Un écart sur délai négatif (CPTE < CPTP) traduit :", opts:["Un retard par rapport au planning prévu","Une avance sur le planning","Un gaspillage budgétaire"], correct:0, exp:"On a moins avancé que ce qui était prévu à cette date."},
+    {q:"Pour qu'une ressource SI procure un avantage concurrentiel durable, elle doit être :", opts:["Rare, non imitable, non substituable","Uniquement peu coûteuse","Accessible à tous les concurrents"], correct:0, exp:"Approche par les ressources (RBV) appliquée au SI."},
+    {q:"Le schéma directeur a un horizon typique de :", opts:["3 à 5 ans","1 semaine","20 ans"], correct:0, exp:"C'est un document de planification pluriannuelle à moyen terme."},
+    {q:"Dans le RACI, le « A » signifie :", opts:["Accountable (approbateur)","Assistant","Analyst"], correct:0, exp:"R=réalisateur, A=approbateur, C=consulté, I=informé."},
+    {q:"La recette d'un projet SI intervient :", opts:["En toute dernière phase, avant/au moment du déploiement","Avant même le cahier des charges","Immédiatement après le choix de l'éditeur"], correct:0, exp:"Elle valide la conformité finale au cahier des charges."}
+  ]
+};
+
+/* ================= QUIZ MODAL ENGINE ================= */
+let quizState = { id:null, idx:0, score:0, answered:false };
+
+function openQuiz(id){
+  quizState = { id:id, idx:0, score:0, answered:false };
+  document.getElementById('quizModal').classList.add('open');
+  renderQuestion();
+}
+
+function closeQuiz(){
+  document.getElementById('quizModal').classList.remove('open');
+}
+
+function renderQuestion(){
+  const data = QUIZ_DATA[quizState.id] || [];
+  const content = document.getElementById('quizContent');
+  if(quizState.idx >= data.length){
+    content.innerHTML = `
+      <div class="score-screen">
+        <div class="score-num">${quizState.score}/${data.length}</div>
+        <p style="color:var(--text-dim);font-size:14.5px;margin-bottom:18px;">Score final pour ce quiz.</p>
+        <button class="navbtn primary" onclick="closeQuiz()">Terminer →</button>
+      </div>`;
+    return;
+  }
+  const item = data[quizState.idx];
+  quizState.answered = false;
+  let optsHtml = '';
+  item.opts.forEach((opt, oi) => {
+    optsHtml += `<button class="opt" data-i="${oi}" onclick="answerQuiz(${oi})">${opt}</button>`;
+  });
+  content.innerHTML = `
+    <h3>Question ${quizState.idx+1}</h3>
+    <div class="qcount">${quizState.idx+1} / ${data.length} · Score actuel : ${quizState.score}</div>
+    <p class="qtext">${item.q}</p>
+    <div id="optsWrap">${optsHtml}</div>
+    <div class="explain" id="explainBox">💡 ${item.exp}</div>
+    <div class="modal-nav">
+      <button class="navbtn" onclick="closeQuiz()">Fermer</button>
+      <button class="navbtn primary" id="nextBtn" onclick="nextQuestion()" disabled>Suivant →</button>
+    </div>`;
+}
+
+function answerQuiz(oi){
+  if(quizState.answered) return;
+  quizState.answered = true;
+  const data = QUIZ_DATA[quizState.id];
+  const item = data[quizState.idx];
+  const opts = document.querySelectorAll('#optsWrap .opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if(i === item.correct) btn.classList.add('correct');
+    else if(i === oi) btn.classList.add('wrong');
+  });
+  if(oi === item.correct) quizState.score++;
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion(){
+  quizState.idx++;
+  renderQuestion();
+}
+
+document.getElementById('quizModal').addEventListener('click', function(e){
+  if(e.target === this) closeQuiz();
+});
+</script>
+</body>
+</html>
