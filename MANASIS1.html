@@ -1314,6 +1314,7 @@ table.chrecap-table tr:last-child td{border-bottom:none;}
   <button class="tbtn" id="exportBtn" onclick="exportPDF()">⬇ Export PDF</button>
 </div>
 
+<div class="wrap">
 <!-- ================= METHODOLOGIE ================= -->
 <section class="chapter" id="methodo">
   <div class="chapter-head">
@@ -1360,6 +1361,7 @@ table.chrecap-table tr:last-child td{border-bottom:none;}
     </div>
   </div>
 </section>
+</div><!-- /wrap methodo -->
 
 <!-- ================= FINAL QUIZ SECTION ================= -->
 <div class="wrap">
@@ -1406,15 +1408,13 @@ var navClickTimer = null;
 
 navBtns.forEach(function(btn){
   btn.addEventListener('click', function(){
-    setActiveNav(btn.dataset.target, true);
     var target = document.getElementById(btn.dataset.target);
-    if(target){
-      navClickScroll = true;
-      clearTimeout(navClickTimer);
-      var y = target.getBoundingClientRect().top + window.pageYOffset - 72;
-      window.scrollTo({top: y, behavior:'smooth'});
-      navClickTimer = setTimeout(function(){ navClickScroll = false; }, 800);
-    }
+    if(!target) return;
+    navClickScroll = true;
+    clearTimeout(navClickTimer);
+    setActiveNav(btn.dataset.target, true);
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+    navClickTimer = setTimeout(function(){ navClickScroll = false; }, 900);
   });
 });
 
